@@ -1,0 +1,502 @@
+
+* {
+    padding: 0px; margin: 0px;
+    font-family: Times New Roman;
+    /*font-family: ".VnArial";*/
+}
+
+body {
+    /*background-color: #000;*/
+}
+
+.body {
+    /*    height: 297mm;
+        width: 210mm;*/
+    /*margin: 10px auto;*/
+    /*color: blue;*/
+    color: #000;
+    /*background: url('in_kim_a5.png');*/
+    /*font-size: 14px;*/
+    font-size: 16.8px;
+    background-color: #fff;
+    /*border: 1px solid #000;*/
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.text-capitalize {
+    text-decoration: underline;
+}
+
+.text-title {
+    /*font-size: 18px;*/
+    /*margin-bottom: 20px;*/
+    /*padding-top: 10px;*/
+}
+
+.content {
+    /*width: 182mm;*/
+    /*border: 1px solid #000;*/
+    /*margin: 10px auto;*/
+    /*padding: 10px 0px;*/
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    /*padding: 0px 20px 0px 30px;*/
+}
+
+.box_donvi2 {
+    float: left;
+    width: 38%;
+    text-align: center;
+    /*font-size: 13px;*/
+    line-height: 20px;
+    font-weight: bold;
+}
+
+.box_donvi {
+    float: left;
+    width: 50%;
+    /*width: 33.333%;*/
+    text-align: center;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: bold;
+    /*border: 1px solid #000;*/
+}
+
+.box_donvi .conghoa {
+    /*font-size: 15px;*/
+}
+
+.box_donvi .site-name span {
+    border-bottom: 1px solid #fff;
+    padding-bottom: 5px;
+    /*border: 1px solid #000;*/
+}
+
+.box_donvi .so {
+    /*font-size: 9px;*/
+    font-weight: normal;
+    margin-top: 10px;
+}
+
+.box_title {
+    float: left;
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: -6px;
+}
+
+.box_title .comment {
+    font-style: italic;
+    font-weight: bold;
+
+}
+
+.box_id {
+    float: right;
+    width: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.box_id .conghoa {
+    /*font-size: 16px;*/
+}
+.box_id .doclap {
+    font-size: 15px;
+    text-decoration: none; 
+}
+
+.box_id .doclap span, .doclap span {
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    /*border: 1px solid #000;*/
+}
+
+.box_donvi .site-name-line span {
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    /*border: 1px solid #000;*/
+}
+
+.box_id .ngaythang {
+    margin-top: 5px;
+}
+
+.sample_no {
+    float: right;
+}
+
+.text-underline{
+    text-decoration: underline; 
+}
+
+hr.line {
+    border: none;
+    border-bottom: 1px solid #000;
+    width: 30%;
+    margin: 0px auto;
+    margin-top: 5px;
+}
+
+.clear-fix {
+    clear: both;
+}
+
+
+.footer {
+    text-align: center;
+    font-weight: bold;
+    /*font-size: 14px;*/
+    padding-top: 5px;
+}
+
+.footer .box-ky-title {
+    line-height: 15px;
+}
+
+.footer .box-left {
+    float: left;
+    /*width: 40%;*/
+    font-weight: bold;
+}
+.footer .box-mid {
+    float: left;
+    /*width: 40%;*/
+}
+.footer .box-right {
+    float: left;
+    /*width: 40%;*/
+}
+
+.footer .chu-ky {
+    font-weight: normal;
+    font-size: 14px;
+    /*font-style: italic;*/
+}
+
+.footer .empty-ky {
+    height: 50px;
+}
+
+.footer .note {
+    text-align: right;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.row {
+    clear: both;
+}
+.row .col-35 {
+    width: 35%;
+    float: left;
+}
+.row .col-33 {
+    width: 33.33%;
+    float: left;
+}
+.row .col-30 {
+    width: 30%;
+    float: left;
+}
+.row .col-15 {
+    width: 15%;
+    float: left;
+}
+.row .col-18 {
+    width: 18%;
+    float: left;
+}
+.row .col-20 {
+    width: 20%;
+    float: left;
+}
+.row .col-75 {
+    width: 75%;
+    float: left;
+}
+.row .col-70 {
+    width: 70%;
+    float: left;
+}
+.row .col-95 {
+    width: 90%;
+    float: left;
+}
+.row .col-25 {
+    width: 25%;
+    float: left;
+}
+.row .col-5 {
+    width: 10%;
+    padding-left: 35px;
+    float: left;
+}
+.row .col-10 {
+    width: 70px;
+    float: left;
+    margin-left: 0px;
+}
+.row .col-40 {
+    width: 40%;
+    float: left;
+}
+.row .col-50 {
+    width: 50%;
+    float: left;
+}
+.row .col-60 {
+    width: 60%;
+    float: left;
+}
+.row .col-100 {
+    width: 100%;
+    float: left;
+}
+.row .col-80 {
+    width: 80%;
+    float: left;
+}
+
+.mid {
+    /*font-size: 18px;*/
+    line-height: 24px;
+    margin-top: 10px;
+}
+
+.mid .tam-giu {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.mid .tam-giu td, .mid .tam-giu th {
+    padding: 1px 5px;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-normal {
+    font-weight: normal;
+}
+
+.text-size-18 {
+    font-size: 18px!important;
+    line-height: 28px;
+}
+.text-size-15 {
+    font-size: 15px!important;
+}
+
+.text-size-14 {
+    font-size: 14px!important;
+}
+
+.text-size-13 {
+    font-size: 13px!important;
+}
+
+.text-size-12 {
+    font-size: 12px!important;
+}
+
+.text-size-11 {
+    font-size: 11px!important;
+}
+
+.text-size-10 {
+    font-size: 10px!important;
+}
+
+.nowrap {
+    word-break: inherit!important;
+}
+
+
+.text-red {
+    color: red;
+}
+
+.table-report {
+    /*display: flex;*/
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-spacing: 0;
+    table-layout: auto !important;
+    font-size: 14px;
+    -fs-table-paginate: paginate;
+}
+
+.table-report tr th {
+    background: rgb(239, 239, 239) !important;
+    font-weight: bold;
+    vertical-align: middle;
+    text-align: center !important;
+}
+
+.table-report tr th, .table-report tr td {
+    /*font-size: 12px;*/
+    word-break: break-word;
+    /*white-space: normal;*/
+    overflow: hidden;
+    /*text-overflow: ellipsis;*/
+    border: 0.5px solid #000;
+    line-height: normal;
+    padding: 2px;
+}
+
+.table-report tr td {
+    padding: 2px;
+}
+.page[size=A4]{
+    width: 21cm;
+    height: 29.7cm;
+}
+.page-height-a4 {
+    /*height: 26.58cm;*/ 
+    /*height: 25cm;*/ 
+    /*border: 1px solid #000;*/
+    page-break-after: always;
+}
+.page[size=A4][layout=landscape] {
+    width: 29.7cm;
+    height: 21cm;
+}
+.page[size=A3] {
+    width: 29.7cm;
+    height: 42cm;
+}
+.page[size=A3][layout=landscape] {
+    width: 42cm;
+    height: 29.7cm;
+}
+.page[size=A5] {
+    width: 14.8cm;
+    height: 21cm;
+}
+.page[size=A5][layout=landscape] {
+    width: 21cm;
+    height: 14.8cm;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}
+
+.capitalize-first-letter::first-letter {
+    text-transform: uppercase;
+}
+
+.text-bold {
+    font-weight: bold!important;
+}
+
+.fullname {
+    min-width: 100px;
+}
+.date {
+    min-width: 70px;
+}
+.gender {
+    min-width: 30px;
+}
+.tt {
+    min-width: 20px;
+}
+
+.square {
+    border: 1px solid #000;
+    background: #fff!important;
+    margin-bottom: -2px;
+}
+.min-height-30{
+    min-height: 30px;
+}
+.min-width-80{
+    min-width: 80px;
+}
+.min-width-240{
+    min-width: 240px;
+}
+
+
+.font-weight-bold {
+  font-weight: bold;
+}
+
+.font-italic { 
+    font-style: italic !important; 
+}
+.text-italic {
+    font-style: italic!important
+}
+.border {
+  border: 1px solid #e9ecef !important;
+}
+.border-dark {
+  border-color: #343a40 !important;
+}
+.with-250{
+    width: 250px;
+};
+@media print {
+    * {
+        /*padding: 0px; margin: 0px;*/
+        font-family: Times New Roman;
+    }
+}
+
+.box_id_1 {
+    margin-left: 60px; 
+    margin-right: 15px; 
+    float: left;
+    /*width: 50%;*/
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.box_id_1 .conghoa {
+    /*font-size: 16px;*/
+}
+.box_id_1 .doclap {
+    font-size: 15px;
+    text-decoration: none; 
+}
+
+.box_id_1 .doclap span, .doclap span {
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    /*border: 1px solid #000;*/
+}
+
+.box_donvi_1 {
+    float: left;
+}
