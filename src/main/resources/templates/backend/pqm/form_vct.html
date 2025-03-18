@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                            form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+                        var province_id = [[${currentSite.provinceID}
+                        ]];
+                        var district_id = [[${currentSite.districtID}
+                        ]];
+                        var ward_id = [[${currentSite.wardID}
+                        ]];
+                        var scanUrl = '/service/pqm-vct/scan.json';
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).pqmVct()}" 
+                       data-confirm="Bạn chắc chắn muốn hủy ?"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${breadcrumbUrl}"><span th:text="${breadcrumbTitle}"  ></span></a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).pqmVctUpdate(form.ID)}"  ><span th:text="${title}" ></span></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pqm_vct_update" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).pqmVctUpdate(form.ID)} " 
+                          th:object="${form}"
+                          method="post"
+                          name="pac_patient_form">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        A. Thông tin chỉnh sửa
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <input type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('Mã khách hàng: ', 'code', ${code}, '')"></div>
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Tên khách hàng:', 'name', fasle, '', '')"></div>
+                                            <!--<div data-th-replace="widget/form :: form-static('Tên khách hàng: ', 'name', ${name}, '')"></div>-->
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Mã XN khẳng định:', 'confirmTestNo', fasle, '', '')"></div>
+                                            <!--                                            <div class="form-group">
+                                                                                            <label>
+                                                                                                <span >Mã XN khẳng định:</span> 
+                                                                                            </label>
+                                                                                            <input type="text" class="form-control" disabled th:value="${entity.confirmTestNo}" />
+                                                                                        </div>-->
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    <span >Ngày XN khẳng định:</span> 
+                                                </label>
+                                                <input type="text" class="form-control" disabled th:value="${T(com.gms.components.TextUtils).formatDate(entity.confirmTime,'dd/MM/yyyy')}" />
+                                            </div>
+                                        </div> 
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    <span >Ngày nhận kết quả:</span> 
+                                                </label>
+                                                <input type="text" class="form-control" disabled th:value="${T(com.gms.components.TextUtils).formatDate(entity.resultsTime,'dd/MM/yyyy')}" />
+                                            </div>
+                                        </div> 
+
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày xét nghiệm mới nhiễm:', 'earlyHivDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Kết luận chuẩn đoán nhiễm mới:', 'earlyDiagnose', false, ${options.get(T(com.gms.entity.db.ParameterEntity).EARLY_DIAGNOSE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Mã số điều trị:', 'therapyNo', fasle, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày đăng ký điều trị:', 'registerTherapyTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày chuyển gửi điều trị:', 'exchangeTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Tên cơ sở điều trị:', 'registeredTherapySite', fasle, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Được phép ghi đè khi nhập liệu:', 'blocked', false, ${options.get('blocked')}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: textarea('Ghi chú:', 'note', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+<!--                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        B. Thông tin tìm kiếm từ biến động điều trị
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+
+                                    <div class="row">
+                                        <blockquote>
+                                            <small  id="scan" ><span class="">Thông tin:</span>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <dl class="dl-opc dl-horizontal">
+                                                            <dt>Ngày đăng ký điều trị:</dt>
+                                                            <dd><span id="registerTherapyTime_view" ></span></dd>
+                                                            <dt>Tên cơ sở điều trị:</dt>
+                                                            <dd><span id="registeredTherapySite_view" ></span></dd>
+                                                            <dt>Mã số điều trị:</dt>
+                                                            <dd><span id="therapyNo_view" ></span></dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <dl class="dl-opc dl-horizontal">
+                                                            <dt>Ngày chuyển gửi ĐT:</dt>
+                                                            <dd><span id="exchangeTime_view" ></span></dd>
+                                                            <dt>Kết luận CĐ nhiễm mới:</dt>
+                                                            <dd><span id="earlyDiagnose_view" ></span></dd>
+                                                            <dt>Ngày CĐ nhiễm mới:</dt>
+                                                            <dd><span id="earlyHivDate_view" ></span></dd>
+                                                        </dl>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                            </small>
+
+
+                                            <small>Chức năng "Tìm kiếm từ biến động điều trị", các trường <span class="text-bold">Ngày đăng ký điều trị, Tên cơ sở điều trị, Mã số điều trị, Kết luận chuẩn đoán nhiễm mới, Ngày chuẩn đoán nhiễm mới </span>sẽ được lấy từ QLNN, trường <span class="text-bold">Ngày chuyển gửi điều trị </span>sẽ được lấy bằng <span class="text-bold">Ngày trả kết quả XN Khẳng định</span>.</small>
+
+                                        </blockquote>
+
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+<!--                                <button  class="btn btn-info"  type="button"
+                                         th:attr="ng-click='actionScan(\''+${form.ID}+'\', \''+${form.identityCard}+'\')'">
+                                    <i class="fa fa-search" ></i>
+                                    Tìm kiếm từ biến động điều trị
+                                </button>-->
+                                <button  class="btn btn-primary"  
+                                         type="submit">
+                                    <i class="fa fa-edit" ></i>
+                                    Cập nhật
+                                </button>
+                                <a  th:href="${T(com.gms.components.UrlUtils).pqmVct()}" class="btn btn-default">Huỷ</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

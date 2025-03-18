@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                        form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+                        var hasErrorDob = [[${#fields.hasErrors('form.dob')}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).opcIndex()}" 
+                       data-confirm="Bạn chắc chắn muốn hủy ?"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                       <span >[[${title}]]</span> <span class="text-danger text-bold text-uppercase" >#[[${entity.code}]]</span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcIndex()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).OPC_ARV.getLabel()}"></span></a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).opcArvUpdate(form.ID)}"  ><span th:text="${title}" ></span></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_arv_update" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/opc_arv/widget :: opc-tab('patient', ${form.ID})" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).opcArvUpdate(form.ID)} " 
+                          th:object="${form}"
+                          method="post"
+                          name="opc_arv_update_form"
+                          ng-submit="register(opc_arv_update_form, $event)"
+                          ng-validate="validationOptions">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        A. Thông tin chung
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <input type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A1. Mã bệnh án:', 'code', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A2. Họ và tên:', 'fullName', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A3. Giới tính:', 'genderID', true, ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('A4. Ngày sinh:', 'dob', true, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A5. Số CMND:', 'identityCard', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A6. Dân tộc:', 'raceID', true, ${options.get(T(com.gms.entity.db.ParameterEntity).RACE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A7. Nghề nghiệp:', 'jobID', false, ${options.get(T(com.gms.entity.db.ParameterEntity).JOB)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A8. Nhóm đối tượng:', 'objectGroupID', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A9. BN có thẻ BHYT:', 'insurance', true, ${options.get(T(com.gms.entity.db.ParameterEntity).HAS_HEALTH_INSURANCE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A10. Số thẻ BHYT:', 'insuranceNo', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A11. Loại thẻ BHYT:', 'insuranceType', false, ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_TYPE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A12. Nơi ĐK KCB ban đầu:', 'insuranceSite', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('A13. Ngày hết hạn thẻ BHYT:', 'insuranceExpiry', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('A14. Tỷ lệ thanh toán BHYT(%):', 'insurancePay', false, ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_PAY)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('A15. SĐT bệnh nhân:', 'patientPhone', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <label>A16. Nơi đăng ký hộ khẩu thường trú:</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div data-th-replace="widget/form :: input-text('Số nhà:', 'permanentAddress', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'permanentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Phường xã:', 'permanentWardID', true, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="form-fieldset" >
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>A17. Nơi cư trú hiện tại (Nếu khác nơi đăng ký hộ khẩu thường trú):</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <input type="hidden"  id="isDisplayCopy" ng-model="isCopyPermanentAddress" th:field="${form.isDisplayCopy}">
+                                                    <button class="btn btn-primary form-control" id="copyButton"
+                                                            ng-class="isCopyPermanentAddress ? 'btn btn-primary form-control' : 'btn btn-info form-control'" 
+                                                            type="button" ng-click="copyAddress()">
+                                                        <i class="fa fa-clone"></i> 
+                                                        <span ng-show="isCopyPermanentAddress" ng-cloak >Nhập địa chỉ cư trú</span>
+                                                        <span ng-show="!isCopyPermanentAddress" ng-cloak >Hủy nhập địa chỉ cư trú</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6"></div>
+                                        </div>
+                                        <div class="row" ng-show="!isCopyPermanentAddress">
+                                            <div class="col-md-12">
+                                                <div data-th-replace="widget/form :: input-text('Số nhà:', 'currentAddress', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'currentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'currentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Phường/xã:', 'currentWardID', true, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-text('A18. Họ tên người hỗ trợ:', 'supporterName', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('A19. Quan hệ với BN:', 'supporterRelation', false, ${options.get(T(com.gms.entity.db.ParameterEntity).SUPPORTER_RELATION)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-text('A20. SĐT người hỗ trợ:', 'supporterPhone', false, '', '')"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> 
+
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        B. Thông tin xét nghiệm khẳng định HIV
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('B1. Mã XN khẳng định:', 'confirmCode', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('B2. Ngày XN khẳng định:', 'confirmTime', true, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('B3. Nơi XN khẳng định:', 'confirmSiteID', true, ${options.get('siteConfirm')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('B4. Khác (Ghi rõ):', 'confirmSiteName', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('B5. Ngày XN PCR lần 1:', 'pcrOneTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('B6. Kết quả XN PCR lần 1:', 'pcrOneResult', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS_PCR)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('B7. Ngày XN PCR lần 2:', 'pcrTwoTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('B8. Kết quả XN PCR lần 2:', 'pcrTwoResult', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS_PCR)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row"> 
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: textarea('Ghi chú:', 'note', false, '', '')"></div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        C. Thông tin đăng ký điều trị
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcStage(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Cơ sở điều trị:</dt>
+                                                <dd>[[${entity.siteID == null || entity.siteID == 0 ? '__' : options.get('treatment-facility').get(entity.siteID + '')}]]</dd>
+                                                <dt>Loại đăng ký:</dt>
+                                                <dd>[[${entity.registrationType == null || entity.registrationType == '' ? '__' : options.get('registration-type').get(entity.registrationType)}]]</dd>
+                                                <dt>Ngày đăng ký:</dt>
+                                                <dd>[[${entity.registrationTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.registrationTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Giai đoạn lâm sàng:</dt>
+                                                <dd>[[${entity.clinicalStage == null || entity.clinicalStage == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).CLINICAL_STAGE).get(entity.clinicalStage + '')}]]</dd>
+                                                <dt>CD4 hoặc CD4%:</dt>
+                                                <dd>[[${entity.cd4 == null || entity.cd4 == '' ? '__' : entity.cd4}]]</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Cơ sở chuyển gửi:</dt>
+                                                <dd>[[${entity.sourceSiteID == null || entity.sourceSiteID == 0 ?  '__' : entity.sourceSiteID == -1 ? entity.sourceArvSiteName : options.get('siteOpcTo').get(entity.sourceSiteID + '')}]]</dd>
+                                                <dt>Mã BA chuyển đến:</dt>
+                                                <dd>[[${entity.sourceArvCode == null || entity.sourceArvCode == '' ? '__' : entity.sourceArvCode}]]</dd>
+                                                <dt>Ngày tiếp nhận:</dt>
+                                                <dd>[[${entity.tranferToTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.tranferToTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Ngày CG theo phiếu:</dt>
+                                                <dd>[[${entity.dateOfArrival == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.dateOfArrival, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Ngày phản hồi:</dt>
+                                                <dd>[[${entity.tranferToTimeOpc == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.tranferToTimeOpc, 'dd/MM/yyyy')}]]</dd>
+                                                
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        D. Thông tin sàng lọc, điều trị dự phòng lao và nhiễm trùng cơ hội
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Sàng lọc Lao:</dt>
+                                                <dd class="text-danger">[[${options.get('has').get(entity.lao == false ? '0' : entity.lao == true ? '1' : '' )}]]</dd>
+                                                <dt>Ngày sàng lọc:</dt>
+                                                <dd>[[${entity.laoTestTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.laoTestTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Các biểu hiện nghi Lao:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.laoSymptoms == null}">__</span>
+                                                    <span th:if="${entity.laoSymptoms != null}" th:each="item,i : ${entity.laoSymptoms}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).LAO_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.laoSymptoms) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                                <dt>Triệu chứng khác:</dt>
+                                                <dd>[[${entity.laoOtherSymptom == null || entity.laoOtherSymptom == '' ? '__' : entity.laoOtherSymptom}]]</dd>
+                                                <dt>Điều trị dự phòng INH:</dt>
+                                                <dd class="text-danger">[[${options.get('has').get(entity.inh == false ? '0' : entity.inh == true ? '1' : '' )}]]</dd>
+                                                <dt>Ngày điều trị INH:</dt>
+                                                <dd th:if="${entity.inhFromTime != null}">
+                                                    <span th:if="${entity.inhFromTime != null}">Từ [[${T(com.gms.components.TextUtils).formatDate(entity.inhFromTime, 'dd/MM/yyyy')}]]</span>
+                                                    <span th:if="${entity.inhToTime != null}"> đến [[${T(com.gms.components.TextUtils).formatDate(entity.inhToTime, 'dd/MM/yyyy')}]]</span>
+                                                </dd>
+                                                <dd  th:if="${entity.inhFromTime == null}">__</dd>
+                                                <dt>Lý do kết thúc:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.inhEndCauses == null}">__</span>
+                                                    <span th:if="${entity.inhEndCauses != null}" th:each="item,i : ${entity.inhEndCauses}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).LAO_END_CASE).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.inhEndCauses) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Điều trị NTCH:</dt>
+                                                <dd class="text-danger">[[${options.get('has').get(entity.ntch == false ? '0' : entity.ntch == true ? '1' : '' )}]]</dd>
+                                                <dt>Điều trị Cotrimoxazole:</dt>
+                                                <dd th:if="${entity.inhFromTime != null}">
+                                                    <span th:if="${entity.cotrimoxazoleFromTime != null}">Từ [[${T(com.gms.components.TextUtils).formatDate(entity.cotrimoxazoleFromTime, 'dd/MM/yyyy')}]]</span>
+                                                    <span th:if="${entity.cotrimoxazoleToTime != null}"> đến [[${T(com.gms.components.TextUtils).formatDate(entity.cotrimoxazoleToTime, 'dd/MM/yyyy')}]]</span>
+                                                </dd>
+                                                <dd  th:if="${entity.inhFromTime == null}">__</dd>
+                                                <dt>Các biểu hiện NTCH:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.ntchSymptoms == null}">__</span>
+                                                    <span th:if="${entity.ntchSymptoms != null}" th:each="item,i : ${entity.ntchSymptoms}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).NTCH_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.ntchSymptoms) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                                <dt>Triệu chứng khác:</dt>
+                                                <dd>[[${entity.ntchOtherSymptom == null || entity.ntchOtherSymptom == '' ? '__' : entity.ntchOtherSymptom}]]</dd>
+                                                <dt>Lý do kết thúc:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.cotrimoxazoleEndCauses == null}">__</span>
+                                                    <span th:if="${entity.cotrimoxazoleEndCauses != null}" th:each="item,i : ${entity.cotrimoxazoleEndCauses}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).NTCH_END_CASE).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.cotrimoxazoleEndCauses) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        E. Thông tin điều trị ARV
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcStage(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Trạng thái điều trị:</dt>
+                                                <dd>[[${entity.statusOfTreatmentID == null || entity.statusOfTreatmentID == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT).get(entity.statusOfTreatmentID)}]]</dd>
+                                                <dt>Ngày ARV đầu tiên:</dt>
+                                                <dd>[[${entity.firstTreatmentTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.firstTreatmentTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Phác đồ đầu tiên:</dt>
+                                                <dd>[[${entity.firstTreatmentRegimenID == null || entity.firstTreatmentRegimenID == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(entity.firstTreatmentRegimenID)}]]</dd>
+                                                <dt>Ngày điều trị ARV:</dt>
+                                                <dd>[[${entity.treatmentTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.treatmentTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Bậc phác đồ hiện tại:</dt>
+                                                <dd>[[${entity.treatmentRegimenStage == null || entity.treatmentRegimenStage == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE).get(entity.treatmentRegimenStage)}]]</dd>
+                                                <dt>Phác đồ hiện tại:</dt>
+                                                <dd>[[${entity.treatmentRegimenID == null || entity.treatmentRegimenID == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(entity.treatmentRegimenID)}]]</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Ngày khám gần nhất:</dt>
+                                                <dd>[[${entity.lastExaminationTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.lastExaminationTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Số ngày nhận thuốc:</dt>
+                                                <dd>[[${entity.daysReceived == 0 ? '__' : entity.daysReceived}]]</dd>
+                                                <dt>Ngày hẹn khám:</dt>
+                                                <dd>[[${entity.appointmentTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.appointmentTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Tuân thủ điều trị:</dt>
+                                                <dd>[[${entity.medicationAdherence == null || entity.medicationAdherence == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).MEDICATION_ADHERENCE).get(entity.medicationAdherence)}]]</dd>
+                                                <dt>Các vấn đề khác:</dt>
+                                                <dd>[[${entity.examinationNote == null || entity.examinationNote == '' ? '__' : entity.examinationNote}]]</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        F. Thông tin xét nghiệm CD4
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info"th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Ngày XN đầu tiên:</dt>
+                                                <dd>[[${entity.firstCd4Time == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.firstCd4Time, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN đầu tiên:</dt>
+                                                <dd>[[${entity.firstCd4Result == null || entity.firstCd4Result == '' ? '__' : entity.firstCd4Result}]]</dd>
+                                                <dt>Lý do XN đầu tiên:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.firstCd4Causes == null}">__</span>
+                                                    <span th:if="${entity.firstCd4Causes != null}" th:each="item,i : ${entity.firstCd4Causes}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).CD4_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.firstCd4Causes) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Ngày XN gần nhất:</dt>
+                                                <dd>[[${entity.cd4Time == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.cd4Time, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN gần nhất:</dt>
+                                                <dd>[[${entity.cd4Result == null || entity.cd4Result == '' ? '__' : entity.cd4Result}]]</dd>
+                                                <dt>Lý do XN gần nhất:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.cd4Causes == null}">__</span>
+                                                    <span th:if="${entity.cd4Causes != null}" th:each="item,i : ${entity.cd4Causes}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).CD4_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.cd4Causes) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        G. Thông tin xét nghiệm tải lượng virus
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcViralLoad(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Ngày XN đầu tiên:</dt>
+                                                <dd>[[${entity.firstViralLoadTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.firstViralLoadTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN đầu tiên:</dt>
+                                                <dd>[[${entity.firstViralLoadResult == null || entity.firstViralLoadResult == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).VIRUS_LOAD).get(entity.firstViralLoadResult)}]]</dd>
+                                                <dt>Lý do XN đầu tiên:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.firstViralLoadCauses == null}">__</span>
+                                                    <span th:if="${entity.firstViralLoadCauses != null}" th:each="item,i : ${entity.firstViralLoadCauses}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).VIRAL_LOAD_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.firstViralLoadCauses) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Ngày XN gần nhất:</dt>
+                                                <dd>[[${entity.viralLoadTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.viralLoadTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN gần nhất:</dt>
+                                                <dd>[[${entity.viralLoadResult == null || entity.viralLoadResult == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).VIRUS_LOAD).get(entity.viralLoadResult)}]]</dd>
+                                                <dt>KQ TLVR (nhập số):</dt>
+                                                <dd>[[${entity.viralLoadResultNumber == null || entity.viralLoadResultNumber == '' ? '__' : entity.viralLoadResultNumber}]]</dd>
+                                                <dt>Lý do XN gần nhất:</dt>
+                                                <dd>
+                                                    <span th:if="${entity.viralLoadCauses == null}">__</span>
+                                                    <span th:if="${entity.viralLoadCauses != null}" th:each="item,i : ${entity.viralLoadCauses}">
+                                                        <span>[[${options.get(T(com.gms.entity.db.ParameterEntity).VIRAL_LOAD_SYMTOM).get(item)}]]</span><span th:if="${i.index != (#lists.size(entity.viralLoadCauses) - 1)}">;</span>
+                                                    </span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        H. Thông tin xét nghiệm viêm gan
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Xét nghiệm HBV:</dt>
+                                                <dd class="text-danger">[[${options.get('has').get(entity.hbv == false ? '0' : entity.hbv == true ? '1' : '' )}]]</dd>
+                                                <dt>Ngày xét nghiệm HBV:</dt>
+                                                <dd>[[${entity.hbvTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.hbvTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN HBV:</dt>
+                                                <dd>[[${entity.hbvResult == null || entity.hbvResult == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS).get(entity.hbvResult)}]]</dd>
+                                                <dt>Lý do XN HBV:</dt>
+                                                <dd>[[${entity.hbvCase == null || entity.hbvCase == '' ? '__' : entity.hbvCase}]]</dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Xét nghiệm HCV:</dt>
+                                                <dd class="text-danger">[[${options.get('has').get(entity.hcv == false ? '0' : entity.hcv == true ? '1' : '' )}]]</dd>
+                                                <dt>Ngày xét nghiệm HCV:</dt>
+                                                <dd>[[${entity.hcvTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.hcvTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Kết quả XN HCV:</dt>
+                                                <dd>[[${entity.hcvResult == null || entity.hcvResult == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS).get(entity.hcvResult)}]]</dd>
+                                                <dt>Lý do XN HCV:</dt>
+                                                <dd>[[${entity.hcvCase == null || entity.hcvCase == '' ? '__' : entity.hcvCase}]]</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        I. Thông tin biến động điều trị
+                                    </h4>
+                                    <div class="box-tools pull-right text-italic" >
+                                        <a class="text-info" th:href="${T(com.gms.components.UrlUtils).opcStage(arvID)}"><u style="color: #3c8dbc;">Xem chi tiết</u></a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Trạng thái biến động:</dt>
+                                                <dd>[[${entity.treatmentStageID == null || entity.treatmentStageID == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_CHANGE_TREATMENT).get(entity.treatmentStageID)}]]</dd>
+                                                <dt>Ngày biến động:</dt>
+                                                <dd>[[${entity.treatmentStageTime == null ? '__' : T(com.gms.components.TextUtils).formatDate(entity.treatmentStageTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Ngày kết thúc:</dt>
+                                                <dd>[[${entity.endTime == null || entity.endTime == '' ? '__' : T(com.gms.components.TextUtils).formatDate(entity.endTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Lý do kết thúc:</dt>
+                                                <dd>[[${entity.endCase == null || entity.endCase == '' ? '__' : options.get(T(com.gms.entity.db.ParameterEntity).ARV_END_CASE).get(entity.endCase)}]]</dd>
+                                                
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="dl-opc dl-horizontal">
+                                                <dt>Cơ sở chuyển tới:</dt>
+                                                <dd>[[${entity.transferSiteID == null || entity.transferSiteID == 0 ? '__' : entity.transferSiteID == -1 ? entity.transferSiteName  : options.get('siteOpcTo').get(entity.transferSiteID + '')}]]</dd>
+                                                <dt>Lý do chuyển:</dt>
+                                                <dd>[[${entity.transferCase == null || entity.transferCase == '' ? '__' : entity.transferCase}]]</dd>
+                                                <dt>Ngày chuyển đi:</dt>
+                                                <dd>[[${entity.tranferFromTime == null || entity.tranferFromTime == '' ? '__' : T(com.gms.components.TextUtils).formatDate(entity.tranferFromTime, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Ngày CSTN phản hồi:</dt>
+                                                <dd>[[${entity.feedbackResultsReceivedTimeOpc == null || entity.feedbackResultsReceivedTimeOpc == '' ? '__' : T(com.gms.components.TextUtils).formatDate(entity.feedbackResultsReceivedTimeOpc, 'dd/MM/yyyy')}]]</dd>
+                                                <dt>Ngày CSCĐ phản hồi:</dt>
+                                                <dd>[[${entity.feedbackResultsReceivedTime == null || entity.feedbackResultsReceivedTime == '' ? '__' : T(com.gms.components.TextUtils).formatDate(entity.feedbackResultsReceivedTime, 'dd/MM/yyyy')}]]</dd>
+                                                
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        K. Thông tin bổ xung các lượt xét nghiệm đầu tiên
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày ARV đầu tiên:', 'firstTreatmentTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày XN CD4 đầu tiên:', 'firstCd4Time', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày XN TLVR đầu tiên:', 'firstViralLoadTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                <button ng-cloak class="btn btn-primary" type="submit">
+                                    <i class="fa fa-edit" ></i> 
+                                    Cập nhật bệnh án
+                                </button>
+                                <a th:href="${T(com.gms.components.UrlUtils).opcIndex()}" 
+                                   class="btn btn-default" 
+                                   data-confirm-browsers
+                                   data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>
+                            </div>
+                            <!--col-12-end-->
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

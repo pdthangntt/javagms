@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript"
+                th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                currentSite=${#request.userPrincipal.principal.site}">
+            var form = {
+            permanent_district_id: [[${#httpServletRequest.getParameterValues('district_id')}]],
+            permanent_ward_id: [[${#httpServletRequest.getParameterValues('ward_id')}]],
+            permanent_province_id: [[${#httpServletRequest.getParameterValues('province_id')}]]
+            };
+            var urlPdf = [[${T(com.gms.components.UrlUtils).pacOutProvinceTransmission('pdf')}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).pacOutProvinceTransmission('excel')}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).pacOutProvinceTransmission('mail')}]];
+            var formSearch = [[${form}]];
+        </script>
+        <style type="text/css">
+            .width-60 {
+                width: 100px;
+            }
+            .width-80 {
+                width: 120px;
+            }
+
+            .nopadding {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .padding-bottom-label{
+                padding-bottom: 8px;
+            }
+            .col-report {
+                width: 9%;        
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb"> 
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceGender('index')}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceTransmission('index')}"  th:text="${title}"><span></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_out_province_report" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div data-th-include="report/pac/widget :: out-province-tab('transmission')" ></div>
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pacOutProvinceTransmission('index')}" method="GET" id="searchDetect">
+                                    <div data-th-include="report/pac/widget :: search-out-province('transmission')" ></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span class = "titleTable" th:utext="${form.title}" ></span>
+                                </div> 
+                            </div>
+                            <div class="box-body">
+                                <div class="table-responsive">
+                                    <div data-th-replace="report/pac/widget-table :: table-out-province-transmission()"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

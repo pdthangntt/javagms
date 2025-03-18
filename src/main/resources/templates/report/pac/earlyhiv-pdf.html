@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            
+            .width-60 {
+                width: 60px;
+            }
+            .width-80 {
+                width: 80px;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu()"></div>
+                    
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="box_title">
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <p class="text-size-13" th:if="${form.startDate != '' && form.endDate != ''}">
+                            Từ <span th:utext="${form.startDate}" ></span> 
+                            đến <span th:utext="${form.endDate}" ></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <div class="row">
+                            <p>&nbsp;</p>
+                            <div data-th-replace="report/pac/widget-table :: table-pdf()"></div>
+                        </div>
+                        <p>&nbsp;</p>
+                    </div>
+
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                    <div class="empty-ky">&nbsp;</div>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" >
+                                    <i>
+                                        <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

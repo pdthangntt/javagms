@@ -1,0 +1,52 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}"></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).feedbackCompose()}" th:text="${title}" ></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="feedBack" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).feedbackCompose()}" 
+                          th:object="${form}" 
+                          method="post"
+                          name="feedback_form"
+                          ng-submit="register(feedback_form, $event)" 
+                          ng-validate="validationOptions">
+                        <div class="col-md-12">
+                            <div class="box box-solid">
+                                <!--                                <div class="box-header with-border">
+                                                                    <h3 class="box-title">Nhập nội dung góp ý</h3>
+                                                                </div>-->
+                                <div class="box-body">
+                                    <div data-th-replace="widget/form :: input-hidden('ID')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('siteID')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('name')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('sendEmail')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('sendPhone')"></div>
+                                    <div data-th-replace="widget/form :: textarea('Xin cảm ơn bạn đã quan tâm, vui lòng cho chúng tôi biết bạn thấy bất tiện gì khi sử dụng?', 'content', true, '','')"></div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-send"></i> Gửi</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).feedbackCompose()}" data-confirm="Bạn chắc chắn muốn nhập lại góp ý?" class="btn btn-default btn-sm" >Làm lại</a>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </section> 
+        </div>
+    </body>
+</html>

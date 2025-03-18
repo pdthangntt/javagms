@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlExcel = [[${T(com.gms.components.UrlUtils).earlyConfirmExcel()}]];
+            var urlPdf = [[${T(com.gms.components.UrlUtils).earlyConfirmPDF()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).earlyConfirmEmail()}
+            ]];
+            var from = [[${form.startDate}]];
+            var to = [[${form.endDate}]];
+        </script>
+        <style>
+            .width-col {width: 10%!important;}
+            .col {width: 4% !important;}
+            .object {width: 5.5% !important;}
+            .reda {
+                background-color: #d9edf7 !important;};
+
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${title_small}" ></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).earlyConfirmIndex()}">Xét nghiệm khẳng định</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).earlyConfirmIndex()}" >Khách hàng nhiễm mới</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_confirm_early_report" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).earlyConfirmIndex()}" method="GET" name="form" id="search">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label id = "from">Ngày XN nhiễm mới từ</label>
+                                                <input type="text" class="form-control" name="from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label id="to">Đến ngày</label>
+                                                <input type="text" class="form-control" name="to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Đơn vị gửi mẫu</label>
+                                                <select name="sites" id="sites" class="form-control">
+                                                    <option th:each="n : ${form.getSiteOptions()}" 
+                                                            th:selected="${form.sites != null ? #arrays.contains(form.sites, n.key) : false}"
+
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 text-center">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-search"></i> Xem báo cáo
+                                        </button>
+                                        <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                th:data-role="${T(com.gms.components.UrlUtils).earlyConfirmPDF()}">
+                                            <i class="fa fa-print"></i> In
+                                        </button>
+                                        <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                th:data-role="${T(com.gms.components.UrlUtils).earlyConfirmExcel()}">
+                                            <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                        </button>
+                                        <button ng-click="email()" type="button" class="btn btn-primary margin-left-5"
+                                                th:data-role="${T(com.gms.components.UrlUtils).earlyConfirmEmail()}">
+                                            <i class="fa fa-inbox"></i> Gửi đến Email
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Ngày xét nghiệm nhiễm mới từ <span class="text-danger" th:utext="${form.startDate}" ></span> đến <span class="text-danger" th:utext="${form.endDate}" ></span>
+                                    - [[${form.siteName}]]
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table-report table table-striped table-bordered table-hover table-full" data-scrollY="auto">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success"></th>
+                                                <th class="text-center vertical-align-middle success " colspan="10">THÔNG TIN KHÁCH HÀNG</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">ĐƠN VỊ GỬI MẪU</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">NGÀY LẤY MẪU</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">Ngày XN</th>
+                                                <th class="text-center vertical-align-middle success " colspan="4">Kết quả XN</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">KẾT LUẬN</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">MÃ SỐ BN của PXN</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">KẾT QUẢ NHIỄM MỚI</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">TLVR</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">ĐƠN VỊ KHẲNG ĐỊNH</th>
+                                                <th class="text-center vertical-align-middle success " rowspan="3">GHI CHÚ</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">STT</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">HỌ TÊN</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">MÃ SỐ NƠI GỬI</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">Giới</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">Năm sinh</th>
+                                                <th class="text-center vertical-align-middle success" ></th>
+                                                <th class="text-center vertical-align-middle success" colspan="3">Địa chỉ</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">Số CMT/CCCD</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">ĐỐI TƯỢNG</th>
+                                                <th class="text-center vertical-align-middle success">SP1</th>
+                                                <th class="text-center vertical-align-middle success">SP2</th>
+                                                <th class="text-center vertical-align-middle success">SP3</th>
+                                                <th class="text-center vertical-align-middle success">SP4</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success">Địa chỉ</th>
+                                                <th class="text-center vertical-align-middle success">Tỉnh/TP</th>
+                                                <th class="text-center vertical-align-middle success">Quận/Huyện</th>
+                                                <th class="text-center vertical-align-middle success">Xã/Phường</th>
+                                                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                                                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                                                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                                                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item, iter : ${form.items}">
+                                                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                                                <td class="text-left" th:utext="${item.fullname}" ></td>
+                                                <td class="text-left" th:utext="${item.sourceID}" ></td>
+                                                <td class="text-center"><span th:text="${item.genderID == null || item.genderID == '' ? '' : options.get('gender').get(item.genderID)}"></span></td>
+                                                <td class="text-center" th:utext="${item.year}" ></td>
+                                                <td class="text-left" th:utext="${item.address}" ></td>
+                                                <td class="text-left" th:utext="${options.get('province').get(item.provinceID)}" ></td>
+                                                <td class="text-left" th:utext="${options.get('district').get(item.districtID)}" ></td>
+                                                <td class="text-left" th:utext="${options.get('ward').get(item.wardID)}" ></td>
+                                                <td class="text-left" th:utext="${item.patientID}" ></td>
+                                                <td class="text-left" th:utext="${item.objectGroupID == null || item.objectGroupID == '' ? '' : form.getObjectGroups().getOrDefault(item.objectGroupID,'Khác')}" ></td>
+                                                <td class="text-left"><span th:text="${form.getSiteOptions().get(item.sourceSiteID + '')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.sourceReceiveSampleTime, 'dd/MM/yyyy')}"></span></td>
+<!--                                                <td class="text-center"><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>-->
+                                                   <td class="text-center"><span th:text="${#dates.format(item.earlyHivDate, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-left" th:utext="${item.bioNameResult1 == null || item.bioNameResult1 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult1)}" ></td>
+                                                <td class="text-left" th:utext="${item.bioNameResult2 == null || item.bioNameResult2 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult2)}" ></td>
+                                                <td class="text-left" th:utext="${item.bioNameResult3 == null || item.bioNameResult3 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult3)}" ></td>
+                                                <td class="text-center" ></td>
+                                                <td class="text-left" th:utext="${item.resultsID == null || item.resultsID == '' ? '' : options.get('test-result-confirm').get(item.resultsID)}" ></td>
+                                                <td class="text-left" th:utext="${item.code}" ></td>
+                                                <td class="text-left" th:utext="${item.earlyDiagnose == null || item.earlyDiagnose == '' ? '' : options.get('early-diagnose').get(item.earlyDiagnose)}" ></td>
+                                                <td class="text-left" th:utext="${item.virusLoadNumber}" ></td>
+                                                 <td class="text-left"><span th:text="${form.getSiteOptions().get(item.siteID + '')}"></span></td>
+                                                <td class="text-left" ></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+
+        <style type="text/css" th:if="${!print}">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"' >
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan" >
+            <div class="content">
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince}, dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="row text-normal">
+                            <p>
+                                Kính gửi:
+                                <span class="point" >........................................................................</span>
+                            </p>
+                        </div>
+                        <div class="clear-fix" >&nbsp;</div>
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <p class="text-normal text-center" >
+                            <i>
+                               (Ban hành kèm Thông tư số 09/2012/TT-BYT ngày 24 tháng 5 năm 2012 của Bộ trưởng Bộ Y tế)
+                            </i>
+                        </p>
+                        <p class="text-normal">
+                            Tháng <span th:utext="${form.month >= 10 ? form.month : '0' + form.month}" ></span> 
+                            năm <span th:utext="${form.year}" ></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <div class="row">
+                            <p>&nbsp;</p>
+                            <div data-th-replace="report/tt09/widget-table :: table-phuluc01(${form})"></div>
+                        </div>
+                    </div>
+                    <div class="info-time">
+                        <p class="" >&nbsp;</p>
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" > Người tổng hợp</span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Thủ trưởng đơn vị</span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký tên, đóng dấu)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1 th:text="${title}" ></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="profile_config" ng-init="init()" ng-cloak id="config-form" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom" style="box-shadow: none;">
+                            <div class="tab-content" style="background: #ecf0f5; ">
+                                <div class="tab-pane active" id="tab_d">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Cấu hình chi nhánh</h3>
+                                                <div>Thông số liên quan đến cơ sở chi nhánh</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label><span th:text="${T(com.gms.entity.constant.StaffConfigEnum).HTC_STAFF_CODE.getLabel()}" ></span> <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).HTC_STAFF_CODE.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.StaffConfigEnum).HTC_STAFF_CODE.getKey()}"
+                                                                   th:value="${items==null? '' : items.getOrDefault(T(com.gms.entity.constant.StaffConfigEnum).HTC_STAFF_CODE.getKey(), '')}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label><span th:text="${T(com.gms.entity.constant.StaffConfigEnum).SITE_ADDTESS.getLabel()}" ></span> <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).SITE_ADDTESS.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.StaffConfigEnum).SITE_ADDTESS.getKey()}"
+                                                                   th:value="${items==null? '' : items.getOrDefault(T(com.gms.entity.constant.StaffConfigEnum).SITE_ADDTESS.getKey(), '')}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label><span th:text="${T(com.gms.entity.constant.StaffConfigEnum).SITE_PHONE.getLabel()}" ></span> <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).SITE_PHONE.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.StaffConfigEnum).SITE_PHONE.getKey()}"
+                                                                   th:value="${items==null? '' : items.getOrDefault(T(com.gms.entity.constant.StaffConfigEnum).SITE_PHONE.getKey(), '')}" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isLaytest}" >
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Xét nghiệm tại cộng đồng</h3>
+                                                <div>
+                                                    Thông tin liên quan đến dịch xét nghiệm tại cộng đồng cho từng cán bộ
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Mã cán bộ xét nghiệm tại cộng đồng <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_STAFF_CODE.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_STAFF_CODE.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_STAFF_CODE.getKey())}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Cơ sở cố định chuyển đến <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:id="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_SITE_CONFIRM.getKey()}"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_SITE_CONFIRM.getKey()), ',')}"
+                                                                    th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_SITE_CONFIRM.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_SITE_CONFIRM.getKey()}">
+                                                                <option th:each="instance : ${options.get('site_htc')}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}"
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}" ></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Nhóm đối tượng nguy cơ cao <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_OBJECT_GROUP.getKey()), ',')}"
+                                                                    th:id="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_OBJECT_GROUP.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_OBJECT_GROUP.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.StaffConfigEnum).LAYTEST_OBJECT_GROUP.getKey()}">
+                                                                <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}" 
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-content -->
+                    </div>
+                </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

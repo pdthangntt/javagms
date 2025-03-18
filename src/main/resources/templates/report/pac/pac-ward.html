@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript"
+                th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                currentSite=${#request.userPrincipal.principal.site}">
+                    var form = {
+                    permanent_district_id: [[${#httpServletRequest.getParameterValues('district_id')}]],
+                            permanent_ward_id: [[${#httpServletRequest.getParameterValues('ward_id')}]],
+                            permanent_province_id: [[${#httpServletRequest.getParameterValues('province_id')}]]
+                    };
+                    var urlPdf = [[${T(com.gms.components.UrlUtils).pacWardPdf()}]];
+                    var urlExcel = [[${T(com.gms.components.UrlUtils).pacWardExcel()}]];
+                    var urlEmail = [[${T(com.gms.components.UrlUtils).pacWardEmail()}]];
+                    var formSearch = [[${form}]];
+        </script>
+        <style type="text/css">
+            .width-60 {
+                width: 100px;
+            }
+            .width-80 {
+                width: 120px;
+            }
+
+            .nopadding {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .padding-bottom-label{
+                padding-bottom: 8px;
+            }
+            .col-report {
+               width: 60px!important;        
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacWardIndex()}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacWardIndex()}"  th:text="${titleBreacum}"><span></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_ward" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pacWardIndex()}" method="GET" name="pac_local" id="search">
+                                    <div class="row form-horizontal">
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="row" th:if="${form.PAC}">
+                                                <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí hiển thị báo cáo chi tiết:</div>
+                                                <div class="col-md-3">
+                                                    <div class="radio">
+                                                        <label id = "district"><input type="radio"  class="radio-cust" name="level_display" th:checked="${form.levelDisplay == 'district' || ((form.levelDisplay == 'province' || form.levelDisplay == '' || form.levelDisplay == null) && !isVAAC)}" value="district">&nbsp;&nbsp;&nbsp;Huyện </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="radio">
+                                                        <label id = "ward"><input type="radio"  class="radio-cust" name="level_display" th:checked="${form.levelDisplay == 'ward'}" value="ward">&nbsp;&nbsp;&nbsp;Xã </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <br>
+                                                <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí lọc theo trạng thái quản lý:</div>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" name="manage_status" id="manage_status">
+                                                        <option th:each="instance : ${options.get('manageStatus')}" 
+                                                                th:value="${instance.key}" 
+                                                                th:selected="${#httpServletRequest.getParameter('manage_status') == instance.key}"
+                                                                th:utext="${instance.value}" ></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <br>
+                                                <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí lọc tử vong:</div>
+                                                <div class="col-md-3">
+                                                    <select class="form-control" name="statusDeath" id="statusDeath">
+                                                        <option th:each="instance : ${statusDeaths}" 
+                                                                th:value="${instance.key}" 
+                                                                th:selected="${#httpServletRequest.getParameter('statusDeath') == instance.key}"
+                                                                th:utext="${instance.value}" ></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding-top: 30px;">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Tháng</label>
+                                                <select name="month" id="month" class="form-control">
+                                                    <option th:each="n : ${#numbers.sequence(1,12)}" 
+                                                            th:selected="${n+'' == form.month}"
+                                                            th:value="${n}" 
+                                                            th:text="'Tháng ' + ${n >= 10? n : '0'+n}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${#numbers.sequence(form.years,#dates.year(#dates.createNow()))}" 
+                                                            th:selected="${n == form.year}"
+                                                            th:value="${n}" 
+                                                            th:text="${n}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Giới tính</label>
+                                                <select class="form-control" name="gender" id="gender">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('gender') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Nhóm đối tượng</label>
+                                                <select class="form-control" name="test_object" id="test_object">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('test_object') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <br/>
+                                    <div class="row">
+                                        <div class="text-center" ng-controller="report_pac_local">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <div class="box-title">
+                                    <span class = "titleTable" ></span> <span class="text-danger" th:utext="${'tháng ' + form.month + ' năm ' + form.year}" ></span>
+                                </div>
+                                <p>&nbsp;</p>
+                                <div class="table-responsive">
+                                    <div data-th-replace="report/pac/widget-table :: table-ward()"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

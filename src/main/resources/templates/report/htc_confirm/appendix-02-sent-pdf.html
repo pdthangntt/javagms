@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .top-secret{
+                line-height: 30px;
+                position: absolute;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 50px;
+                height: 30px;
+                text-align: center;
+                left: 10%;
+                top: 170px;
+            }
+            .page-height-a4 {
+                position: relative;
+            }
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman";'>
+        <div class="body page-height-a4"
+             th:if="form.listPatient != null" th:each="item, iter : ${form.listPatient}">
+            <div class="content">
+                <div class="header">
+                    <div class="box_title">
+                        <p>Phụ lục 2</p>
+                        <p class="text-uppercase text-title">MẪU BÁO CÁO GIÁM SÁT CA BỆNH</p>
+                        <div class="text-normal text-center" >
+                            <i>(Ban hành kèm theo Thông tư số 09/2012/TT-BYT ngày 24 tháng 05 năm 2012 của Bộ trưởng Bộ Y tế)</i>
+                            <p>----------------------------------------------</p>
+                        </div>
+                    </div>
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince}, dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="top-secret" >MẬT</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <div class="row text-normal dear">
+                            <p>
+                                Kính gửi:
+                                <span class="point" >.................................................................................................</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid" style="padding-left: 1cm;">
+                    <p>&nbsp;</p>
+                    <div class="row">
+                        <div class="col-35">1. Họ và tên: <b class="text-uppercase" th:utext="${item.fullname}"></b></div>
+                        <div class="col-20">2. Dân tộc: .................</div>
+                        <div class="col-20"><span th:utext="${'3. Giới tính: '+ (item.genderID == null || item.genderID == ''  ? '.................' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID))}"></span></div>
+                        <div class="col-20"><span th:utext="${'4. Năm sinh: '+ (item.year == null || item.year == ''  ? '.................' : item.year)}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-35">5. CMND/CCCD: <span th:utext="${(item.patientID == null || item.patientID == ''  ? '...................................' : item.patientID)}"></span></div>
+                        <div class="col-60">Số thẻ BHYT: .......................................................................................................</div>
+                    </div>
+                    <div class="row">
+                        <p th:utext="${'6. Nơi cư trú hiện tại: ' + (item.currentAddressFull == '' || item.currentAddressFull == null ? '................................................................................................................................................................................': item.currentAddressFull)}"></p>
+                    </div>
+                    <div class="row">
+                        <p th:utext="${'7. Nơi đăng ký hộ khẩu thường trú: ' + (item.addressFull == '' || item.addressFull == null ? '..........................................................................................................................................................': item.addressFull)}"></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-40">8. Nghề nghiệp: ......................................................</div>
+                        <div class="col-50"><span th:utext="${'9. Đối tượng: ' + (item.objectGroupID == null || item.objectGroupID == '' ? '...........' : options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP).get(item.objectGroupID))}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40">10. Nguy cơ: ...........................................................</div>
+                        <div class="col-50"><span th:utext="${'11. Đường lây: ' + (item.modeOfTransmission == null || item.modeOfTransmission == '' ? '...................................................' : options.get(T(com.gms.entity.db.ParameterEntity).MODE_OF_TRANSMISSION).getOrDefault(item.modeOfTransmission, '...................................................'))}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40"><span th:utext="${'12.Ngày xét nghiệm khẳng định: ' +( item.confirmTime == null || item.confirmTime == ''  ? '.................' : T(com.gms.components.TextUtils).formatDate(item.confirmTime, 'dd/MM/yyyy'))}"></span></div>
+                        <div class="col-60">13.Phòng xét nghiệm khẳng định: <span th:utext="${form.siteName}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Mã xét nghiệm khẳng định:
+                            <span class="text-uppercase" th:utext="${(item.code == null || item.code == '' ? '.................': item.code)}"></span>
+                        </div>
+                        <div class="col-60">
+                            <span th:utext="${'14.Nơi lấy mẫu máu xét nghiệm: ' + (item.sourceSiteID == null || item.sourceSiteID == '' ? '............' : options.get('htcOptions').get(item.sourceSiteID.toString()))}"></span>
+                        </div>
+                    </div>
+                    <div class="row"> 15.Kết quả xác minh hiện trạng cư trú: ..................................................................................................................................................</div>
+                    <div class="row">
+                        16.Tiền sử điều trị thuốc kháng HIV: ....................................................................................................................................................
+                    </div>
+                    <div class="row">
+                        <div class="col-30">&nbsp;&nbsp;&nbsp;&nbsp; Ngày bắt đầu điều trị: ....../....../.........</div>
+                        <div class="col-30">Phác đồ điều trị:  ....................................</div>
+                        <div class="col-33">Số lượng tế bào CD4: ............. tế bào/mm3</div>
+                    </div>
+                    <div class="row">&nbsp;&nbsp;&nbsp;&nbsp; Nơi điều trị: ........................................................................................................................................................................................</div>
+                    <div class="row">
+                        <div class="col-33">&nbsp;&nbsp;&nbsp;&nbsp; Ngày chẩn đoán AIDS: ....../....../.........</div>
+                        <div class="col-33">Triệu chứng lâm sàng: ...........................</div>
+                        <div class="col-33">Nơi chẩn đoán: ...........................</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-33">17. Ngày tử vong: ....../....../.........</div>
+                        <div class="col-60">Nguyên nhân tử vong: ...............................................................................................</div>
+                    </div>
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <p class="" >&nbsp;</p>
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky" >(Ký tên, đóng dấu)</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,130 @@
+<div data-th-fragment="pagination-title(dataPage)" th:with="type=${type} ? ${type} : '', connect=${connect} ? ${connect} : ''">
+    <div th:if="${dataPage.data != null && dataPage.data.size() != 0}" class="no-margin pull-left">
+        Trình bày <b th:utext="${#numbers.formatInteger(((dataPage.currentPage - 1) * dataPage.maxResult) + 1,2,'POINT')}" ></b>
+        <span th:text="${connect == null ? '-': connect}" ></span>
+        <b th:utext="${#numbers.formatInteger(((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size(),2,'POINT')}" ></b> 
+        trong số <b th:utext="${#numbers.formatInteger(dataPage.totalRecords,2,'POINT')}" ></b> 
+        <span th:text="${type == null ? 'mục': type}" ></span>
+    </div>
+</div>
+
+<div data-th-fragment="pagination(totalPages, navigationPages, currentPage)">
+    <ul th:if="${totalPages > 1}" 
+        class="pagination pagination-sm no-margin">
+        <th:block th:each="page: ${navigationPages}" >
+            <li th:if="${page != -1}" th:class="${page == currentPage ? 'active':''}" >
+                <a th:href="${view.replaceQueryParam('page', page)}" th:utext="${#numbers.formatInteger(page,2,'POINT')}" ></a>
+            </li>
+            <li th:if="${page == -1}" >
+                <a href="javascript:;">...</a>
+            </li>
+        </th:block>
+    </ul>
+</div>
+
+<div data-th-fragment="select-model(label, fieldName, required, options, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <select class="form-control" 
+                th:attr="ng-model='__${fieldName}__'" 
+                th:id="${fieldName}" 
+                th:field="*{__${fieldName}__}" >
+            <option th:each="instance : ${options}" th:value="${instance.key}" th:utext="${instance.value}" ></option>
+        </select>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+
+<div data-th-fragment="select-mutiple(label, fieldName, values, required, options, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label th:if="${label != ''}">
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <select class="form-control" 
+                th:id="${fieldName}" 
+                th:field="*{__${fieldName}__}" >
+            <option th:each="instance : ${options}" 
+                    th:selected="${#lists.contains(values, instance.key)}"
+                    th:value="${instance.key}" 
+                    th:utext="${instance.value}" ></option>
+        </select>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="export-dropdown(print, excel, email)">
+    <div class="btn-group" id = "actionButton" >
+        <button type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="false">Hành động</button>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li th:if="${print}" ><a href="javascript:;" ng-click="pdf()"><i class="fa fa-print"></i> In</a></li>
+            <li th:if="${excel}" ><a href="javascript:;" ng-click="excel()"><i class="fa fa-file-excel-o"></i> Xuất Excel</a></li>
+            <li th:if="${email}" ><a href="javascript:;" ng-click="email()"><i class="fa fa-inbox"></i> Gửi đến Email</a></li>
+        </ul>
+    </div>
+</div>
+
+<div data-th-fragment="default-action()">
+    <a class="btn btn-default btn-xs disabled" >
+        <i class="fa fa-eye"></i> Xem
+    </a>
+    <a class="btn btn-default btn-xs disabled" href="javascript:;">
+        <i class="fa fa-edit"></i> Sửa
+    </a>
+    <a class="btn btn-danger btn-xs disabled" href="javascript:;">
+        <i class="fa fa-remove"></i> Xoá
+    </a>
+    <button type="button" class="btn btn-default btn-xs disabled">
+        <i class="fa fa-comment"></i>
+        Lịch sử
+    </button>
+</div>
+<th:block data-th-fragment="so_arv(index, item)">
+    <th:block  th:each="it, iter: ${item.data.get(index)}">
+        <span th:if="${it.line == '1' || it.line == '0' || it.line == '3'}">
+            <span  th:utext="${(it.endCase == null || it.endCase == '') && it.treatmentRegimentID != null && it.treatmentRegimentID != '' ? options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(it.treatmentRegimentID) + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3'}" th:utext="${(it.endCase == '4' || it.endCase == '1') && it.examinationTime != '' && it.examinationTime != null ? 'B' + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3'}" th:utext="${it.endCase == '2' ? 'TV'  + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3'}" th:utext="${it.endCase == '3' ? 'CĐ'  + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3' }" th:utext="${it.endCase == '5' ? 'KT'  + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3' && it.dateOfArrival != null && it.dateOfArrival != '' && it.regimentKey != 'yes'}" th:utext="${it.registrationType == '3' && (it.endCase == '' || it.endCase == null) ? 'CT'  + '<br>' : ''}"></span>
+            <span class="text-bold" th:if="${it.line != '3' && it.regimentKey != 'yes'}" th:utext="${it.registrationType == '2' && (it.endCase == '' || it.endCase == null) ? 'ĐTL'  + '<br>' : ''}"></span>
+            <span th:if="${it.line != '3' && (it.endCase == '4' || it.endCase == '1') && it.examinationTime != '' && it.examinationTime != null}" th:utext="${it.examinationTime == null || it.examinationTime == '' ? '<br>' : it.examinationTime + '<br>'}"></span>
+            <span th:if="${it.line != '3' && (it.endCase == '2' || it.endCase == '5')}" th:utext="${it.endTime == null || it.endTime == '' ? '<br>' : it.endTime + '<br>'}"></span>
+            <span th:if="${it.line != '3' && it.endCase == '3'}" th:utext="${it.tranferFromTime == null || it.tranferFromTime == '' ? '<br>' : it.tranferFromTime + '<br>'}"></span>
+            <span th:if="${it.line != '3' && it.registrationType == '3' && it.regimentKey != 'yes' && (it.endCase == '' || it.endCase == null)}" th:utext="${it.dateOfArrival == null || it.dateOfArrival == '' ? '<br>' : it.dateOfArrival + '<br>'}"></span>
+            <span th:if="${it.line != '3' && it.registrationType == '2' && it.regimentKey != 'yes' && (it.endCase == '' || it.endCase == null)}" th:utext="${it.treatmentTime == null || it.treatmentTime == '' ? '<br>' : it.treatmentTime + '<br>'}"></span>
+        </span>
+    </th:block>
+</th:block>
+<th:block data-th-fragment="so_arv_2(index, item)">
+    <th:block  th:each="it, iter: ${item.data.get(index)}">
+        <span th:if="${it.line == '2' || it.line == '0'}">
+            <span th:if="${it.laoStartTime != '' && it.laoStartTime != null && it.keyLao == index + ''}" class="text-bold" th:utext="${'ĐTL<br>' }"></span>
+            <span th:if="${it.laoStartTime != '' && it.laoStartTime != null && it.keyLao == index + ''}" th:utext="${it.laoStartTime + '<br>'}"></span>
+            <span th:if="${it.inhStartTime != '' && it.inhStartTime != null && it.keyInh == index + ''}" class="text-bold" th:utext="${'INH<br>'}"></span>
+            <span th:if="${it.inhStartTime != '' && it.inhStartTime != null && it.keyInh == index + ''}" th:utext="${it.inhStartTime + '<br>'}"></span>
+            <span th:if="${it.cotrimoxazoleStartTime != '' && it.cotrimoxazoleStartTime != null && it.keyCotri == index + ''}" class="text-bold" th:utext="${'CTX<br>'}"></span>
+            <span th:if="${it.cotrimoxazoleStartTime != '' && it.cotrimoxazoleStartTime != null && it.keyCotri == index + ''}" th:utext="${it.cotrimoxazoleStartTime + '<br>'}"></span>
+        </span>
+    </th:block>
+</th:block>
+<th:block data-th-fragment="so_arv_2_cd4(index, item)">
+    <th:block  th:each="it, iter: ${item.data.get(index)}">
+        <span th:if="${it.line == '2' || it.line == '0'}">
+            <span th:utext="${it.cd4TestTime != '' && it.cd4TestTime != null ? it.cd4TestTime + '<br>': '' + '<br>'}"></span>
+            <span th:if="${it.cd4TestTime != null && it.cd4TestTime != ''}" th:utext="${it.cd4Result != '' && it.cd4Result != null ? it.cd4Result + '<br>' : '' + '<br>'}"></span>
+        </span>
+    </th:block>
+</th:block>
+

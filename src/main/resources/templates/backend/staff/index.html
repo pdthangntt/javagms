@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content" th:with="tab=${#request.getParameter('tab') == '' ? 'all' : #request.getParameter('tab')}">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = {
+                        permanent_district_id: [[${#httpServletRequest.getParameter('permanent_district_id')}]],
+                                permanent_ward_id: [[${#httpServletRequest.getParameter('permanent_ward_id')}]],
+                                permanent_province_id: [[${#httpServletRequest.getParameter('permanent_province_id')}]]
+                        };
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).adminStaffIndex(tab)}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="staff_admin" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).adminStaffIndex(tab)}" method="get" id="search">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs">
+                                    <li th:class="${tab == null || tab == 'all' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).adminStaffIndex('all')}">Tất cả</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).DELETE.getKey() ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).adminStaffIndex(T(com.gms.entity.constant.PacTabEnum).DELETE.getKey())}">Đã xóa</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>ID</label>
+                                                <input type="text" class="form-control" name = "oid" th:value="${#httpServletRequest.getParameter('oid')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Tên đăng nhập</label>
+                                                <input type="text" class="form-control" name = "username" th:value="${#httpServletRequest.getParameter('username')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Họ và Tên</label>
+                                                <input type="text" class="form-control" name = "name" th:value="${#httpServletRequest.getParameter('name')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" name = "email" th:value="${#httpServletRequest.getParameter('email')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Số điện thoại</label>
+                                                <input type="text" class="form-control" name = "phone" th:value="${#httpServletRequest.getParameter('phone')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"  th:if="${vaac == false}">
+                                            <div class="form-group" >
+                                                <label>Mã cơ sở</label>
+                                                <input type="text" class="form-control" name = "sid" th:value="${#httpServletRequest.getParameter('sid')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2"  th:if="${vaac == true}">
+                                            
+                                            <div class="form-group">
+                                                <label>Cơ sở:</label>
+                                                <select class="form-control" name="sid" id="sid">
+                                                    <option th:each="instance : ${siteSearchOptions}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('sid') == instance.key}"
+                                                            th:utext="${instance.key == '0' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).adminStaffIndex(tab)}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default">
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left">
+                                        <span th:if="${dataPage.data.size() != 0  && dataPage.data != null}"  >Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</span>
+                                    </div>
+                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <div data-th-include="widget/gridview :: default-action" ></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <table ng-cloak class="table table-striped table-bordered table-sm table-full" data-scrollY="auto">
+                                        <thead>
+                                            <tr class="success">
+                                                <!-- start table-->
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center vertical-align-middle">ID</th>
+                                                <th class="text-center vertical-align-middle">Tên đăng nhập</th>
+                                                <th class="text-center vertical-align-middle">Họ và tên</th>
+                                                <th class="text-center vertical-align-middle">Số điện thoại</th>
+                                                <th class="text-center vertical-align-middle">Email</th>
+                                                <th class="text-center vertical-align-middle">Cơ sở</th>
+                                                <th class="text-center vertical-align-middle">Đăng nhập lần cuối</th>
+                                                <th class="text-center vertical-align-middle">Quyền</th>
+                                                <th class="text-center vertical-align-middle">Trạng thái</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}"
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : '' }"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td>#[[${item.ID}]]</td>
+                                                <td class="text-center" >[[${item.username}]]</td>
+                                                <td>[[${item.name}]]</td>
+                                                <td class="text-center">[[${item.phone}]]</td>
+                                                <td class="text-center">[[${item.email}]]</td>
+                                                <td class="text-info" th:utext="${'#'+item.siteID + ' - ' +siteOptions.getOrDefault(item.siteID, '')}" ></td>
+                                                <td>[[${item.lastLoginTime == null ? 'Chưa đăng nhập' :  #dates.format(item.lastLoginTime, 'hh:mm dd/MM/yyyy')}]]</td>
+                                                <td><span th:each="assginRole,iter : ${item.userRoles}" th:utext="${assginRole.role == null ? '' : assginRole.role.name + ', '}"></span></td>
+                                                <td class="text-center">
+                                                    <label th:if="${!item.isActive}" class="label label-danger" >Tạm khoá</label>
+                                                    <label th:if="${item.isActive}" class="label label-success" >Hoạt động</label>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs table-function" 
+                                                       target="_blank"
+                                                       th:href="${T(com.gms.components.UrlUtils).adminStaffSwitch(item.username)}">
+                                                        <i class="fa fa-chain"></i> Sử dụng
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" 
+                                                       target="_blank"
+                                                       th:href="${T(com.gms.components.UrlUtils).siteStaffUpdate(item.siteID,item.ID)}">
+                                                        <i class="fa fa-edit"></i> Sửa
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" 
+                                                       target="_blank"
+                                                       th:href="${T(com.gms.components.UrlUtils).siteStaffChangePwd(item.siteID,item.ID)}">
+                                                        <i class="fa fa-key"></i> Đổi mật khẩu
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data.size() != 0  && dataPage.data != null}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

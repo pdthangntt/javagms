@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${parent_title}"></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="'Cơ sở '+${site.viewName()}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}"><span th:text="'Quản trị viên'" ></span></a></li>
+                    <li><a href="${T(com.gms.components.UrlUtils).siteStaffNew(site.ID)}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="staff" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).siteStaffNew(site.ID)}" 
+                          th:object="${form}" 
+                          method="post"
+                          name="staff_form"
+                          ng-submit="register(staff_form, $event)" 
+                          ng-validate="validationOptions">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="box box-solid">
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-3" >
+                                                <div data-th-replace="widget/form :: input-hidden('ID')"></div>
+                                                <div data-th-replace="widget/form :: input-text('Họ và tên', 'name', true, 'ví dụ: Nguyễn Văn A', '')"></div>
+                                            </div>
+                                            <div class="col-md-3" >
+                                                <div data-th-replace="widget/form :: input-text('Số điện thoại', 'phone', true, 'ví dụ: 03660000000', '')"></div>
+                                            </div>
+                                            <div class="col-md-3" >
+                                                <div data-th-replace="widget/form :: input-text('Email', 'email', false, 'ví dụ: example@domain.com', '')"></div>
+                                            </div>
+                                            <div class="col-md-3" >
+                                                <div data-th-replace="widget/form :: select('Trạng thái', 'isActive', true, ${activeLabel}, 'Trạng thái hoạt động')"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6" >
+                                                <div th:if="${site.serviceIDs != null && #lists.contains(site.serviceIDs, T(com.gms.entity.constant.ServiceEnum).HTC.getKey())}">
+                                                    <div data-th-replace="widget/form :: select('Khoa/Phòng/dịch vụ', 'serviceVisitID', false, ${serviceTests}, '')"></div>
+                                                </div>
+                                                <div data-th-replace="widget/form :: select('Quyền hạn', 'roleID', false, ${roles}, '')"></div>
+                                                <div data-th-replace="widget/form :: input-text('Tên đăng nhập', 'username', true, '', 'Tên đăng nhập là duy nhất dùng để đăng nhập hệ thống. Viết liền không dấu, chỉ chưa các kí tự \'a-z\', \'0-9\', \'_\' và \'-\'')"></div>
+                                            </div>
+                                            <div class="col-md-6" >
+                                                <fieldset class="form-fieldset">
+                                                    <div data-th-replace="widget/form :: input-pwd('Mật khẩu', 'pwd', true, '', 'Mật khẩu ít nhất 6 ký tự')"></div>
+                                                    <div data-th-replace="widget/form :: input-pwd('Nhập lại mật khẩu', 'confirmPwd', true, '', '')"></div>
+                                                </fieldset>
+
+                                            </div>
+                                            <div class="col-md-12 text-center" >
+                                                <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                                <a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}" class="btn btn-default">Huỷ</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

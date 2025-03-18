@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .col-width-80 { width: 200px; float: left}
+            .col-offset-80 { margin-left: 200px;}
+            * { font-size: 18px!important; line-height: 30px;}
+            /* #qr_box { border: 1px solid #ddd; margin: 0px 80px; } option - 1 */
+            #qr_box {
+                position: absolute;
+                /*border: 1px solid #ddd;*/
+                width: 150px;
+                height: 120px;
+                text-align: center;
+                right: -28px;
+                top: 135px;
+            }
+            #qr_box > img, #qr_box > p {
+                line-height: 1px!important;
+                font-size: 10px!important;
+            }
+            .page-height-a4 {
+                position: relative;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"' th:with="show=${form.config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_PRINT_ANSWER_RESULT.getKey(), '0')},isQr=${form.config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getKey(), '')}">
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body page-height-a4" th:each="ticket : ${form.tickets}">
+            <div class="content" style="padding-top: 75px;">  
+                <div class="header">
+                    <p class="text-normal sample_no">Mẫu số 6B</p>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Tên đơn vị:
+                        </div>
+                        <div class="col-offset-80">
+                            <b class="text-uppercase" th:utext="${form.siteName}" ></b>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Phòng xét nghiệm HIV:
+                        </div>
+                        <div class="col-offset-80">
+                            Tự nguyện &nbsp;<input type="checkbox" class="square" />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; 
+                            Dịch vụ &nbsp;<input type="checkbox" class="square"/>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Địa chỉ:
+                        </div>
+                        <div class="col-offset-80">
+                            <span class="point" th:utext="${ticket.siteAddress == '' ? '.....................' : ticket.siteAddress}"></span>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Số điện thoại:
+                        </div>
+                        <div class="col-offset-80">
+                            <span class="point" th:utext="${ticket.sitePhone == '' ? '.....................' : ticket.sitePhone}"></span>
+                        </div>
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title">
+                        <p class="text-uppercase text-title" th:utext="${ticket.title}"></p>
+                        <p class="text-normal text-center"><i>(Dùng để trả cho người được làm xét nghiệm)</i></p> 
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                </div>
+                <div class="mid">
+                    <div class="info-time" style="padding-left: 75px;" >
+                        <div class="row col-100" th:if="${ticket.objectGroupID == T(com.gms.entity.constant.TestObjectGroupEnum).PHAM_NHAN.getKey() && ticket.sampleSentSource != null && ticket.sampleSentSource != ''}">
+                            <div class="col-30">
+                                Nơi gửi bệnh phẩm:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.sampleSentSource == null || ticket.sampleSentSource == '' } ? '' : ${ticket.sampleSentSource}"></span>
+                            </div>
+                        </div>
+                        <div class="row col-100">
+                            <div class="col-30">
+                                <div class="form-group">
+                                    <label>Họ tên bệnh nhân:</label> 
+                                </div>
+                            </div>
+                            <div class="col-40">
+                                <div class="form-group">
+                                    <b class="text-uppercase" th:utext="${ticket.patientName}"></b>
+                                </div>
+                            </div>
+                            <div class="col-30">
+                                <div class="form-group">
+                                    <label>Giới tính:</label> 
+                                    <span class="point" th:utext="${ticket.genderID == null || ticket.genderID == '' } ? '.........................................' : ${ticket.genderID}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Mã số người được XN:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.sourceID == null || ticket.sourceID == '' } ? '................................................................................................................' : ${ticket.sourceID}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Năm sinh:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.yearOfBirth == 'null' || ticket.yearOfBirth == null || ticket.yearOfBirth == '' } ? '..................................................................................' : ${ticket.yearOfBirth}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Địa chỉ:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.patientAddress == null  || ticket.patientAddress == '' } ? '..............................................................................................' : ${ticket.patientAddress}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Số chứng minh thư:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.patientID == null || ticket.patientID == '' } ? '<i>Không có giấy tờ tuỳ thân đối chiếu người được làm xét nghiệm xác thực với họ và tên ghi trên giấy xét nghiệm</i>' : ${ticket.patientID}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Mã khẳng định:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.patientCode == null || ticket.patientCode == '' } ? '................................................................................................................' : ${ticket.patientCode}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Ngày lấy mẫu:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.sampleReceiveTime == null || ticket.sampleReceiveTime == '' } ? '' : ${ticket.sampleReceiveTime}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-30">
+                                Ngày xét nghiệm:
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal" th:utext="${ticket.confirmTime == null || ticket.confirmTime == '' } ? '' : ${ticket.confirmTime}"></span>
+                            </div>
+                        </div>
+                        <div class="row" th:each="item,iStat  : ${ticket.bioNameResult}" >
+                            <div class="col-30"><span th:text="${iStat.index == 0 ? 'Tên các sinh phẩm XN:':'&nbsp;'}" ></span> </div>
+                            <div class="col-70">
+                                <p class="point" th:utext="'- ' + ${item}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${ticket.bioNameResult.size() == 0}" >
+                            <div class="col-30">Tên các sinh phẩm XN:</div>
+                            <div class="col-70">..............................................................................................</div>
+                        </div>
+                        <div class="row">
+                            <div>Kết luận (Ghi rõ bằng chữ): <b class="text-uppercase" th:utext="${ticket.resultsID}"></b></div>
+                            <div class="text-center">
+                                <div id="qr_box" th:if="${ticket.qrCode != null && isQr=='1'}">
+                                    <img th:src="${baseUrl + T(com.gms.components.UrlUtils).qrCode(ticket.qrCode) + '?width=100&height=100'}" />
+                                    <p>Mã QR khách hàng</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${ticket.resultsID == 'Không xác định'}">
+                            <div class="col-30">
+                                Ghi chú :
+                            </div>
+                            <div class="col-70">
+                                <span class="text-normal">Hẹn xét nghiệm lại sau 14 ngày</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-time">
+                        <div class="row" >
+                            <div class="col-50 text-center footer" th:if="${show == null || show == '' || show == '0'}">
+                                <p class="text-normal" >&nbsp;</p>
+                            </div>
+                            <div class="col-50 text-center footer" th:if="${show == '2'}">
+                                <p class="text-normal" >&nbsp;</p>
+                                <p class="box-ky-title">
+                                    <b th:if="${ticket.objectGroupID == T(com.gms.entity.constant.TestObjectGroupEnum).PHAM_NHAN.getKey()}">THỦ TRƯỞNG ĐƠN VỊ</b>
+                                    <b th:if="${ticket.objectGroupID != T(com.gms.entity.constant.TestObjectGroupEnum).PHAM_NHAN.getKey()}">LÃNH ĐẠO KHOA</b>
+                                </p>
+                                <div class="box-ky-title">
+                                    <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                </div>
+                                <p class="empty-ky">&nbsp;</p>
+                            </div>
+                            <div class="col-50 text-center footer" th:if="${show == '1'}">
+                                <p class="text-normal" >&nbsp;</p>
+                                <p class="box-ky-title">
+                                    <b class="" >XÁC NHẬN CỦA THỦ TRƯỞNG ĐƠN VỊ</b>
+                                </p>
+                                <div class="box-ky-title">
+                                    <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                </div>
+                                <p class="empty-ky">&nbsp;</p>
+<!--                                <p class="text-normal text-center" >
+                                    <i>
+                                        <span class="text-size-14" >(Trong trường hợp cần thiết và có yêu cầu đặc biệt)</span> 
+                                    </i>
+                                </p>-->
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Phụ trách xét nghiệm hiv</span>
+                                    </p>
+                                    <div class="box-ky-title">
+                                        <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                    </div>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

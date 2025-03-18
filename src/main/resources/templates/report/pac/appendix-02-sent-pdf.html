@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .top-secret{
+                line-height: 30px;
+                position: absolute;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 50px;
+                height: 30px;
+                text-align: center;
+                left: 10%;
+                top: 170px;
+            }
+            .page-height-a4 {
+                position: relative;
+            }
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman";'>
+        <div class="body page-height-a4"
+             th:if="form.listPatient != null" th:each="item, iter : ${form.listPatient}">
+            <div class="content">
+                <div class="header">
+                    <div class="box_title">
+                        <p>Phụ lục 2</p>
+                        <p class="text-uppercase text-title">MẪU BÁO CÁO GIÁM SÁT CA BỆNH</p>
+                        <div class="text-normal text-center" >
+                            <i>(Ban hành kèm theo Thông tư số 09/2012/TT-BYT ngày 24 tháng 05 năm 2012 của Bộ trưởng Bộ Y tế)</i>
+                            <p>----------------------------------------------</p>
+                        </div>
+                    </div>
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince}, dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="top-secret" >MẬT</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <div class="row text-normal dear">
+                            <p>
+                                Kính gửi:
+                                <span class="point" >.................................................................................................</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid" style="padding-left: 1cm;">
+                    <p>&nbsp;</p>
+                    <div class="row">
+                        <div class="col-40">1. Họ và tên: <b class="text-uppercase" th:utext="${item.fullname}"></b></div>
+                        <div class="col-20"><span th:utext="${'2. Dân tộc: '+ (item.raceID == null || item.raceID == ''  ? '.................' : options.get(T(com.gms.entity.db.ParameterEntity).RACE).get(item.raceID))}"></span></div>
+                        <div class="col-20"><span th:utext="${'3. Giới tính: '+ (item.genderID == null || item.genderID == ''  ? '.................' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID))}"></span></div>
+                        <div class="col-15"><span th:utext="${'4. Năm sinh: '+ (item.yearOfBirth == null || item.yearOfBirth == ''  ? '.................' : item.yearOfBirth)}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40">5. CMND/CCCD: <span th:utext="${(item.identityCard == null || item.identityCard == ''  ? '...................................................' : item.identityCard)}"></span></div>
+                        <div class="col-60"><span th:utext="${'&nbsp;&nbsp;&nbsp;&nbsp;Số thẻ BHYT: '+ (item.healthInsuranceNo == null || item.healthInsuranceNo == ''  ? '............................................................................................' : item.healthInsuranceNo)}"></span></div>
+                    </div>
+                    <p th:utext="${'6. Nơi cư trú hiện tại: ' + (item.currentAddressFull == '' ? '...................................................................................................................................................................................': item.currentAddressFull)}"></p>
+                    <p th:utext="${'7. Nơi đăng ký hộ khẩu thường trú: ' + item.permanentAddressFull}"></p>
+                    <div class="row">
+                        <div class="col-40"><span th:utext="${'8. Nghề nghiệp: ' + (item.jobID == null || item.jobID == '' ? '......................................................' : options.get(T(com.gms.entity.db.ParameterEntity).JOB).get(item.jobID))}"></span></div>
+                        <div class="col-50"><span th:utext="${'9. Đối tượng: ' + (item.objectGroupID == null || item.objectGroupID == '' ? '...........' : options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP).get(item.objectGroupID))}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40"><span th:utext="${'10. Nguy cơ: ' + (item.riskBehaviorID == null || item.riskBehaviorID.size() == 0 ? '...........................................................' : options.get(T(com.gms.entity.db.ParameterEntity).RISK_BEHAVIOR).getOrDefault(item.riskBehaviorID.get(0), item.riskBehaviorID))}"></span></div>
+                        <div class="col-50"><span th:utext="${'11. Đường lây: ' + (item.modeOfTransmissionID == null || item.modeOfTransmissionID == '' ? '...................................................' : options.get(T(com.gms.entity.db.ParameterEntity).MODE_OF_TRANSMISSION).getOrDefault(item.modeOfTransmissionID, '...................................................'))}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40"><span th:utext="${'12.Ngày xét nghiệm khẳng định: ' +( item.confirmTime == null || item.confirmTime == ''  ? '.................' : T(com.gms.components.TextUtils).formatDate(item.confirmTime, 'dd/MM/yyyy'))}"></span></div>
+                        <div class="col-50" th:utext="${'13.Phòng xét nghiệm khẳng định: ' + (item.siteConfirmID == null || item.siteConfirmID == '' ? '....................................................' : options.get(T(com.gms.entity.db.ParameterEntity).PLACE_TEST).get(item.siteConfirmID))}"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-40">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Mã xét nghiệm khẳng định:
+                            <span class="text-uppercase" th:utext="${(item.confirmCode == null || item.confirmCode == '' ? '.................': item.confirmCode)}"></span>
+                        </div>
+                        <div class="col-60">
+                            <span th:utext="${'14.Nơi lấy mẫu máu xét nghiệm: ' + (item.bloodBaseID == null || item.bloodBaseID == '' ? '............' : options.get(T(com.gms.entity.db.ParameterEntity).BLOOD_BASE).get(item.bloodBaseID))}"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <span th:utext="${'15.Kết quả xác minh hiện trạng cư trú: ' + (item.statusOfResidentID == null || item.statusOfResidentID == '' ? '..................................................................................................................................................' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_RESIDENT).get(item.statusOfResidentID))}"></span>
+                    </div>
+                    <div class="row">
+                        <span th:utext="${'16.Tiền sử điều trị thuốc kháng HIV:......................................................................................................................................................'}"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-33">
+                            &nbsp;&nbsp;&nbsp;&nbsp; Ngày bắt đầu điều trị:
+                            <span th:utext="${(item.startTreatmentTime == null || item.startTreatmentTime == '' ? '....../....../.........' : T(com.gms.components.TextUtils).formatDate(item.startTreatmentTime, 'dd/MM/yyyy'))}"></span></div>
+                        <div class="col-33"><span th:utext="${'Phác đồ điều trị: ' + (item.treatmentRegimenID == null || item.treatmentRegimenID == '' ? '....................................' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(item.treatmentRegimenID))}"></span></div>
+                        <div class="col-33"><span th:utext="${'Số lượng tế bào CD4: ' + (item.cdFourResultCurrent == null || item.cdFourResultCurrent == '' ? '.................' : item.cdFourResultCurrent + ' tế bào/mm3')}"></span></div>
+                    </div>
+                    <div class="row">
+                        &nbsp;&nbsp;&nbsp;&nbsp; Nơi điều trị: 
+                        <span th:utext="${(item.siteTreatmentFacilityID == null || item.siteTreatmentFacilityID == '' ? '........................................................................................................................................................................................' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(item.siteTreatmentFacilityID))}"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-33">
+                            &nbsp;&nbsp;&nbsp;&nbsp; Ngày chẩn đoán AIDS:
+                            <span th:utext="${(item.aidsStatusDate == null || item.aidsStatusDate == '' ? '....../....../.........' : T(com.gms.components.TextUtils).formatDate(item.aidsStatusDate, 'dd/MM/yyyy'))}"></span>
+                        </div>
+                        <div class="col-33"><span th:utext="${'Triệu chứng lâm sàng: ' + (item.symptomID == null || item.symptomID == '' ? '...........................' : options.get(T(com.gms.entity.db.ParameterEntity).SYSMPTOM).get(item.symptomID))}"></span></div>
+                        <div class="col-33">
+                            Nơi chẩn đoán: ...........................
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-33"><span th:utext="${'17. Ngày tử vong: ' + (item.deathTime == null || item.deathTime == '' ? '....../....../.........' : T(com.gms.components.TextUtils).formatDate(item.deathTime, 'dd/MM/yyyy'))}"></span></div>
+                        <div class="col-60"><span th:utext="${'Nguyên nhân tử vong: ' + (item.causesOfDead == null || item.causesOfDead == '' ? '...............................................................................................' : item.causesOfDead)}"></span></div>
+                    </div>
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <p class="" >&nbsp;</p>
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky" >(Ký tên, đóng dấu)</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcElogIndex()}">Tư vấn & xét nghiệm</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcElogIndex()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_elog_index" ng-init="init()">
+                <script th:inline="javascript">
+                    var form = {};
+                     var urlExcel = [[${T(com.gms.components.UrlUtils).htcElogExcel()}]];
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).htcElogIndex()}" method="get" id="search">
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Ngày tư vấn từ</label>
+                                                <input type="text" class="form-control" name = "advisorye_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="advisorye_time_from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Đến ngày</label>
+                                                <input type="text" class="form-control" name = "advisorye_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="advisorye_time_to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Dịch vụ</label>
+                                                <select class="form-control" name="service" id="service">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).SERVICE_TEST)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('service') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Kết quả xét nghiệm</label>
+                                                <select class="form-control" name="result_id" id="result_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('result_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                       <div class="col-md-12 text-center" ng-controller="report_htc_elogg" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).htcElogIndex()}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcElogExcel()}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+
+                                    <table class="table table-bordered table-sm table-full"  
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">Ngày tư vấn</th>
+                                                <th class="text-center">Mã KH</th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Năm sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center">Kết quả XN sàng lọc</th>
+                                                <th class="text-center">Kết quả XN khẳng định</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}"
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : '' }"
+                                                th:data-id="${item.ID}"
+                                                th:data-code="${item.code}"
+                                                th:data-transfer-opc="${item.confirmResultsID == '2' && item.arvExchangeResult == '1'}">
+                                                <td class="text-center"><span th:text="${#dates.format(item.advisoryeTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${item.code}"></span></td>
+                                                <td class=""><span th:text="${item.patientName}"></span></td>
+                                                <td class="text-center"><span th:text="${item.yearOfBirth}"></span></td>
+                                                <td class="text-center"><span th:text="${item.genderID == null || item.genderID == '' ? '' : options.get('gender').get(item.genderID)}"></span></td>
+                                                <td class="text-center">
+                                                    <span th:if="${item.testResultsID != ''}" th:class="${item.testResultsID == '1' ? 'text-success' : item.testResultsID == '3' ? 'text-warning' : 'text-danger'}" th:text="${item.testResultsID == null || item.testResultsID == '' ? '' : options.get('test-results').get(item.testResultsID)}"></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.confirmResultsID == '1' ? 'text-success' : item.confirmResultsID == '2' ? 'text-danger' : item.confirmResultsID == '3' ? 'text-warning' : ''}" 
+                                                          th:text="${item.confirmResultsID == null || item.confirmResultsID == '' ? '' : options.get('test-result-confirm').get(item.confirmResultsID)}"></span>
+                                                </td>  
+                                                <td th:text="${item.permanentAddressFull}"></td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data != null}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

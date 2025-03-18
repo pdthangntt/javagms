@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span class="loading_config" ></span>
+                    <a th:href="${T(com.gms.components.UrlUtils).parameterIndex()}" class="btn btn-default" >
+                        <i class="fa fa-backward"></i> Quay lại
+                    </a>
+                    <span th:text="${title}" ></span>
+                    <small th:text="${parent_title}"></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).parameterIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).parameterDefine()}">
+                            <span th:text="${title}" ></span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" id="config-form" ng-controller="parameter" ng-init="init()" ng-cloak  >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12" 
+                         th:each="instance : ${parameterTypes}"
+                         th:with="dataModel=${dataModels[instance.key]}">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">
+                                        <i th:if="${dataModel['icon'] != ''}" th:class="${dataModel['icon']}"></i>
+                                        <b th:text="${instance.key}" ></b>
+                                    </h3>
+                                    <div th:text="${instance.value}" ></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8">
+                                <div class="box box-info">
+                                    <div class="box-body row">
+                                        <div class="col-md-12" >
+                                            <div class="form-group has-feedback">
+                                                <label>Tiêu đề chức năng</label>
+                                                <input type="text" class="form-control" name="title" 
+                                                       th:data-type="${instance.key}"
+                                                       th:value="${dataModel['title']}"/>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12" >
+                                            <div class="form-group has-feedback" >
+                                                <label>Mô tả ngắn/Hướng dẫn cơ bản</label>
+                                                <textarea class="form-control" 
+                                                          name="description" 
+                                                          th:data-type="${instance.key}"
+                                                          th:utext="${dataModel['description']}"></textarea>
+                                                <span class="form-control-feedback loading_config "></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9" >
+                                            <div class="form-group has-feedback">
+                                                <label>Icon</label>
+                                                <input type="text" class="form-control" name="icon" 
+                                                       th:data-type="${instance.key}"
+                                                       th:value="${dataModel['icon']}"/>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="form-group has-feedback">
+                                                <label>HTC elog</label>
+                                                <select type="text" class="form-control" name="elog" 
+                                                        th:data-type="${instance.key}"
+                                                        th:value="${dataModel['elog']}">
+                                                    <option value="0" th:selected="${dataModel['elog'] == '0'}" >Không</option>
+                                                    <option value="1" th:selected="${dataModel['elog'] == '1'}" >Có</option>
+                                                </select>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="form-group has-feedback">
+                                                <label>Cha/con</label>
+                                                <select type="text" class="form-control" name="useparent" 
+                                                        th:data-type="${instance.key}"
+                                                        th:value="${dataModel['useparent']}">
+                                                    <option value="0" th:selected="${dataModel['useparent'] == '0'}" >Không</option>
+                                                    <option value="1" th:selected="${dataModel['useparent'] == '1'}" >có</option>
+                                                </select>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="form-group has-feedback">
+                                                <label>HIV Info</label>
+                                                <select type="text" class="form-control" name="hivinfo" 
+                                                        th:data-type="${instance.key}"
+                                                        th:value="${dataModel['hivinfo']}">
+                                                    <option value="0" th:selected="${dataModel['hivinfo'] == '0'}" >Không</option>
+                                                    <option value="1" th:selected="${dataModel['hivinfo'] == '1'}" >Có</option>
+                                                </select>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="form-group has-feedback">
+                                                <label>Map cơ sở</label>
+                                                <select type="text" class="form-control" name="sitemap" 
+                                                        th:data-type="${instance.key}"
+                                                        th:value="${dataModel['sitemap']}">
+                                                    <option value="0" th:selected="${dataModel['sitemap'] == '0'}" >Không</option>
+                                                    <option value="1" th:selected="${dataModel['sitemap'] == '1'}" >Có</option>
+                                                </select>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="form-group has-feedback">
+                                                <label>Hub PQM</label>
+                                                <select type="text" class="form-control" name="pqm" 
+                                                        th:data-type="${instance.key}"
+                                                        th:value="${dataModel['pqm']}">
+                                                    <option value="0" th:selected="${dataModel['pqm'] == '0'}" >Không</option>
+                                                    <option value="1" th:selected="${dataModel['pqm'] == '1'}" >Có</option>
+                                                </select>
+                                                <span class="form-control-feedback loading_config"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

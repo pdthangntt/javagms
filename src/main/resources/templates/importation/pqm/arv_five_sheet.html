@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${form.title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var siteID = [[${
+                        currentSite.ID
+                        }
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${form.title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${form.smallUrl}"><span th:text="${form.smallTitle}" ></span></a></li>
+                    <li><a th:href="${form.uploadUrl}"><span th:text="${form.title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="import_view" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul th:replace="importation/widget :: tab" ></ul>
+                            <div class="tab-content">
+                                <div class="box box-solid">
+                                    <div class="box-body">
+                                        <div class="tab-pane active form-horizontal" >
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label text-left">Tên tệp import:</label>
+                                                <div class="col-md-10">
+                                                    <div class="form-control-static" th:utext="${form.fileName}"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-2 control-label text-left">Tên tệp cơ sở import:</label>
+                                                <div class="col-md-10">
+                                                    <div class="form-control-static" th:utext="${site}"></div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" th:if="${h == 'ok'}">
+                                                <label class="col-md-2 control-label text-left">Thông tin import:</label>
+                                                <div class="col-md-10 form-control-static" >
+                                                    <span th:if="${!ok}">Không thể thực hiện nhập dữ liệu excel khi có <span class="text-danger">[[${(total == null ? 0 : total) - (successx == null ? 0 : successx)}]] </span> bản ghi lỗi</span>
+                                                    <span th:if="${ok}">Đã thực hiện nhập dữ liệu excel thành công <span class="">[[${successx == null ? '0' : successx}]] </span> bệnh án </span>
+                                                    <span th:if="${ok}" th:utext="${', '+st + ' đợt điều trị , '+ vs + ' lượt khám, ' + te + ' lượt XN dự phòng Lao, ' + vr + ' lượt XN tải lượng virus'}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" th:if="${h == 'ok' && (!ok || !oks)}">
+                                                <label class="col-md-2 control-label text-left">Tải file báo lỗi:</label>
+                                                <div class="col-md-10 form-control-static">
+                                                    <a style="font-size: 20px;" class="text-danger" th:href="${'/report/index/dowload-excel.html?path=' + filePath}" target='_blank'>Tải tập tin excel</a>
+                                                </div>
+                                            </div>
+<!--                                            <div class="form-group" th:if="${!ok || !oks}">
+                                                <label class="col-md-2 control-label text-left"></label>
+                                                <div class="col-md-10 form-control-static" >
+                                                    <i class="text-danger">(Vui lòng tải tệp tin excel và chỉnh sửa bản ghi lỗi đã được bôi màu nếu có thông báo lỗi bên dưới)</i>
+                                                </div>
+                                            </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-uppercase text-bold text-danger">
+                                    <span>Bệnh án</span>
+                                </p>
+                                <table class="table table-striped table-bordered table-hover table-sm table-full" style="width: 100%">
+                                    <tr class="text-center vertical-align-middle successs">
+                                        <th class="text-center">Dòng</th>
+                                        <th class="text-center">Thông báo</th>
+                                    </tr>
+                                    <tr th:each="entry : ${errorsw}">
+                                        <td class="text-center" th:text="${entry.key}"></td>
+                                        <td class="text-left ">
+                                            <div class="row">
+                                                <div class="col-md-6" th:each="o : ${entry.value}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="text-wrap"th:utext="${o}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-uppercase text-bold text-danger">
+                                    <span>Giai đoạn điều trị</span>
+                                </p>
+                                <table class="table table-striped table-bordered table-hover table-sm table-full" style="width: 100%">
+                                    <tr class="text-center vertical-align-middle successs">
+                                        <th class="text-center">Dòng</th>
+                                        <th class="text-center">Thông báo</th>
+                                    </tr>
+                                    <tr th:each="entry : ${stageErrors}">
+                                        <td class="text-center" th:text="${entry.key}"></td>
+                                        <td class="text-left ">
+                                            <div class="row">
+                                                <div class="col-md-6" th:each="o : ${entry.value}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="text-wrap"th:utext="${o}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-uppercase text-bold text-danger">
+                                    <span>Lượt khám</span>
+                                </p>
+                                <table class="table table-striped table-bordered table-hover table-sm table-full" style="width: 100%">
+                                    <tr class="text-center vertical-align-middle successs">
+                                        <th class="text-center">Dòng</th>
+                                        <th class="text-center">Thông báo</th>
+                                    </tr>
+                                    <tr th:each="entry : ${visitErrors}">
+                                        <td class="text-center" th:text="${entry.key}"></td>
+                                        <td class="text-left ">
+                                            <div class="row">
+                                                <div class="col-md-6" th:each="o : ${entry.value}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="text-wrap"th:utext="${o}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-uppercase text-bold text-danger">
+                                    <span>Tải lượng virus</span>
+                                </p>
+                                <table class="table table-striped table-bordered table-hover table-sm table-full" style="width: 100%">
+                                    <tr class="text-center vertical-align-middle successs">
+                                        <th class="text-center">Dòng</th>
+                                        <th class="text-center">Thông báo</th>
+                                    </tr>
+                                    <tr th:each="entry : ${viralErrors}">
+                                        <td class="text-center" th:text="${entry.key}"></td>
+                                        <td class="text-left ">
+                                            <div class="row">
+                                                <div class="col-md-6" th:each="o : ${entry.value}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="text-wrap"th:utext="${o}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p class="text-uppercase text-bold text-danger">
+                                    <span>Dự phòng Lao</span>
+                                </p>
+                                <table class="table table-striped table-bordered table-hover table-sm table-full" style="width: 100%">
+                                    <tr class="text-center vertical-align-middle successs">
+                                        <th class="text-center">Dòng</th>
+                                        <th class="text-center">Thông báo</th>
+                                    </tr>
+                                    <tr th:each="entry : ${testErrors}">
+                                        <td class="text-center" th:text="${entry.key}"></td>
+                                        <td class="text-left ">
+                                            <div class="row">
+                                                <div class="col-md-6" th:each="o : ${entry.value}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="text-wrap"th:utext="${o}"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="box-footer text-center navbar-fixed-bottom main-footer">
+                                    <a th:href="${form.uploadUrl}"
+                                       class="btn btn-default">Quay lại</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

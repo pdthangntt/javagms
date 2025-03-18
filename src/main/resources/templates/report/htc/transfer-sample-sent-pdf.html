@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+            @media print {
+                .header-break {page-break-before: always;}
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan" th:if="${form.listSampleSent} == null">
+            <div class="content">  
+                <div class="header">
+                    <div class="box_donvi">
+                        <p class="text-uppercase conghoa text-normal" ><span th:utext="${form.siteAgency}" ></span></p>
+                        <p class="text-underline" ><span th:utext="${form.siteName}" ></span></p>
+                        <hr class="line" />
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="row text-normal dear">
+                            <div class="row">
+                                <i class="text-bold">Kính gửi:</i>
+                                <span class="text-uppercase text-title" th:utext="${form.siteOptions.get(item.getKey())}" ></span>
+                            </div>
+
+                        </div>
+                        <div class="clear-fix" >&nbsp;</div>
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <div class="row text-normal">
+                            (Dùng cho đơn vị gửi mẫu xét nghiệm)
+                        </div>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <table class="table-report table table-striped table-bordered table-hover table-full"
+                               data-scrollY="auto">
+                            <thead>
+                                <tr>
+                                    <th class="text-center vertical-align-middle success text-uppercase" rowspan="2">STT</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Họ tên</th>
+                                    <th class="text-center vertical-align-middle success " colspan="2" >Năm sinh</th>
+                                    <th class="text-center vertical-align-middle success tbl-sent-address" rowspan="2">Địa chỉ</th>
+                                    <th class="text-center vertical-align-middle success tbl-sent-obj" rowspan="2">Đối tượng</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Ngày lấy mẫu</th>
+                                    <th class="text-center vertical-align-middle success " >Kết quả xét nghiệm</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Chất lượng mẫu</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Mã số PXN</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Ghi chú</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center vertical-align-middle success " >Nam</th>
+                                    <th class="text-center vertical-align-middle success " >Nữ</th>
+                                    <th class="text-center vertical-align-middle success " ><b>SP</b>(ghi rõ tên sp)</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center vertical-align-middle text-normal">(1)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(2)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(3)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(4)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(5)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(6)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(7)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(8)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(9)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(10)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(11)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item, iter : ${form}" th:if="${form!= null}" >
+                                    <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                                    <td class="text-left" th:utext="${item.fullname == ''? '-' : item.fullname}" ></td>
+                                    <td class="text-center" th:utext="${item.gender == 'Nam' ? item.year : ''}" ></td>
+                                    <td class="text-center" th:utext="${item.gender == 'Nữ' ? item.year : ''}" ></td>
+                                    <td class="" th:utext="${item.address != '' ? item.address : ''}" ></td>
+                                    <td class="text-left" th:utext="${item.objectGroupID =='' ? '' : item.objectGroupID}" ></td>
+                                    <td class="text-left text-center" th:utext="${item.sourceReceiveSampleTime !='' ? T(com.gms.components.TextUtils).formatDate(item.sourceReceiveSampleTime, 'dd/MM/yyyy') : ''}" ></td>
+                                    <td class="text-center" th:utext="${item.resultsID != '' ? item.resultsID : '' }" ></td>
+                                    <td class="text-left" ></td>
+                                    <td class="text-left text-center" th:utext="${item.roomTestNo != '' ? item.roomTestNo : ''}" ></td>
+                                    <td class="text-left" ></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        Ghi chú: Phiếu này lập thành 02 bản, mỗi bên giữ 01 bản.
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        <p class="text-normal" >
+                                            <i>
+                                                Ngày <span class="point" >.......</span>
+                                                tháng <span class="point" >.......</span> 
+                                                năm <span class="point" >.......</span>
+                                            </i>
+                                        </p>
+                                        NGƯỜI GIAO MẪU
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <p class="text-normal" >
+                                </p>
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" >.......</span>
+                                            tháng <span class="point" >.......</span> 
+                                            năm <span class="point" >.......</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        NGƯỜI NHẬN MẪU XÉT NGHIỆM
+                                        <br/>
+                                        <span class="chu-ky" >(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+        <div class="body xacnhan header-break" id="xacnhan" th:each="item, iter : ${form.listSampleSent}" >
+            <div class="content">  
+                <div class="header">
+                    <p style="text-align: right" >Mẫu số 1A</p>
+                    <div class="box_title" style="text-align: left">
+                        <p class="text-uppercase conghoa text-normal" >
+                            <span th:utext="${form.siteAgency}" ></span>
+                        </p>
+                        <p class="text-normal" th:utext="${form.siteName}" ></p>
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="row text-normal dear">
+                            <div class="row">
+                                 <i class="text-normal">Kính gửi:</i>
+                                <span class="text-uppercase text-title" th:utext="${form.siteOptions.get(item.getKey())}" ></span>
+                            </div>
+                        </div>
+                        <br/>
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <div class="row text-normal">
+                            (Dùng cho đơn vị gửi mẫu xét nghiệm)
+                        </div>
+                    </div>
+                </div>
+                <div class="mid" >
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div data-th-replace="report/htc/widget :: table-sample-sent(${item != null ? item.value: null})"></div>
+                        Ghi chú: Phiếu này lập thành 02 bản, mỗi bên giữ 01 bản.
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <div>
+                                    <p class="box-ky-title">
+                                        <p class="text-normal" >
+                                            <i> 
+                                                Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                                tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                                năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                            </i>
+                                        </p>
+                                        <span class="text-normal">NGƯỜI GIAO MẪU</span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" >.......</span>
+                                            tháng <span class="point" >.......</span> 
+                                            năm <span class="point" >.......</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-normal">NGƯỜI NHẬN MẪU XÉT NGHIỆM</span>
+                                        <br/>
+                                        <span class="chu-ky"  >(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" id ="page-break" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

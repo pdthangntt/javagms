@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title} + ' - ' + ${title_small}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).opcRegimenReport("pdf")}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).opcRegimenReport("excel")}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).opcRegimenReport("email")}]];
+        </script>
+        <style>
+            .width-col {width: 10%!important;}
+            .reda {
+               background-color: #d9edf7 !important;};
+           
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${title_small}" ></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}">Điều trị ngoại trú</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcRegimenReport('index')}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="regimen_report" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).opcRegimenReport('index')}" method="GET" name="form">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Tháng</label>
+                                                <select name="month" id="month" class="form-control">
+                                                    <option th:each="n : ${#numbers.sequence(1,12)}" 
+                                                            th:selected="${n == form.month}"
+                                                            th:value="${n}" 
+                                                            th:text="'Tháng ' + ${n >= 10? n : '0'+n}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${form.year != null && form.year+'' == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6" th:if="${isOpcManager}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select name="sites" id="sites" class="form-control">
+                                                    <option th:each="n : ${sites}" 
+                                                            th:selected="${form.sites != null ? #arrays.contains(form.sites, n.key) : false}"
+                                                            th:district-id="${n.value.districtID}"
+                                                            th:value="${n.key}" th:text="${n.value.shortName}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6" th:if="${!isOpcManager}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <input class="form-control" disabled="disabled" th:value="${currentUser.site.shortName}" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcRegimenReport('pdf')}">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcRegimenReport('excel')}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcRegimenReport('email')}">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Báo cáo phác đồ điều trị <span class="text-danger" th:utext="${'tháng ' + (form.month < 10 ? '0'+form.month : form.month) + ' năm ' + form.year}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/opc/widget-table :: table-regimen()"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

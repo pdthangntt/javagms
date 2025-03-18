@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPqmApiHub = [[${T(com.gms.components.UrlUtils).pqmApiHub()}
+            ]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).pqmReportExcel()}
+            ]];
+            var urlExcelData = [[${T(com.gms.components.UrlUtils).pqmReportDataExcel()}
+            ]];
+            var urlMonth = [[${T(com.gms.components.UrlUtils).pqmReportIndex()}
+            ]];
+            var urlSend = [[${T(com.gms.components.UrlUtils).pqmReportSend()}
+            ]];
+            var urlSynthetic = [[${T(com.gms.components.UrlUtils).pqmReportSynthetic()}
+            ]];
+            var urlSynthetics = [[${T(com.gms.components.UrlUtils).pqmReportSynthetics()}
+            ]];
+            var hub = [[${form.hub}
+            ]];
+            var mon = [[${form.month}
+            ]];
+            var isUpdate = [[${form.update}
+            ]];
+            var isSend = [[${form.isSend()}
+            ]];
+            var mapSites = [[${mapSites}
+            ]];
+            var false_key = [[${false_key}
+            ]];
+            var urlGet = '/service/pqm-report/get.json';
+            var urlUpdate = '/service/pqm/update-result.json';
+            
+            var urlSyntheticsALL = [[${T(com.gms.components.UrlUtils).pqmReportSyntheticsALL()}
+            ]];
+        </script>
+        <style>
+            .width-col {
+                width: 10%!important;
+            }
+            .col {
+                width: 4% !important;
+            }
+            .object {
+                width: 5.5% !important;
+            }
+            .reda {
+                background-color: #d9edf7 !important;
+            }
+            ;
+
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${title_small}" ></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmReportIndex() + '?tab=' + tab}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="qpm__report" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pqmReportIndex() + '?tab=' + tab}" method="GET" name="form" id="search">
+                                    <input type="hidden" th:value="${tab}" name="tab" >
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${form.year != null && form.year+'' == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" th:if="${isPAC}">
+                                            <div class="form-group">
+                                                <label>Cơ sở</label>
+                                                <select name="sites" id="sites" class="form-control">
+                                                    <option th:each="n : ${form.getSiteOptions()}" 
+                                                            th:selected="${form.sites != null ? #arrays.contains(form.sites, n.key) : false}"
+
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--                                        <div class="col-md-3" th:if="${isPAC}">
+                                                                                    <div class="form-group">
+                                                                                        <label>Cơ sở đã gửi báo cáo</label>
+                                                                                        <select name="siteSend" id="siteSend" class="form-control">
+                                                                                            <option th:each="n : ${form.getSiteSendOptions()}" 
+                                                                                                    th:selected="${form.siteSends != null ? #arrays.contains(form.siteSends, n.key) : false}"
+                                        
+                                                                                                    th:value="${n.key}" th:text="${n.value}"/>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>-->
+                                        <input type="hidden"  name="month" th:value="${form.month}" />
+                                        <div class="col-md-12 text-center">
+                                            <div class="btn btn-group">
+                                                <button ng-click="month('1')" type="button"  th:class="${form.month != 1 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('1') == '3' ) || monthKey.get('1') == '2' ) ? 'c-signal is-success' : monthKey.get('1') == '1' ? 'c-signal is-warning' : monthKey.get('1') == '0' ? 'c-signal is-default'  : ''}">Tháng 1</span></button>
+                                                <button ng-click="month('2')" type="button"  th:class="${form.month != 2 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('2') == '3' ) || monthKey.get('2') == '2' ) ? 'c-signal is-success' : monthKey.get('2') == '1' ? 'c-signal is-warning' : monthKey.get('2') == '0' ? 'c-signal is-default'  : ''}">Tháng 2</span></button>
+                                                <button ng-click="month('3')" type="button"  th:class="${form.month != 3 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('3') == '3' ) || monthKey.get('3') == '2' ) ? 'c-signal is-success' : monthKey.get('3') == '1' ? 'c-signal is-warning' : monthKey.get('3') == '0' ? 'c-signal is-default'  : ''}">Tháng 3</span></button>
+                                                <button ng-click="month('4')" type="button"  th:class="${form.month != 4 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('4') == '3' ) || monthKey.get('4') == '2' ) ? 'c-signal is-success' : monthKey.get('4') == '1' ? 'c-signal is-warning' : monthKey.get('4') == '0' ? 'c-signal is-default'  : ''}">Tháng 4</span></button>
+                                                <button ng-click="month('5')" type="button"  th:class="${form.month != 5 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('5') == '3' ) || monthKey.get('5') == '2' ) ? 'c-signal is-success' : monthKey.get('5') == '1' ? 'c-signal is-warning' : monthKey.get('5') == '0' ? 'c-signal is-default'  : ''}">Tháng 5</span></button>
+                                                <button ng-click="month('6')" type="button"  th:class="${form.month != 6 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('6') == '3' ) || monthKey.get('6') == '2' ) ? 'c-signal is-success' : monthKey.get('6') == '1' ? 'c-signal is-warning' : monthKey.get('6') == '0' ? 'c-signal is-default'  : ''}">Tháng 6</span></button>
+                                                <button ng-click="month('7')" type="button"  th:class="${form.month != 7 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('7') == '3' ) || monthKey.get('7') == '2' ) ? 'c-signal is-success' : monthKey.get('7') == '1' ? 'c-signal is-warning' : monthKey.get('7') == '0' ? 'c-signal is-default'  : ''}">Tháng 7</span></button>
+                                                <button ng-click="month('8')" type="button"  th:class="${form.month != 8 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('8') == '3' ) || monthKey.get('8') == '2' ) ? 'c-signal is-success' : monthKey.get('8') == '1' ? 'c-signal is-warning' : monthKey.get('8') == '0' ? 'c-signal is-default'  : ''}">Tháng 8</span></button>
+                                                <button ng-click="month('9')" type="button"  th:class="${form.month != 9 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${((monthKey.get('9') == '3' ) || monthKey.get('9') == '2' ) ? 'c-signal is-success' : monthKey.get('9') == '1' ? 'c-signal is-warning' : monthKey.get('9') == '0' ? 'c-signal is-default'  : ''}">Tháng 9</span></button>
+                                                <button ng-click="month('10')" type="button" th:class="${form.month != 10 ? 'btn btn-default' : 'btn btn-primary'}"><span th:class="${((monthKey.get('10') == '3') || monthKey.get('10') == '2')  ? 'c-signal is-success' :monthKey.get('10') == '1' ? 'c-signal is-warning' :monthKey.get('10') == '0' ? 'c-signal is-default'  : ''}">Tháng 10</span></button>
+                                                <button ng-click="month('11')" type="button" th:class="${form.month != 11 ? 'btn btn-default' : 'btn btn-primary'}"><span th:class="${((monthKey.get('11') == '3') || monthKey.get('11') == '2')  ? 'c-signal is-success' :monthKey.get('11') == '1' ? 'c-signal is-warning' :monthKey.get('11') == '0' ? 'c-signal is-default'  : ''}">Tháng 11</span></button>
+                                                <button ng-click="month('12')" type="button" th:class="${form.month != 12 ? 'btn btn-default' : 'btn btn-primary'}"><span th:class="${((monthKey.get('12') == '3') || monthKey.get('12') == '2')  ? 'c-signal is-success' :monthKey.get('12') == '1' ? 'c-signal is-warning' :monthKey.get('12') == '0' ? 'c-signal is-default'  : ''}">Tháng 12</span></button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span th:text="${isPAC ? (form.donvi == '' ? 'Bảng tổng hợp theo chỉ số ' : 'Bảng chỉ số ' ) : 'Bảng chỉ số '}"></span><span class="text-danger" th:utext="${'tháng ' + (form.month < 10 ? '0'+form.month : form.month) + ' năm ' + form.year}" ></span>
+                                    <span th:text="${form.donvi == '' ? '' : ' - ' + form.donvi}"></span>
+                                    <span th:if="${!isPAC}" th:text="${((isPAC &&  monthKey.get(form.month + '') == '3') || monthKey.get(form.month + '') == '2')  ? ' - Đã tổng hợp ' :monthKey.get(form.month + '') == '1' ? ' - Đã gửi báo cáo ' :monthKey.get(form.month + '') == '0' ? ' - Đã nhập liệu'  : ''}"></span>
+                                </div>
+                                <div class="no-margin pull-right" >
+                                    <!--                                    <button th:if="${form.hub != '1' && form.hub != '0'}" type="button" th:attr="ng-click='actionSynthetic('+${123}+', \''+${'x'}+'\', \''+${'x'}+'\', \''+${form.month}+'\', \''+${form.year}+'\')'" class="btn btn-xs btn-primary">
+                                                                            <i class="fa  fa-sitemap"></i>
+                                                                            Tổng hợp
+                                                                        </button>-->
+                                    <button type="button" ng-click="send()" class="btn btn-xs btn-primary" th:if="${form.hub == '0'}" >
+                                        <i class="fa fa-send"></i>
+                                        Gửi báo cáo
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <p class="text-center text-bold text-danger" th:if="${!key}">[[${form.sites == null || form.sites == '' ? 'Bạn cần chọn cơ sở để xem báo cáo!' : 'Dữ liệu chưa được tổng hợp. Bạn cần thực hiện tổng hợp để xem báo cáo!'}]]</p>
+                                <div th:if="${key}" class="table-responsive">
+                                    <table class="table-report table table-bordered table-hover table-full" >
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2" th:text="${isPAC ? 'STT' : ''}"></th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">Chỉ số</th>
+                                                <th class="text-center vertical-align-middle success" colspan="10">Nhóm tuổi</th>
+                                                <th class="text-center vertical-align-middle success" colspan="3">Giới tính</th>
+                                                <th class="text-center vertical-align-middle success" colspan="11">Nhóm đối tượng</th>
+                                                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success col">10-14</th>
+                                                <th class="text-center vertical-align-middle success col">15-19</th>
+                                                <th class="text-center vertical-align-middle success col">20-24</th>
+                                                <th class="text-center vertical-align-middle success col">25-29</th>
+                                                <th class="text-center vertical-align-middle success col">30-34</th>
+                                                <th class="text-center vertical-align-middle success col">35-39</th>
+                                                <th class="text-center vertical-align-middle success col">40-44</th>
+                                                <th class="text-center vertical-align-middle success col">45-49</th>
+                                                <th class="text-center vertical-align-middle success col">&nbsp;50+&nbsp;</th>
+                                                <th class="text-center vertical-align-middle success col">Không có thông tin</th>
+
+                                                <th class="text-center vertical-align-middle success col">Nam</th>
+                                                <th class="text-center vertical-align-middle success col">&nbsp;Nữ&nbsp;</th>
+                                                <th class="text-center vertical-align-middle success col">Không có thông tin</th>
+
+                                                <th class="text-center vertical-align-middle success object">Nghiện chích ma túy (NCMT)</th>
+                                                <th class="text-center vertical-align-middle success object">Người hành nghề mại dâm</th>
+                                                <th class="text-center vertical-align-middle success object">Phụ nữ mang thai</th>
+                                                <th class="text-center vertical-align-middle success object">Người bán máu /hiến máu /cho máu</th>
+                                                <th class="text-center vertical-align-middle success object">Bệnh nhân nghi ngờ AIDS</th>
+                                                <th class="text-center vertical-align-middle success object">Bệnh nhân Lao</th>
+                                                <th class="text-center vertical-align-middle success object">Bệnh nhân mắc các nhiễm trùng LTQĐTD</th>
+                                                <th class="text-center vertical-align-middle success object">Thanh niên khám tuyển nghĩa vụ quân sự</th>
+                                                <th class="text-center vertical-align-middle success object">Nam quan hệ tình dục với nam (MSM)</th>
+                                                <th class="text-center vertical-align-middle success object">Các đối tượng khác</th>
+                                                <th class="text-center vertical-align-middle success object">Không có thông tin</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${isHTC || isConfirm}">
+                                                <td class="info text-bold" colspan="27">Xét nghiệm (Testing)</td>
+                                            </tr>
+                                            <tr th:each="item, iter : ${form.items0}" th:if="${isHTC || isConfirm}">
+                                                <td class="text-center">
+                                                    <span th:if="${item.keyEarly != 'x'}"><button th:attr="ng-click='actionUpdate('+${123}+', \''+${item.indicators}+'\', \''+${item.indicatorKey}+'\', \''+${form.month}+'\', \''+${form.year}+'\')'" type="button" class="btn btn-block btn-primary btn-xs"><i class="fa fa-pencil"></i></button></span>
+                                                    <span th:if="${item.keyEarly == 'x'}"><button  type="button" class="btn btn-block btn-primary btn-xs disabled"><i class="fa fa-pencil"></i></button></span>
+                                                    <span th:if="${isPAC}" th:utext="${iter.index + 1}"></span>
+                                                </td>
+                                                <td class="text-left"  >[[${item.indicators == ''? '' : item.indicators}]]</td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i10x14 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i15x19 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i20x24 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i25x29 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i30x34 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i35x39 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i40x44 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i45x49 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i50x )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ina )}"></td>
+
+                                                <td class="text-center" th:utext="${form.displayNumber(item.male )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.female )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.gna )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ntmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.md )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.pnmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nhm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.aids )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.lao )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ltqdtd )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nvqs )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.msm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.other )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ona )}"></td>
+                                                <td class="text-center text-bold" th:utext="${item.getSum() }"></td>
+                                            </tr>
+                                            <tr th:if="${isOPC || isPAC}">
+                                                <td class="info text-bold" colspan="27">Điều trị (Treatment)</td>
+                                            </tr>
+                                            <tr th:each="item, iter : ${form.items1}" th:if="${isOPC || isPAC}">
+                                                <td class="text-center">
+                                                    <span th:if="${!isPAC}"><button th:attr="ng-click='actionUpdate('+${123}+', \''+${item.indicators}+'\', \''+${item.indicatorKey}+'\', \''+${form.month}+'\', \''+${form.year}+'\')'" type="button" class="btn btn-block btn-primary btn-xs"><i class="fa fa-pencil"></i></button></span>
+                                                    <span th:if="${isPAC}" th:utext="${iter.index + 1}"></span>
+                                                </td>
+                                                <td class="text-left"  >[[${item.indicators == ''? '' : item.indicators}]]</td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i10x14 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i15x19 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i20x24 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i25x29 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i30x34 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i35x39 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i40x44 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i45x49 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i50x )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ina )}"></td>
+
+                                                <td class="text-center" th:utext="${form.displayNumber(item.male )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.female )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.gna )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ntmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.md )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.pnmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nhm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.aids )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.lao )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ltqdtd )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nvqs )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.msm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.other )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ona )}"></td>
+                                                <td class="text-center text-bold" th:utext="${item.getSum() }"></td>
+                                            </tr>
+                                            <tr th:if="${isPrEP || isPAC}">
+                                                <td class="info text-bold" colspan="27">Dự phòng trước phơi nhiễm (PrEP)</td>
+                                            </tr>
+                                            <tr th:each="item, iter : ${form.items2}" th:if="${isPrEP || isPAC}">
+                                                <td class="text-center">
+                                                    <span th:if="${!isPAC}"><button th:attr="ng-click='actionUpdate('+${123}+', \''+${item.indicators}+'\', \''+${item.indicatorKey}+'\', \''+${form.month}+'\', \''+${form.year}+'\')'" type="button" class="btn btn-block btn-primary btn-xs"><i class="fa fa-pencil"></i></button></span>
+                                                    <span th:if="${isPAC}" th:utext="${iter.index + 1}"></span>
+                                                </td>
+                                                <td class="text-left"  >[[${item.indicators == ''? '' : item.indicators}]]</td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i10x14 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i15x19 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i20x24 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i25x29 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i30x34 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i35x39 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i40x44 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i45x49 )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.i50x )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ina )}"></td>
+
+                                                <td class="text-center" th:utext="${form.displayNumber(item.male )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.female )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.gna )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ntmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.md )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.pnmt )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nhm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.aids )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.lao )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ltqdtd )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.nvqs )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.msm )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.other )}"></td>
+                                                <td class="text-center" th:utext="${form.displayNumber(item.ona )}"></td>
+                                                <td class="text-center text-bold" th:utext="${item.getSum() }"></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div class="clearfix"></div>
+                                <div id="table-comment">
+                                    Chú thích màu: 
+                                    <label class="label bg-green color-palette" >Đã tổng hợp</label>
+                                    <!--                                    <label class="label bg-yellow disabled color-palette" >Đã gửi báo cáo</label>
+                                                                        <label class="label label-s bg-gray color-palette" >Đã nhập liệu</label>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div data-th-include="report/pqm/widget-table :: pqm-update()" ></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,975 @@
+<ul class="nav nav-tabs" data-th-fragment="htc-header()">
+    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcIndex()}">Tất cả</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'confirm' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcIndex() + '?tab=confirm'}">Chuyển gửi khẳng định</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'positive' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcIndex() + '?tab=positive'}">Phát hiện dương tính</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'opc' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcIndex() + '?tab=opc'}">Chuyển gửi điều trị</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'remove' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcIndex() + '?tab=remove'}">Đã xóa</a>
+    </li>
+</ul>
+
+<ul class="nav nav-tabs header-tabs" data-th-fragment="htc-header-export()">
+    <li>
+        <a th:href="${T(com.gms.components.UrlUtils).htcPositiveView()}">Danh sách dương tính phát hiện         </a>
+    </li>
+    <li>
+        <a th:href="${T(com.gms.components.UrlUtils).htcTransferSuccessView()}">Danh sách chuyển gửi điều trị thành công</a>
+    </li>
+</ul>
+
+<ul class="nav nav-tabs" data-th-fragment="htc-laytest-header()">
+    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcLaytestIndex()}">Tất cả</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == '1' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcLaytestIndex() + '?tab=1'}">Chưa tiếp nhận</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == '2' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcLaytestIndex() + '?tab=2'}">Đã tiếp nhận</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == '3' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).htcLaytestIndex() + '?tab=3'}">Đã xóa</a>
+    </li>
+</ul>
+
+<div data-th-fragment="htc-log()">
+    <script type="text/ng-template" id="htcLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử khách hàng <span class="text-danger" >#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th  class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.createAt| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;">{{log.content}}</td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control"
+        placeholder="Ghi chú thêm" ng-enter="add()" />
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="htcSendConfirm">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Xác nhận gửi thông tin bệnh nhân sang CSXN khẳng định</h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+        <form class="row">
+        <div class="col-md-6">
+        <div class="form-group">
+        <label>Mã khách hàng</label>
+        <input type="text" ng-value="item.code" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+        <label>Ngày XN sàng lọc</label>
+        <input type="text" ng-value="item.preTestTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+        <label>Khách hàng đồng ý XN khẳng định</label>
+        <input type="text" ng-value="item.isAgreeTest?'Có':'Không'" class="form-control" disabled />
+        </div>
+        </div>
+        <div class="col-md-6">
+        <div class="form-group">
+        <label>Họ và tên khách hàng</label>
+        <input type="text" ng-value="item.patientName" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+        <label>Kết quả XN sàng lọc</label>
+        <input type="text" ng-value="options['test-results'][item.testResultsID]" class="form-control" disabled />
+        </div>
+        <div ng-class="errors.siteConfirmTest?'has-error form-group':'form-group'">
+        <label>Nơi chuyển máu đến <span class="text-danger">*</span></label>
+        <select ng-model="model.siteConfirmTest" id="siteConfirmTest" 
+        ng-options="key as value for (key , value) in options.confirmSite"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.siteConfirmTest">{{errors.siteConfirmTest}}</p>
+        </div>
+        </div>
+        <div class="col-md-12">
+        <div ng-class="errors.sampleSentDate?'has-error form-group':'form-group'">
+        <label>Ngày gửi mẫu <span class="text-danger">*</span></label>
+        <input type="text" ng-model="model.sampleSentDate" disabled 
+        ui-mask="99/99/9999" 
+        placeholder="dd/mm/yyyy" class="form-control"/>
+        <p class="help-block" ng-if="errors.sampleSentDate">{{errors.sampleSentDate}}</p>
+        </div>
+        </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Gửi thông tin</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+
+    <!--DSNAnh-->
+    <script type="text/ng-template" id="htcConfirmReceive">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Đối chiếu kết quả khẳng định của khách hàng giữa hệ thống và giấy trả kết quả giấy</h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+            <form>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Mã khách hàng:</label>
+                            <input type="text" ng-value="item.code" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div ng-class="errors.patientName?'has-error form-group':'form-group'">
+                            <label>Họ tên khách hàng: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.patientName" class="form-control" />
+                            <p class="help-block" ng-if="errors.patientName">{{errors.patientName}}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div ng-class="errors.yearOfBirth?'has-error form-group':'form-group'">
+                            <label>Năm sinh:</label>
+                            <input type="text" ng-value="item.yearOfBirth" ng-model= "model.yearOfBirth" class="form-control" />
+                            <p class="help-block" ng-if="errors.yearOfBirth">{{errors.yearOfBirth}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Giới tính: </label>
+                            <select ng-model="model.genderID" 
+                            ng-options="key as value for (key , value) in options['gender']"
+                            class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <label>Nơi đăng ký hộ khẩu thường trú:</label>
+                <fieldset class="form-fieldset">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddress?'has-error form-group':'form-group'">
+                                <label>Số nhà: </label>
+                                <input type="text" ng-model="model.permanentAddress" id="permanentAddress" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddress">{{errors.permanentAddress}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddressStreet?'has-error form-group':'form-group'">
+                                <label>Đường phố (nếu có): </label>
+                                <input type="text" ng-model="model.permanentAddressStreet" id="permanentAddressStreet" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddressStreet">{{errors.permanentAddressStreet}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddressGroup?'has-error form-group':'form-group'">
+                                <label>Tổ/ấp/Khu phố: </label>
+                                <input type="text" ng-model="model.permanentAddressGroup" id="permanentAddressGroup" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddressGroup">{{errors.permanentAddressGroup}}</p>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentProvinceID?'has-error form-group':'form-group'">
+                                <label>Tỉnh/Thành phố: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentProvinceID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentProvinceID" id ="hiddenProvinceID">
+                                <p class="help-block" ng-if="errors.permanentProvinceID">{{errors.permanentProvinceID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>-->
+                            <div ng-class="errors.permanentDistrictID?'has-error form-group':'form-group'">
+                                <label>Quận/Huyện: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentDistrictID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentDistrictID" id ="hiddenDistrictID">
+                                <p class="help-block" ng-if="errors.permanentDistrictID">{{errors.permanentDistrictID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Phường/xã:', 'permanentWardID', false, null, '')"></div>-->
+                            <div ng-class="errors.permanentWardID?'has-error form-group':'form-group'">
+                                <label>Phường/xã: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentWardID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentWardID" id ="hiddenWardID">
+                                <p class="help-block" ng-if="errors.permanentWardID">{{errors.permanentWardID}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                    
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày XN sàng lọc:</label>
+                            <input type="text" ng-value="item.preTestTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Kết quả XN sàng lọc:</label>
+                            <input type="text" ng-value="options['test-results'][item.testResultsID]" class="form-control" disabled/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày gửi mẫu:</label>
+                            <input type="text" ng-value="item.sampleSentDate | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        
+                        <div class="form-group">
+                            <label>Tên cơ sở XN khẳng định:</label>
+                            <input type="text" ng-value="options['confirmSite'][item.siteConfirmTest]" class="form-control" disabled/>
+                        </div>
+                    </div>  
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Mã XN khẳng định: </label>
+                            <input type="text" ng-value="item.confirmTestNo" class="form-control" disabled />
+                        </div>
+                    </div>  
+                    <div class="col-md-4">    
+                        <div class="form-group">
+                            <label>Kết quả XN khẳng định:</label>
+                            <input type="text" ng-value="options['test-result-confirm'][item.confirmResultsID]" class="form-control" disabled/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày XN khẳng định:</label>
+                            <input type="text" ng-value="item.confirmTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                        
+                    <div class="col-md-4">    
+                        <div ng-class="errors.resultsSiteTime?'has-error form-group':'form-group'">
+                            <label>Ngày cơ sở nhận kết quả KĐ: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.resultsSiteTime" 
+                            ui-mask="99/99/9999" 
+                            placeholder="dd/mm/yyyy" class="form-control"/>
+                            <p class="help-block" ng-if="errors.resultsSiteTime">{{errors.resultsSiteTime}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div ng-class="errors.feedbackMessage?'has-error form-group':'form-group'">
+                                <label>Lý do phản hồi: <span class="text-danger">*</span></label>
+                                <textarea class="form-control" ng-model="model.feedbackMessage"  rows="4"></textarea>
+                                <p class="help-block" ng-if="errors.feedbackMessage">{{errors.feedbackMessage}}</p>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok(false)"><i class="fa fa-share-square-o"></i> Gửi phản hồi thông tin sai</button>
+            <button class="btn btn-primary" type="button" ng-click="ok(true)"><i class="fa fa-check"></i> Xác nhận</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+
+    <!--pdThang-->
+    <script type="text/ng-template" id="transferSampleModal">
+    <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">In phiếu gửi mẫu xét nghiệm</h4>
+    </div>
+    <div class="modal-body">
+        <div ng-repeat="(key, item) in items" ng-if="item.length > 0" style="padding-bottom: 25px;">
+        <h4 ng-if="key == 'keyNot'" class="text-danger">Khách hàng không đủ điều kiện gửi mẫu xét nghiệm</h4>
+        <h4 ng-if="key != 'keyNot'" >Gửi <span class="text-danger">{{item.length}}</span> mẫu xét nghiệm tới cơ sở {{key}}</h4>
+            <table class="table table-striped table-bordered table-sm">
+                <thead>
+                    <tr class="text-center vertical-align-middle success">
+                       <th class="text-center">TT</th>
+                        <th class="text-center">Mã KH</th>
+                        <th class="text-center">Họ tên khách hàng</th>
+                        <th class="text-center">Năm sinh</th>
+                        <th class="text-center">Giới tính</th>
+                        <th class="text-center">Ngày lấy mẫu</th>
+                        <th class="text-center">Kết quả xét nghiệm</th>
+                        <th class="text-center">Ngày gửi mẫu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item1 in item">
+                        <td class="text-center">{{$index + 1}}</td>
+                        <td class="text-center">{{item1.code}}</td>
+                        <td class="text-left">{{item1.patientName}}</td>
+                        <td class="text-center">{{item1.yearOfBirth}}</td>
+                        <td class="text-center" ng-bind="options['gender'][item1.genderID]"></td>
+                        <td class="text-center">{{item1.preTestTime | date:"dd/MM/yyyy"}}</td>
+                        <td class="text-center">
+                            <span class="{{item1.testResultsID == '1' ? 'text-success' : item1.testResultsID == '2' ? 'text-danger' : item1.testResultsID == '3' ? 'text-warning' : ''}}"
+                            ng-bind="options['test-results'][item1.testResultsID]"></span> 
+                        </td> 
+                        <td class="text-center">{{item1.sampleSentDate | date:"dd/MM/yyyy"}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer navbar-fixed-bottom box-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()" ng-if="isPrint">In phiếu</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()">Hủy</button>
+        </div>
+    </div>
+    </script>
+</div>
+<div data-th-fragment="htc-transfer-treatment()">
+    <script type="text/ng-template" id="htcTransferTreatment">
+        <div class="modal-header">
+            <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Chuyển thông tin khách hàng tới cơ sở điều trị ARV</b></h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+            <form>
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Họ tên khách hàng: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{item.patientName}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Mã khách hàng: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{item.code}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Năm sinh: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{item.yearOfBirth}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Mã XN khẳng định: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{item.confirmTestNo}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Giới tính: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{item.genderID == null || item.genderID == '' ? '' : options['gender'][item.genderID]}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Ngày XN khẳng định: </b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.confirmTime}}
+                    </div>
+                </div>
+                <div class="row">        
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kết quả TV CGĐT ARV: </label>
+                            <select ng-model="model.arvExchangeResult" disabled id="arvExchangeResult"  
+                            ng-options="key as value for (key , value) in options['arv-consultant-exchange']"
+                            class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="row">
+                    <div class="col-md-6">    
+                        <div ng-class="errors.exchangeConsultTime?'has-error form-group':'form-group'">
+                            <label>Ngày tư vấn chuyển gửi điều trị ARV: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.exchangeConsultTime" 
+                            ui-mask="99/99/9999" id="exchangeConsultTime" 
+                            placeholder="dd/mm/yyyy" class="form-control"/>
+                            <p class="help-block" ng-if="errors.exchangeConsultTime">{{errors.exchangeConsultTime}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Kết quả TVXN theo dấu: </label>
+                            <select ng-model="model.partnerProvideResult" id="partnerProvideResult" 
+                            ng-options="key as value for (key , value) in options['partner-provide-result']"
+                            class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div ng-class="errors.permanentProvinceID?'has-error form-group':'form-group'">
+                            <label>Tỉnh/Thành phố: <span class="text-danger">*</span></label>
+                            <select class="form-control" 
+                                    id="permanentProvinceID">
+                            </select>
+                            <input type="hidden" ng-model="model.permanentProvinceID" id ="hiddenProvinceID">
+                            <p class="help-block" ng-if="errors.permanentProvinceID">{{errors.permanentProvinceID}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!--<div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>-->
+                        <div ng-class="errors.permanentDistrictID?'has-error form-group':'form-group'">
+                            <label>Quận/Huyện: <span class="text-danger">*</span></label>
+                            <select class="form-control" 
+                                    id="permanentDistrictID">
+                            </select>
+                            <input type="hidden" ng-model="model.permanentDistrictID" id ="hiddenDistrictID">
+                            <p class="help-block" ng-if="errors.permanentDistrictID">{{errors.permanentDistrictID}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4" hidden="true">
+                        <!--<div data-th-replace="widget/form :: select('Phường/xã:', 'permanentWardID', false, null, '')"></div>-->
+                        <div ng-class="errors.permanentWardID?'has-error form-group':'form-group'">
+                            <label>Phường/xã: <span class="text-danger">*</span></label>
+                            <select class="form-control" 
+                                    id="permanentWardID">
+                            </select>
+                            <input type="hidden" ng-model="model.permanentWardID" id ="hiddenWardID">
+                            <p class="help-block" ng-if="errors.permanentWardID">{{errors.permanentWardID}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div ng-class="errors.arrivalSiteID?'has-error form-group':'form-group'">
+                            <label>Cơ sở điều trị chuyển gửi: </label>
+                            <select ng-model="model.arrivalSiteID" id="arrivalSiteID" ng-change="arrivalSiteIDChange()" 
+                            ng-options="key as value for (key , value) in options['siteOpc']"
+                            class="form-control">
+                            </select>
+                            <p class="help-block" ng-if="errors.arrivalSiteID">{{errors.arrivalSiteID}}</p>
+                        </div>
+                    </div>
+                        
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div ng-class="errors.arrivalSite?'has-error form-group':'form-group'">
+                                <label>Cơ sở khác (Nhập tên): <span class="text-danger">*</span></label>
+                                <input disabled class="form-control" id="arrivalSite" ng-model="model.arrivalSite" ng-disabled = "model.arrivalSiteID != '-1'" />
+                                <p class="help-block" ng-if="errors.arrivalSite">{{errors.arrivalSite}}</p>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">    
+                        <div ng-class="errors.exchangeTime?'has-error form-group':'form-group'">
+                            <label>Ngày chuyển gửi: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.exchangeTime" 
+                            ui-mask="99/99/9999" id="exchangeTime" 
+                            placeholder="dd/mm/yyyy" class="form-control"/>
+                            <p class="help-block" ng-if="errors.exchangeTime">{{errors.exchangeTime}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">    
+                        <div ng-class="errors.transferStaff?'has-error form-group':'form-group'">
+                            <label>Cán bộ chuyển gửi: <span class="text-danger">*</span></label>
+                            <input class="form-control" ng-value="transferStaff" disabled/>
+                            <p class="help-block" ng-if="errors.transferStaff">{{errors.transferStaff}}</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class="fa fa-check"></i> Đồng ý</button>
+            <button class="btn btn-danger" type="button" ng-click="cancel()"><i class="fa fa-close"></i> Không</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="htc-additional-request()">
+    <script type="text/ng-template" id="additionalRequest">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Chuyển yêu cầu cập nhật thông tin khách hàng tới cơ sở khẳng định</h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+            <form>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Mã khách hàng:</label>
+                            <input type="text" ng-value="item.code" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div ng-class="errors.patientName?'has-error form-group':'form-group'">
+                            <label>Họ tên khách hàng: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.patientName" class="form-control" />
+                            <p class="help-block" ng-if="errors.patientName">{{errors.patientName}}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div ng-class="errors.yearOfBirth?'has-error form-group':'form-group'">
+                            <label>Năm sinh: <span class="text-danger">*</span></label>
+                            <input type="text" ng-value="item.yearOfBirth" ng-model= "model.yearOfBirth" class="form-control" />
+                            <p class="help-block" ng-if="errors.yearOfBirth">{{errors.yearOfBirth}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div ng-class="errors.genderID?'has-error form-group':'form-group'">
+                            <label>Giới tính: <span class="text-danger">*</span></label>
+                            <select ng-model="model.genderID" id="genderID" name="genderID" 
+                            ng-options="key as value for (key , value) in options['gender']"
+                            class="form-control">
+                            </select>
+                            <p class="help-block" ng-if="errors.genderID">{{errors.genderID}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        <div ng-class="errors.patientID?'has-error form-group':'form-group'">
+                            <label>Số CMND:</label>
+                            <input  type="text" ng-model="model.patientID"  ng-value="item.patientID" class="form-control" />
+                            <p class="help-block" ng-if="errors.patientID">{{errors.patientID}}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div ng-class="errors.objectGroupID?'has-error form-group':'form-group'">
+                            <label>Nhóm đối tượng: <span class="text-danger">*</span></label>
+                            <select ng-model="model.objectGroupID"  id="objectGroupID" name="objectGroupID" 
+                            ng-options="key as value for (key , value) in options['test-object-group']"
+                            class="form-control"></select>
+                            <p class="help-block" ng-if="errors.objectGroupID">{{errors.objectGroupID}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Đường lây nhiễm:</label>
+                            <select ng-model="model.modeOfTransmission" id="modeOfTransmission" name="modeOfTransmission" 
+                            ng-options="key as value for (key , value) in options['modes-of-transmision']"
+                            class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+                
+                <label>Nơi đăng ký hộ khẩu thường trú:</label>
+                <fieldset class="form-fieldset">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddress?'has-error form-group':'form-group'">
+                                <label>Số nhà: </label>
+                                <input type="text" ng-model="model.permanentAddress" id="permanentAddress" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddress">{{errors.permanentAddress}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddressStreet?'has-error form-group':'form-group'">
+                                <label>Đường phố (nếu có): </label>
+                                <input type="text" ng-model="model.permanentAddressStreet" id="permanentAddressStreet" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddressStreet">{{errors.permanentAddressStreet}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddressGroup?'has-error form-group':'form-group'">
+                                <label>Tổ/ấp/Khu phố: </label>
+                                <input type="text" ng-model="model.permanentAddressGroup" id="permanentAddressGroup" class="form-control" />
+                                <p class="help-block" ng-if="errors.permanentAddressGroup">{{errors.permanentAddressGroup}}</p>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentProvinceID?'has-error form-group':'form-group'">
+                                <label>Tỉnh/Thành phố: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentProvinceID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentProvinceID" id ="hiddenProvinceID">
+                                <p class="help-block" ng-if="errors.permanentProvinceID">{{errors.permanentProvinceID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>-->
+                            <div ng-class="errors.permanentDistrictID?'has-error form-group':'form-group'">
+                                <label>Quận/Huyện: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentDistrictID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentDistrictID" id ="hiddenDistrictID">
+                                <p class="help-block" ng-if="errors.permanentDistrictID">{{errors.permanentDistrictID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Phường/xã:', 'permanentWardID', false, null, '')"></div>-->
+                            <div ng-class="errors.permanentWardID?'has-error form-group':'form-group'">
+                                <label>Phường/xã: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="permanentWardID">
+                                </select>
+                                <input type="hidden" ng-model="model.permanentWardID" id ="hiddenWardID">
+                                <p class="help-block" ng-if="errors.permanentWardID">{{errors.permanentWardID}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <label>Nơi cư trú hiện tại:</label>
+                <fieldset class="form-fieldset">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.currentAddress?'has-error form-group':'form-group'">
+                                <label>Số nhà: </label>
+                                <input type="text" ng-model="model.currentAddress" id="currentAddress" class="form-control" />
+                                <p class="help-block" ng-if="errors.currentAddress">{{errors.currentAddress}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.currentAddressStreet?'has-error form-group':'form-group'">
+                                <label>Đường phố (nếu có): </label>
+                                <input type="text" ng-model="model.currentAddressStreet" id="currentAddressStreet" class="form-control" />
+                                <p class="help-block" ng-if="errors.currentAddressStreet">{{errors.currentAddressStreet}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-class="errors.permanentAddressGroup?'has-error form-group':'form-group'">
+                                <label>Tổ/ấp/Khu phố: </label>
+                                <input type="text" ng-model="model.currentAddressGroup" id="currentAddressGroup" class="form-control" />
+                                <p class="help-block" ng-if="errors.currentAddressGroup">{{errors.currentAddressGroup}}</p>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div ng-class="errors.currentProvinceID?'has-error form-group':'form-group'">
+                                <label>Tỉnh/Thành phố: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="currentProvinceID">
+                                </select>
+                                <input type="hidden" ng-model="model.currentProvinceID" id ="hiddencurrentProvinceID">
+                                <p class="help-block" ng-if="errors.currentProvinceID">{{errors.currentProvinceID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>-->
+                            <div ng-class="errors.currentDistrictID?'has-error form-group':'form-group'">
+                                <label>Quận/Huyện: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="currentDistrictID">
+                                </select>
+                                <input type="hidden" ng-model="model.currentDistrictID" id ="hiddenCurrentDistrictID">
+                                <p class="help-block" ng-if="errors.currentDistrictID">{{errors.currentDistrictID}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <!--<div data-th-replace="widget/form :: select('Phường/xã:', 'permanentWardID', false, null, '')"></div>-->
+                            <div ng-class="errors.currentWardID?'has-error form-group':'form-group'">
+                                <label>Phường/xã: <span class="text-danger">*</span></label>
+                                <select class="form-control" 
+                                        id="currentWardID">
+                                </select>
+                                <input type="hidden" ng-model="model.currentWardID" id ="hiddenCurrentWardID">
+                                <p class="help-block" ng-if="errors.currentWardID">{{errors.currentWardID}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>    
+<!--                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày XN sàng lọc:</label>
+                            <input type="text" ng-value="item.preTestTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Kết quả XN sàng lọc:</label>
+                            <input type="text" ng-value="options['test-results'][item.testResultsID]" class="form-control" disabled/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày gửi mẫu:</label>
+                            <input type="text" ng-value="item.sampleSentDate | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        
+                        <div class="form-group">
+                            <label>Tên cơ sở XN khẳng định:</label>
+                            <input type="text" ng-value="options['confirmSite'][item.siteConfirmTest]" class="form-control" disabled/>
+                        </div>
+                    </div>  
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Mã XN khẳng định: </label>
+                            <input type="text" ng-value="item.confirmTestNo" class="form-control" disabled />
+                        </div>
+                    </div>  
+                    <div class="col-md-4">    
+                        <div class="form-group">
+                            <label>Kết quả XN khẳng định:</label>
+                            <input ng-if="item.confirmResultsID != null && item.confirmResultsID != ''" type="text" ng-value="options['test-result-confirm'][item.confirmResultsID]" class="form-control" disabled/>
+                            <input ng-if="item.confirmResultsID == null || item.confirmResultsID == ''" type="text" class="form-control" disabled/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Ngày XN khẳng định:</label>
+                            <input type="text" ng-value="item.confirmTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+                        </div>
+                    </div>
+                        
+                    <div class="col-md-4">    
+                        <div ng-class="errors.resultsSiteTime?'has-error form-group':'form-group'">
+                            <label>Ngày cơ sở nhận kết quả KĐ: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.resultsSiteTime" ng-disabled="model.confirmTestStatus != '2'"
+                            ui-mask="99/99/9999" id="resultsSiteTime" name="resultsSiteTime" 
+                            placeholder="dd/mm/yyyy" class="form-control"/>
+                            <p class="help-block" ng-if="errors.resultsSiteTime">{{errors.resultsSiteTime}}</p>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div ng-class="errors.causeChange?'has-error form-group':'form-group'">
+                            <label>Lý do yêu cầu: <span class="text-danger">*</span></label>
+                            <textarea class="form-control" ng-model="model.causeChange"  rows="4"></textarea>
+                            <p class="help-block" ng-if="errors.causeChange">{{errors.causeChange}}</p>
+                        </div> 
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class="fa fa-share-square-o"></i> Gửi yêu cầu</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()">Hủy</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="htc-receive-date()">
+    <script type="text/ng-template" id="receiveDate">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title text-bold">Cập nhật ngày khách hàng nhận kết quả xét nghiệm khẳng định và tư vấn chuyển gửi điều trị</h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Họ và tên:</dt>
+                        <dd>{{item.patientName}}</dd>
+                    </dl>
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Năm sinh:</dt>
+                        <dd>{{item.yearOfBirth}}</dd>
+                    </dl>
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Giới tính:</dt>
+                        <dd ng-bind="options['gender'][item.genderID]"></dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Mã khách hàng:</dt>
+                        <dd>{{item.code}}</dd>
+                    </dl>
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Mã XN khẳng định:</dt>
+                        <dd>{{item.confirmTestNo}}</dd>
+                    </dl>
+                    <dl class="dl-opc dl-horizontal">
+                        <dt>Ngày XN khẳng định:</dt>
+                        <dd>{{item.confirmTime | date:"dd/MM/yyyy"}}</dd>
+                    </dl>
+                </div>
+            </div>
+            <br>
+            <form>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div ng-class="errors.resultsPatienTime?'has-error form-group':'form-group'">
+                            <label>Ngày KH nhận kết quả KĐ: <span class="text-danger">*</span></label>
+                            <input type="text" ng-model="model.resultsPatienTime" 
+                                ui-mask="99/99/9999" 
+                                placeholder="dd/mm/yyyy" class="form-control"/>
+                            <p class="help-block" ng-if="errors.resultsPatienTime">{{errors.resultsPatienTime}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.exchangeServiceConfirm?'has-error form-group':'form-group'">
+                            <label>Dịch vụ tư vấn chuyển gửi:</label>
+                            <select ng-model="model.exchangeServiceConfirm"  id="exchangeServiceConfirm" name="exchangeServiceConfirm" 
+                            ng-options="key as value for (key , value) in options['exchange-service']"
+                            class="form-control"></select>
+                            <p class="help-block" ng-if="errors.exchangeServiceConfirm">{{errors.exchangeServiceConfirm}}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div ng-class="errors.exchangeServiceNameConfirm?'has-error form-group':'form-group'">
+                            <label>Dịch vụ tư vấn chuyển gửi khác:</label>
+                            <input type="text" ng-model= "model.exchangeServiceNameConfirm" id= "exchangeServiceNameConfirm" class="form-control" />
+                            <p class="help-block" ng-if="errors.exchangeServiceNameConfirm">{{errors.exchangeServiceNameConfirm}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div ng-class="errors.exchangeConsultTime?'has-error form-group':'form-group'">
+                            <label>Ngày tư vấn chuyển gửi điều trị ARV:</label>
+                            <input type="text" ng-model="model.exchangeConsultTime" id="exchangeConsultTime"
+                                ui-mask="99/99/9999" 
+                                placeholder="dd/mm/yyyy" class="form-control"/>
+                                <p class="help-block" ng-if="errors.exchangeConsultTime">{{errors.exchangeConsultTime}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.partnerProvideResult?'has-error form-group':'form-group'">
+                            <label>Kết quả TVXN theo dấu:</label>
+                            <select ng-model="model.partnerProvideResult"  id="partnerProvideResult" name="partnerProvideResult" 
+                            ng-options="key as value for (key , value) in options['partner-provide-result']"
+                            class="form-control"></select>
+                            <p class="help-block" ng-if="errors.partnerProvideResult">{{errors.partnerProvideResult}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.arvExchangeResult?'has-error form-group':'form-group'">
+                            <label>Kết quả TV CGĐT ARV:</label>
+                            <select ng-model="model.arvExchangeResult"  id="arvExchangeResult" name="arvExchangeResult" 
+                            ng-options="key as value for (key , value) in options['arv-consultant-exchange']"
+                            class="form-control"></select>
+                            <p class="help-block" ng-if="errors.arvExchangeResult">{{errors.arvExchangeResult}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div ng-class="errors.exchangeTime?'has-error form-group':'form-group'">
+                            <label>Ngày chuyển gửi:</label>
+                            <input type="text" ng-model="model.exchangeTime" id="exchangeTime"
+                                ui-mask="99/99/9999" 
+                                placeholder="dd/mm/yyyy" class="form-control"/>
+                                <p class="help-block" ng-if="errors.exchangeTime">{{errors.exchangeTime}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.permanentProvinceID?'has-error form-group':'form-group'">
+                            <label>Tỉnh/Thành phố:</label>
+                            <select class="form-control" 
+                                    id="permanentProvinceID">
+                            </select>
+                            <input type="hidden" ng-model="model.permanentProvinceID" id ="hiddenProvinceID">
+                            <p class="help-block" ng-if="errors.permanentProvinceID">{{errors.permanentProvinceID}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.permanentDistrictID?'has-error form-group':'form-group'">
+                            <label>Quận/Huyện:</label>
+                            <select class="form-control" id="permanentDistrictID">
+                            </select>
+                            <input type="hidden" ng-model="model.permanentDistrictID" id ="hiddenDistrictID">
+                            <p class="help-block" ng-if="errors.permanentDistrictID">{{errors.permanentDistrictID}}</p>
+                        </div>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col-md-4">
+                        <div ng-class="errors.arrivalSiteID?'has-error form-group':'form-group'">
+                            <label>Cơ sở điều trị chuyển gửi:</label>
+                            <select class="form-control" ng-model="model.arrivalSiteID" id="arrivalSiteID" ng-change="arrivalSiteIDChange()" 
+                            ng-options="key as value for (key , value) in options['siteOpc']">
+                            </select>
+                            <p class="help-block" ng-if="errors.arrivalSiteID">{{errors.arrivalSiteID}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div ng-class="errors.arrivalSite?'has-error form-group':'form-group'">
+                            <label>Cơ sở khác (nhập tên):</label>
+                            <input type="text" ng-model="model.arrivalSite" id ="arrivalSite" ng-disabled="model.arrivalSiteID != -1" class="form-control"/>
+                            <input type="hidden" ng-model="model.arrivalSite" id ="hiddenArrivalSite" ng-if="model.arrivalSiteID == -1">
+                            <p class="help-block" ng-if="errors.arrivalSite">{{errors.arrivalSite}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Tư vấn viên sau xét nghiệm:</label>
+                            <input type="text" ng-value="model.staffAfterID" id="staffAfterID" disabled class="form-control"/>
+                            <input type="hidden" ng-model="model.staffAfterID" id ="hiddenStaffAfterID">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class="fa fa-check"></i> Đồng ý</button>
+            <button class="btn btn-danger" type="button" ng-click="cancel()"><i class="fa fa-remove"></i> Không</button>
+        </div>
+    </script>
+</div>

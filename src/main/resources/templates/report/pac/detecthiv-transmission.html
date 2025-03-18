@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript"
+                th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                currentSite=${#request.userPrincipal.principal.site}">
+                    var form = {
+                    permanent_district_id: [[${#httpServletRequest.getParameterValues('district_id')}]],
+                            permanent_ward_id: [[${#httpServletRequest.getParameterValues('ward_id')}]],
+                            permanent_province_id: [[${#httpServletRequest.getParameterValues('province_id')}]],
+                    };
+                    var urlPdf = [[${T(com.gms.components.UrlUtils).pacDetectHivTransmissionReportPdf()}]];
+                    var urlExcel = [[${T(com.gms.components.UrlUtils).pacDetectHivTransmissionReportExcel()}]];
+                    var urlEmail = [[${T(com.gms.components.UrlUtils).pacDetectHivTransmissionReportEmail()}]];
+                    var formSearch = [[${form}]];
+        </script>
+        <style>
+            .min-width-40{
+                min-width: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacDetectHivGenderReport()}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacDetectHivTransmissionReport()}"><span>Báo cáo người nhiễm phát hiện</span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_detecthiv_transmission" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12" data-th-include="report/pac/widget :: detect-tab('transmission')" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <form method="GET" name="detecthiv_form" id="searchDetect" th:object="${form}"
+                                  th:action="${T(com.gms.components.UrlUtils).pacDetectHivTransmissionReport()}">
+                                <div class="box-body" data-th-include="report/pac/widget :: search('transmission')" ></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-body">
+                                    <span class="text-normal" ><span th:utext="${form.title}"></span></span>
+                                    <span class="text-normal" th:if="${isVAAC && (form.province == null || form.province == '')}"> - Quốc gia</span>
+                                    <span class="text-normal" th:if="${isPAC && (form.titleLocation == null || form.titleLocation == '')}"> - [[${form.provinceName}]]</span>
+                                    <span class="text-normal" th:if="${isTTYT && (form.titleLocation == null || form.titleLocation == '')}"> - [[${form.districtName}]],&nbsp;[[${form.provinceName}]]</span>
+                                    <span class="text-normal" th:if="${isTYT && (form.titleLocation == null || form.titleLocation == '')}"> - [[${form.wardName}]],&nbsp;[[${form.districtName}]],&nbsp;[[${form.provinceName}]]</span>
+                                    <span class="text-normal" th:if="${form.titleLocation != null && form.titleLocation != ''}"> - <span th:utext="${form.titleLocation}"></span></span><p></p>
+                                    <div data-th-replace="report/pac/widget-table :: tableDetectHivTransmission()"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

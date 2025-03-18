@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content"
+             th:with="tab=${#request.getParameter('tab') == '' ? null : #request.getParameter('tab')},isQr=${config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).OPC_QR_LIST.getKey(), '')}">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_arv_index" ng-init="init()">
+                <script th:inline="javascript">
+                    var urlLogCreate = [[${T(com.gms.components.UrlUtils).arvLogCreate()}]];
+                    var urLog = [[${T(com.gms.components.UrlUtils).arvLog()}]];
+                    var isTTYT = [[${isTTYT}]];
+                    var urlGet = '/service/opc-arv/get.json';
+                    var urlPrinted = '/report/opc-arv/send-print.html';
+                    var urlTransferLao = '/report/opc-arv/transfer-lao.html';
+                    var urlGetFeedback = '/service/opc-arv/get-feedback.json';
+                    var urlTransferGSPH = '/service/opc-arv/transfer-gsph.json';
+                    var urlQr = '/report/opc-arv/qr.html';
+                    var urlTransfer = [[${T(com.gms.components.UrlUtils).urlTransferOPC()}]];
+                    var urlTransitTemp = '/report/opc-arv/transit-temp.html';
+                    var form = {
+                    permanent_district_id: [[${#httpServletRequest.getParameter('permanent_district_id')}]],
+                            permanent_ward_id: [[${#httpServletRequest.getParameter('permanent_ward_id')}]],
+                            permanent_province_id: [[${#httpServletRequest.getParameter('permanent_province_id')}]]
+                    };
+                    var urlTransferOPC = '/service/opc-arv/transfer-opc.json';
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).opcArvIndex()}" method="get" id="search">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs">
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}">Tất cả</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'bhyt' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvIndex() + '?tab=bhyt'}">Bảo hiểm y tế</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'stage' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvIndex() + '?tab=stage'}">Biến động điều trị</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'remove' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvIndex() + '?tab=remove'}">Đã xóa</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Mã bệnh án</label>
+                                                <input type="text" class="form-control" th:text="${code}" name = "code" th:value="${#httpServletRequest.getParameter('code')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Họ và tên</label>
+                                                <input type="text" class="form-control" th:text="${name}" name = "name" th:value="${#httpServletRequest.getParameter('name')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Số CMND</label>
+                                                <input type="text" class="form-control" th:text="${identityCard}" name = "identity_card" th:value="${#httpServletRequest.getParameter('identity_card')}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2"  th:if="${tab == 'bhyt'}">
+                                            <div class="form-group">
+                                                <label>Tình trạng BHYT</label>
+                                                <select class="form-control" name="insurance" id="insurance">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).HAS_HEALTH_INSURANCE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('insurance') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" th:if="${tab == 'bhyt'}">
+                                            <div class="form-group">
+                                                <label>Loại thẻ BHYT</label>
+                                                <select class="form-control" name="insurance_type" id="insurance_type">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_TYPE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('insurance_type') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Số thẻ BHYT</label>
+                                                <input type="text" class="form-control" th:text="${insuranceNo}" name = "insurance_no" th:value="${#httpServletRequest.getParameter('insurance_no')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == 'bhyt'}">
+                                            <div class="form-group">
+                                                <label>Thời gian hết hạn BHYT</label>
+                                                <select class="form-control" name="insurance_expiry" id="insurance_expiry">
+                                                    <option th:each="instance : ${options.get('insuranceExpiryOptions')}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('insurance_expiry') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Tỉnh/TP thường trú</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        name="permanent_province_id" id="permanent_province_id">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <label>Quận/Huyện thường trú</label>
+                                                <select class="form-control" 
+                                                        data-title ="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="permanent_district_id" id="permanent_district_id"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" hidden="true">
+                                            <div class="form-group">
+                                                <label>Xã/Phường thường trú</label>
+                                                <select class="form-control" name="permanent_ward_id" 
+                                                        data-title ="Tất cả" 
+                                                        id="permanent_ward_id">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày biến động từ</label>
+                                                <input type="text" class="form-control" name = "treatment_stage_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_stage_time_from"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày biến động đến</label>
+                                                <input type="text" class="form-control" name = "treatment_stage_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_stage_time_to" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab == 'remove' || tab =='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày đăng ký từ</label>
+                                                <input type="text" class="form-control" name = "registration_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="registration_time_from"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab == 'remove' || tab =='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày đăng ký đến</label>
+                                                <input type="text" class="form-control" name = "registration_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="registration_time_to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab == 'remove' || tab =='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày điều trị ARV từ</label>
+                                                <input type="text" class="form-control" name = "treatment_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_time_from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab == 'remove' || tab =='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Ngày điều trị ARV đến</label>
+                                                <input type="text" class="form-control" name = "treatment_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_time_to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab == 'remove' || tab=='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Trạng thái điều trị</label>
+                                                <select class="form-control" name="status_of_treatment_id" id="status_of_treatment_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT)}" 
+                                                            th:selected="${#arrays.contains(search_status_of_treatment, instance.key)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:text="${instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == '' || tab =='bhyt' || tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Phác đồ hiện tại</label>
+                                                <select class="form-control" name="treatmentRegimenID" id="treatmentRegimenID">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN)}" 
+                                                            th:selected="${#arrays.contains(search_treatment_regimen, instance.key)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:text="${instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${isOpcManager  && tab == 'bhyt'}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="therapy_site_id" id="therapy_site_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('therapy_site_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div> 
+                                        <div class="col-md-2" th:if="${tab == 'stage'}">
+                                            <div class="form-group">
+                                                <label>Trạng thái biến động</label>
+                                                <select class="form-control" name="treatment_stage_id" id="treatment_stage_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_CHANGE_TREATMENT)}" 
+                                                            th:selected="${#arrays.contains(search_treatment_stage, instance.key)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:text="${instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${isOpcManager && ( tab == 'stage' || tab == 'remove' )}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="therapy_site_id" id="therapy_site_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('therapy_site_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>  
+
+                                        <div class="row">
+                                            <div class="col-md-12" >
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày chuyển gửi từ</label>
+                                                        <input type="text" class="form-control" name = "dateOfArrivalFrom" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="dateOfArrivalFrom" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày chuyển gửi đến</label>
+                                                        <input type="text" class="form-control" name = "dateOfArrivalTo" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="dateOfArrivalTo" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày tiếp nhận từ</label>
+                                                        <input type="text" class="form-control" name = "tranferToTimeFrom" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="tranferToTimeFrom" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày tiếp nhận đến</label>
+                                                        <input type="text" class="form-control" name = "tranferToTimeTo" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="tranferToTimeTo" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày chuyển đi từ</label>
+                                                        <input type="text" class="form-control" name = "tranferFromTimeFrom" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="tranferFromTimeFrom" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                                    <div class="form-group">
+                                                        <label>Ngày chuyển đi đến</label>
+                                                        <input type="text" class="form-control" name = "tranferFromTimeTo" 
+                                                               ui-mask="99/99/9999" 
+                                                               placeholder="dd/mm/yyyy"
+                                                               ng-model="tranferFromTimeTo" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" th:if="${tab== null || tab == ''}">
+                                            <div class="form-group">
+                                                <label>Trạng thái chuyển GSPH</label>
+                                                <select class="form-control" name="gsph" id="gsph">
+                                                    <option th:each="instance : ${options.get('transferGSPH')}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('gsph') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${isOpcManager && (tab == null || tab == '')}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="therapy_site_id" id="therapy_site_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('therapy_site_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>  
+                                        <div class="row">
+                                            <!--th:class="${tab == null || tab == '' ? 'col-md-10 text-center' : 'col-md-12 text-center'}"--> 
+                                            <div class="col-md-12 text-center " style="margin-top: 22px">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-search"></i> Tìm kiếm
+                                                </button>
+                                                <a th:href="${T(com.gms.components.UrlUtils).opcArvIndex(tabIndex)}" 
+                                                   class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                    <i class="fa fa-remove"></i> Bỏ lọc
+                                                </a>
+                                                <div class="pull-right " style="margin-right: 22px" th:if="${tab != 'remove'}">
+                                                    <div class="btn-group" id = "actionButton" >
+                                                        <button type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="false">Hành động</button>
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="caret"></span>
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" role="menu">
+                                                            <li ><a href="javascript:;" ng-click="excel()"><i class="fa fa-file-excel-o"></i> Xuất Excel</a></li>
+                                                            <li th:if="${isOpcManager}" ><a th:href="${T(com.gms.components.UrlUtils).backendOpcArvUpdateTreatment()}" ><i class="fa fa-inbox"></i> Cập nhật phác đồ từ lượt khám</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left" >
+                                        <button th:if="${isQr == '1' && (#request.getParameter('tab') == null || #request.getParameter('tab') == '') && !isOpcManager}" type="button" class="btn btn-default btn-xs table-function" th:attr="ng-click='qr()'">
+                                            <i class="fa fa-print"></i>
+                                            In mã QR
+                                        </button>
+                                        <button type="button" 
+                                                th:attr="ng-click='transferGSPHs()'"
+                                                th:if="${(tab == null || tab == '' ) && dataPage.data != null && !isOpcManager}" 
+                                                class="btn btn-primary btn-xs table-function" >
+                                            <i class = "fa fa-share-square-o"></i> 
+                                            Chuyển sang GSPH
+                                        </button>
+                                    </div>
+
+                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                        <a class="btn btn-default btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-edit"></i> Sửa
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-remove"></i> Xoá
+                                        </a>
+                                        <button type="button" class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-comment"></i>
+                                            Lịch sử
+                                        </button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <table class="table table-bordered table-sm table-full"  
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Mã bệnh án</th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Ngày sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt'|| tab == 'stage'}">Trạng thái điều trị</th>
+                                                <th class="text-center" >Ngày điều trị ARV</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt' || tab == 'stage'}">Phác đồ hiện tại</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt' || tab == 'stage'}">Bậc phác đồ hiện tại</th>
+                                                <th class="text-center" >Ngày đăng ký</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'remove'}">Ngày XN TLVR gần nhất</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'remove'}">Ngày khám gần nhất</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt'}">Trạng thái chuyển GSPH</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt'}">Số thẻ BHYT</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Địa chỉ hiện tại</th>
+                                                <th class="text-center" th:if="${tab == 'stage'}">Trạng thái biến động</th>
+                                                <th class="text-center" th:if="${tab == 'stage'}">Ngày biến động</th>
+                                                <th class="text-center" th:if="${tab == 'bhyt'}">Tình trạng BHYT</th>
+                                                <th class="text-center" th:if="${tab == 'bhyt'}">Số thẻ BHYT</th>
+                                                <th class="text-center" th:if="${tab == 'bhyt'}">Loại thẻ BHYT</th>
+                                                <th class="text-center" th:if="${tab == 'bhyt'}">Tỷ lệ thanh toán BHYT</th>
+                                                <th class="text-center" th:if="${tab == 'bhyt'}">Ngày hết hạn thẻ BHYT</th>
+
+
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày chuyển gửi</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Cơ sở chuyển gửi</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày tiếp nhận</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày phản hồi</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày chuyển đi</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Cơ sở chuyển đi</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày CSCĐ tiếp nhận</th>
+                                                <th class="text-center" th:if="${tab != 'bhyt' && tab != 'stage' && tab != 'remove'}">Ngày CSCĐ phản hồi</th>
+
+                                                <th class="text-center" th:if="${tab != 'bhyt' }">Trạng thái chuyển gửi</th>
+                                                <th th:if="${isOpcManager}" class="text-center">Cơ sở điều trị</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}" 
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : (item.endCase == '3' && (tab != 'remove') ? 'danger' : '')}"
+                                                th:data-id="${item.ID}"
+                                                th:data-code="${item.code}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td class="text-center"><span th:text="${item.code}"></span></td>
+                                                <td class=""><span th:text="${item.patient != null ? item.patient.fullName : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient != null && item.patient.dob != null ? #dates.format(item.patient.dob, 'dd/MM/yyyy') : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient == null || item.patient.genderID == null || item.patient.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.patient.genderID)}"></span></td>
+                                                <td class="text-primary" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt' || tab == 'stage'}">
+                                                    <a  th:href="${item.tranferToTimeOpc == null ? T(com.gms.components.UrlUtils).opcStage(item.ID) : 'javascript:;'}" 
+                                                        th:text="${item.statusOfTreatmentID == null || item.statusOfTreatmentID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT).get(item.statusOfTreatmentID)}"></a>
+                                                </td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.treatmentTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt' || tab == 'stage'}"><span th:text="${item.treatmentRegimenID == null || item.treatmentRegimenID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(item.treatmentRegimenID)}"></span></td>
+                                                <td class="text-center" th:if="${tab == null || tab == '' || tab == 'remove' || tab == 'bhyt' || tab == 'stage'}"><span th:text="${item.treatmentRegimenStage == null || item.treatmentRegimenStage == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE).get(item.treatmentRegimenStage)}"></span></td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.registrationTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center text-primary" th:if="${tab == null || tab == '' || tab == 'remove'}"><a th:href="${item.tranferToTimeOpc == null ? T(com.gms.components.UrlUtils).opcViral(item.ID, 'all') : 'javascript:;'}" th:text="${#dates.format(item.viralLoadTime, 'dd/MM/yyyy')}"></a></td>
+                                                <td class="text-center text-primary" th:if="${tab == null || tab == '' || tab == 'remove'}"><a th:href="${item.tranferToTimeOpc == null ? T(com.gms.components.UrlUtils).opcVisit(item.ID, 'all') : 'javascript:;'}" th:text="${#dates.format(item.lastExaminationTime, 'dd/MM/yyyy')}"></a></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'}" th:utext="${item.transferTimeGSPH == null ||item.transferTimeGSPH == '' ? 'Chưa chuyển' : 'Đã chuyển' }"></td>
+
+                                                <td class="text-center"><span th:text="${item.patient != null && item.patient.identityCard != null ? item.patient.identityCard : ''}"></span></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'}"><span th:text="${item.insuranceNo}"></span></td>
+                                                <td class=""><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class=""><span th:text="${item.currentAddressFull}"></span></td>
+                                                <td class="" th:if="${tab == 'stage'}"><span th:text="${item.treatmentStageID == null || item.treatmentStageID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_CHANGE_TREATMENT).get(item.treatmentStageID)}"></span></td>
+                                                <td class="text-center" th:if="${tab == 'stage'}"><span th:text="${#dates.format(item.treatmentStageTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="" th:if="${tab == 'bhyt'}"><span th:text="${item.insurance == null || item.insurance == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).HAS_HEALTH_INSURANCE).get(item.insurance)}"></span></td>
+                                                <td class="text-center" th:if="${tab == 'bhyt'}"><span th:text="${item.insuranceNo != null ? item.insuranceNo : ''}"></span></td>
+                                                <td class="" th:if="${tab == 'bhyt'}"><span th:text="${item.insuranceType == null || item.insuranceType == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_TYPE).get(item.insuranceType)}"></span></td>
+                                                <td class="text-center" th:if="${tab == 'bhyt'}"><span th:text="${item.insurancePay == null || item.insurancePay == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_PAY).get(item.insurancePay)}"></span></td>
+                                                <td class="text-center" th:if="${tab == 'bhyt'}"><span th:text="${#dates.format(item.insuranceExpiry, 'dd/MM/yyyy')}"></span></td>
+
+
+
+
+
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}"><span th:text="${#dates.format(item.dateOfArrival, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-left"   th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${item.sourceSiteID == 0 ? '' : item.sourceSiteID == -1 ? item.sourceArvSiteName :  options.get('siteOpcTo').get(item.sourceSiteID + '')}" ></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${#dates.format(item.tranferToTime, 'dd/MM/yyyy')}" ></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${#dates.format(item.feedbackResultsReceivedTime, 'dd/MM/yyyy')}" ></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${#dates.format(item.tranferFromTime, 'dd/MM/yyyy')}" ></td>
+                                                <td class="text-left"   th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${item.transferSiteID == 0 ? '' : item.transferSiteID == -1 ? item.transferSiteName : options.get('siteOpcFrom').get(item.transferSiteID + '')}" ></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${#dates.format(item.tranferToTimeOpc, 'dd/MM/yyyy')}" ></td>
+                                                <td class="text-center" th:if="${tab != 'bhyt'  && tab != 'stage' && tab != 'remove'}" th:text="${#dates.format(item.feedbackResultsReceivedTimeOpc, 'dd/MM/yyyy')}" ></td>
+
+                                                <td class="text-center" th:if="${tab != 'bhyt' }"><span th:text="${item.tranferFromTime != null && item.tranferToTimeOpc == null && item.feedbackResultsReceivedTimeOpc == null ? 'Đã chuyển gửi' :
+                                                                                                        item.tranferFromTime != null && item.tranferToTimeOpc != null && item.feedbackResultsReceivedTimeOpc == null ? 'Đã tiếp nhận' :
+                                                                                                        item.tranferFromTime != null && item.tranferToTimeOpc != null && item.feedbackResultsReceivedTimeOpc != null ? 'Chuyển gửi thành công': ''
+                                                                                                        }"></span></td>
+                                                <td th:if="${isOpcManager}" class=""><span th:text="${item.siteID == null || item.siteID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(item.siteID.toString())}"></span></td>
+                                                <td class="text-right" >
+                                                    <div class="btn-group table-function btn-group-xs" >
+                                                        <button type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="false">
+                                                            <i class="fa fa-print"></i> In phiếu
+                                                        </button>
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                            <span class="caret"></span>
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" role="menu">
+
+                                                            <li th:if="${isQr == '1' && item.patient.qrcode != null && !isOpcManager && tab != 'bhyt' && tab !='stage'}"> 
+                                                                <a class="black" href="javascript:;" th:attr="ng-click='qr('+${item.ID}+')'">
+                                                                    <i class="fa fa-print"></i> In mã QR
+                                                                </a>
+                                                            </li>
+                                                            <li th:if="${(tab == null || tab == '') && item.tranferToTime != null && item.feedbackResultsReceivedTime != null && !isOpcManager}"> 
+                                                                <a class="black" href="javascript:;" th:attr="ng-click='print('+${item.ID}+')'">
+                                                                    <i class="fa fa-print"></i> Phiếu phản hồi
+                                                                </a>
+                                                            </li>
+                                                            <li th:if="${item.endCase == '3' && item.endTime != null  && item.transferSiteID != null && item.tranferFromTime != null && 
+                                                                (tab == null || tab == '') && !isOpcManager && (item.statusOfTreatmentID == '2' || item.statusOfTreatmentID == '3')}" > 
+                                                                <a class="black" href="javascript:;" th:attr="ng-click='printSend('+${item.ID}+')'" >
+                                                                    <i class="fa fa-print fa"></i> Phiếu chuyển gửi điều trị
+                                                                </a>
+                                                            </li>
+                                                            <li th:if="${item.examinationAndTest == true && !isOpcManager && tab != 'bhyt' && tab !='stage'}"> 
+                                                                <a class="black" href="javascript:;" th:attr="ng-click='printLao('+${item.ID}+')'" >
+                                                                    <i class="fa fa-print fa"></i> Phiếu chuyển gửi Lao
+                                                                </a>
+                                                            </li>
+
+                                                            <li th:if="${(tab == null || tab == '') && item.endCase == '3'  && item.endTime != null  && item.tranferFromTime != null && !isOpcManager}">
+                                                                <a class="black" href="javascript:;" th:attr="ng-click='printTransitTemp('+${item.ID}+')'" >
+                                                                    <i class="fa fa-print fa"></i> Phiếu chuyển tuyến theo bảo hiểm
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <button type="button" th:if="${(tab == null || tab == '') &&  item.tranferToTime != null && item.feedbackResultsReceivedTime == null && !isOpcManager && item.sourceServiceID != null && item.sourceServiceID != ''}" 
+                                                            th:attr="ng-click='feedbackReceive('+${item.sourceID == null ? item.ID : item.sourceID}+', '+${item.sourceServiceID == '' ? arv : item.sourceServiceID}+', '+${item.sourceID == null ? '1' : '0'}+')'"
+                                                            class="btn btn-primary btn-xs table-function" >
+                                                        <i class="fa fa-check"></i>
+                                                        Phản hồi tiếp nhận
+                                                    </button>
+
+                                                    <a class="btn btn-primary btn-xs table-function" 
+                                                       th:if="${(item.endCase == null || item.endCase == '') && 
+                                                       (item.endTime == null || item.endTime == '') && (tab == null || tab == '') && !isOpcManager 
+                                                       && item.tranferFromTime == null && (item.statusOfTreatmentID == '2' || item.statusOfTreatmentID == '3')}" 
+                                                       th:attr="ng-click='treatmentTransfer('+${item.ID}+')'" >
+                                                        <i class="fa fa-mail-forward"></i> Chuyển gửi điều trị
+                                                    </a>
+                                                    <!--                                                    <a class="btn btn-primary btn-xs table-function" 
+                                                                                                           th:if="${(tab == null || tab == '' || tab == 'stage') && (item.transferTimeGSPH == null || item.transferTimeGSPH == '') && item.statusOfTreatmentID != '0' && !isOpcManager && dataPage.data != null}"
+                                                                                                           th:attr="ng-click='transferGSPH('+${item.ID}+')'"> 
+                                                                                                            <i class="fa fa-mail-forward"></i>
+                                                                                                            Chuyển sang GSPH
+                                                                                                        </a>-->
+                                                    <a class="btn btn-default btn-xs table-function" th:if="${tab != 'remove'}"  
+                                                       th:href="${T(com.gms.components.UrlUtils).opcArvView(item.ID)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).opcArvView(item.ID)}">
+                                                        <i class="fa fa-eye"></i> Xem
+                                                    </a>
+                                                    <a class="btn btn-default btn-xs table-function" th:if="${tab != 'remove' && (item.tranferToTimeOpc == null)}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).opcArvUpdate(item.ID)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).opcArvUpdate(item.ID)}">
+                                                        <i class="fa fa-edit"></i> Sửa
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs table-function" th:if="${tab != 'remove' && (item.tranferToTimeOpc == null)}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).opcArvRemove(item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).opcArvRemove(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn xóa bệnh nhân này?">
+                                                        <i class="fa fa-remove"></i> Xoá
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${tab == 'remove'}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).restoreOpcArv(item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).restoreOpcArv(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn khôi phục bệnh nhân này?">
+                                                        <i class="fa  fa-undo"></i> Khôi phục
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs table-function" th:if="${tab == 'remove' && !isOpcManager}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).deleteOpcArv(item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).deleteOpcArv(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn xóa vĩnh viễn bệnh nhân này?">
+                                                        <i class="fa fa-remove"></i> Xóa vĩnh viễn
+                                                    </a>
+                                                    <button type="button" 
+                                                            th:attr="ng-click='logs('+${item.ID}+', \''+${item.code}+'\', \''+${item.patient.fullName}+'\')'" 
+                                                            class="btn btn-default btn-xs table-function" 
+                                                            th:data-role="${T(com.gms.components.UrlUtils).arvLog()}" >
+                                                        <i class="fa fa-comment"></i>
+                                                        Lịch sử
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data != null && dataPage.totalRecords > 0}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div><br/>
+                                    <div id="table-comment" th:if="${dataPage.data != null}" >
+                                        Chú thích màu: 
+                                        <label class="label label-danger">Các bản ghi chuyển đi</label>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/opc_arv/widget :: opc-arv-transfer()" ></div>
+            <div data-th-include="backend/opc_arv/widget :: arv-log()" ></div>
+            <div data-th-include="backend/opc_arv/widget :: opc-arv-feedback_receive()" ></div>
+            <div data-th-include="backend/opc_arv/widget :: opc-transfer-arv()" ></div>
+        </div>
+    </body>
+</html>

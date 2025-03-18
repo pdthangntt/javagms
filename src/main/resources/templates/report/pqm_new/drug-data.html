@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlSynthetic = [[${"/report/drug-new-data/synthetic.html" + "?year=" + form.year + "&month=" + form.month}]];
+            var urlMonth = [[${T(com.gms.components.UrlUtils).pqmDrugNewData()}
+            ]];
+            var urlExcelData = [[${T(com.gms.components.UrlUtils).pqmDrugNewDataExcel()}
+            ]];
+            var mon = [[${form.month}
+            ]];
+            var false_key = [[${false_key}
+            ]];
+        </script>
+        <style>
+
+
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${title}">Kết quả chỉ số thuốc ARV</span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmDrugNewData()}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="qpm_report_drug_new" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pqmDrugNewData()}" method="GET" name="form" id="search">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${form.year != null && form.year+'' == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+<!--                                        <div class="col-md-3" th:if="${isPAC}">
+                                            <div class="form-group">
+                                                <label>Cơ sở</label>
+                                                <select name="sites" id="sites" class="e form-control">
+                                                    <option th:each="n : ${siteMaps}" 
+                                                            th:selected="${siteID != null && siteID  == n.key}"
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>-->
+                                        <div class="col-md-6 text-center" style="margin-top: 23px;" th:if="${isPAC}">
+                                            <div class="btn btn-group">
+                                                <button ng-click="month('1')" type="button"  th:class="${form.month != 1 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('1') == '2'  ? 'c-signal is-success' : ''}">Quý 1</span></button>
+                                                <button ng-click="month('2')" type="button"  th:class="${form.month != 2 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('2') == '2'  ? 'c-signal is-success' : ''}">Quý 2</span></button>
+                                                <button ng-click="month('3')" type="button"  th:class="${form.month != 3 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('3') == '2'  ? 'c-signal is-success' : ''}">Quý 3</span></button>
+                                                <button ng-click="month('4')" type="button"  th:class="${form.month != 4 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('4') == '2'  ? 'c-signal is-success' : ''}">Quý 4</span></button>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-3 text-center" style="margin-top: 23px;" th:if="${!isPAC}">
+                                            <div class="btn btn-group">
+                                                <button ng-click="month('1')" type="button"  th:class="${form.month != 1 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('1') == '2'  ? 'c-signal is-success' : ''}">Quý 1</span></button>
+                                                <button ng-click="month('2')" type="button"  th:class="${form.month != 2 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('2') == '2'  ? 'c-signal is-success' : ''}">Quý 2</span></button>
+                                                <button ng-click="month('3')" type="button"  th:class="${form.month != 3 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('3') == '2'  ? 'c-signal is-success' : ''}">Quý 3</span></button>
+                                                <button ng-click="month('4')" type="button"  th:class="${form.month != 4 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('4') == '2'  ? 'c-signal is-success' : ''}">Quý 4</span></button>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-3 text-left" style="margin-top: 28px;" th:if="${!isPAC}">
+                                            <button ng-click="excel_data()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                        <div class="col-md-12 text-center"  th:if="${isPAC}">
+                                            <button  type="button" 
+                                                     th:attr="ng-click='synthetic('+${form.month}+')'"
+                                                     class="btn btn-primary" >
+                                                <i class="fa  fa-sitemap"></i>
+                                                Tổng hợp
+                                            </button>
+                                            <button ng-click="excel_data()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Bảng tổng hợp theo chỉ số<span class="text-danger"> quý [[${form.month}]] năm [[${form.year}]]</span>
+                                    <!--<span th:if="${tab == 'detail' && siteName != ''}">- [[${siteName}]]</span>-->
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table-report table table-striped table-bordered table-hover" >
+                                        <thead>
+                                            <tr class="success">
+                                                <th class="text-center vertical-align-middle"  >STT</th>
+                                                <th class="text-center vertical-align-middle"  >Cơ sở</th>
+                                                <th class="text-center vertical-align-middle"  >Tên thuốc</th>
+                                                <th class="text-center vertical-align-middle"  >Nguồn</th>
+                                                <th class="text-center vertical-align-middle"  >Tỉ lệ cảnh báo số lượng thuốc đủ cấp phát trong quý tiếp</th>
+                                                <th class="text-center vertical-align-middle"  >Tỉ lệ đánh giá hiệu quả dự trù và quản lý kho</th>
+                                                <th class="text-center vertical-align-middle"  >Tồn đầu kỳ	</th>
+                                                <th class="text-center vertical-align-middle"  >Nhập định kỳ	</th>
+                                                <th class="text-center vertical-align-middle"  >Nhập khác	</th>
+                                                <th class="text-center vertical-align-middle"  >Xuất cho bệnh nhân trong kỳ	</th>
+                                                <th class="text-center vertical-align-middle"  >Xuất điều chuyển trong kỳ	</th>
+                                                <th class="text-center vertical-align-middle"  >Hư hao	</th>
+                                                <th class="text-center vertical-align-middle"  >Tồn cuối kỳ	</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${!#lists.isEmpty(items)}" th:each="item,iter : ${items}"
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : '' }"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center">[[${iter.index + 1}]]</td>
+                                                <td class="">[[${siteMaps.getOrDefault(item.siteID, "Chưa cấu hình")}]]</td>
+                                                <td class="">[[${item.drugName}]]</td>
+                                                <td class="">[[${item.source}]]</td>
+                                                <td class="text-center">[[${(#strings.substring(item.tlcb + "", #strings.length(item.tlcb+ "")-2, #strings.length(item.tlcb+ ""))) == ".0" ? (#strings.substring(item.tlcb + "", 0, #strings.length(item.tlcb+ "")-2)) : item.tlcb }]]%</td>
+                                                <td class="text-center">[[${(#strings.substring(item.tldg + "", #strings.length(item.tldg+ "")-2, #strings.length(item.tldg+ ""))) == ".0" ? (#strings.substring(item.tldg + "", 0, #strings.length(item.tldg+ "")-2)) : item.tldg }]]%</td>
+                                                <td class="text-center">[[${item.tdk}]]</td>
+                                                <td class="text-center">[[${item.ndk}]]</td>
+                                                <td class="text-center">[[${item.nk}]]</td>
+                                                <td class="text-center">[[${item.xcbntk}]]</td>
+                                                <td class="text-center">[[${item.xdctk}]]</td>
+                                                <td class="text-center">[[${item.hh}]]</td>
+                                                <td class="text-center">[[${item.tck}]]</td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(items)}">
+                                                <td colspan="13" class="text-center text-bold text-danger">Không có thông tin</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div class="clearfix"></div>
+                                <div id="table-comment">
+                                    Chú thích màu: 
+                                    <label class="label bg-green color-palette" >Đã tổng hợp</label>
+                                    <!--                                    <label class="label bg-yellow disabled color-palette" >Đã gửi báo cáo</label>
+                                                                        <label class="label label-s bg-gray color-palette" >Đã nhập liệu</label>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

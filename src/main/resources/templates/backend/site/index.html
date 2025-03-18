@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1 th:text="${title}" ></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="site" ng-init="init()" ng-cloak >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li th:class="${#httpServletRequest.getParameter('tab') != 'tree' ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).siteIndex()}">Xem dạng cha/con</a>
+                                </li>
+                                <li th:class="${#httpServletRequest.getParameter('tab') == 'tree' ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).siteIndex('tree')}">Xem dạng cây</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" >
+                                    <ol class="breadcrumb" th:if="${tab=='all'}">
+                                        <li  th:each="path : ${site.path}"  >
+                                            <a th:href="${T(com.gms.components.UrlUtils).siteIndex('all', path.ID)}">
+                                                <span th:utext="${path.shortName}" ></span>
+                                            </a>
+                                        </li>
+                                    </ol>
+                                    <div class="table-responsive mailbox-messages">
+                                        <table class="table table-bordered table-hover" id="table_category" >
+                                            <tr class="success">
+                                                <th class="text-center vertical-align-middle " style="min-width: 200px;" >
+                                                    <div class="pull-left" th:if="${tab!='all'}" >
+                                                        <button type="button" ng-show="isShow" class="btn btn-info btn-xs" ng-click="treetableShow()">
+                                                            <i class='fa fa-caret-down'></i> Mở rộng
+                                                        </button>
+                                                        <button type="button" ng-show="!isShow" class="btn btn-info btn-xs" ng-click="treetableShow()">
+                                                            <i class='fa fa-caret-right'></i> Đóng
+                                                        </button>
+                                                    </div>
+                                                    Cơ sở
+                                                </th>
+                                                <th class="text-center vertical-align-middle " >Dịch vụ</th>
+                                                <th class="text-center vertical-align-middle " >Cấp</th>
+                                                <th class="text-center vertical-align-middle " >Dự án</th>
+                                                <th class="text-center vertical-align-middle " >Trạng thái</th>
+                                                <th class="text-center vertical-align-middle" style="width: 156px;" >
+                                                    <a th:href="${T(com.gms.components.UrlUtils).siteNew()}" class="btn btn-primary btn-xs"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).siteNew()}">
+                                                        <i class="fa fa-plus"></i> 
+                                                        Đăng ký cơ sở mới
+                                                    </a>
+                                                </th>
+                                            </tr>
+                                            <tr th:if="${sites == null || sites.size() == 0}" >
+                                                <th colspan="5" class="text-red text-center" >Không có thông tin</th>
+                                            </tr>
+                                            <tbody>
+                                                <tr th:each="item : ${sites}" 
+                                                    th:class="${success_id != null && success_id == item.ID ? 'success' : '' }"
+                                                    th:data-tt-id="${item.ID}"
+                                                    th:data-tt-parent-id="${item.parentID}">
+                                                    <td>
+                                                        <i class="text-danger" th:utext="${#strings.toUpperCase(item.code)}" ></i>
+                                                        <span th:if="${tab!='all'}" th:utext="${item.shortName}" ></span>
+                                                        <a th:if="${tab=='all'}" th:href="${T(com.gms.components.UrlUtils).siteIndex('all', item.ID)}" th:utext="${item.shortName}" ></a>
+                                                    </td>
+                                                    <td class="nowrap">
+                                                        <ul>
+                                                            <li th:each="service : ${item.services}"  th:text="${service != null ? service.value : ''}" ></li>
+                                                            <li class='text-primary' th:if="${item.hub == '1'}">Import vào PQM</li>
+                                                            <li class='text-primary' th:if="${item.hub == '0'}">Nhập số báo cáo vào PQM</li>
+                                                            
+                                                        </ul>
+                                                    </td>
+                                                    <td th:utext="${T(com.gms.entity.db.SiteEntity).typeLabel.getOrDefault(item.type, '')}" class="text-center" ></td>
+                                                    <td th:utext="${projects.getOrDefault(item.projectID, '')}" class="text-center" ></td>
+                                                    <td class="text-center" >
+                                                        <label th:if="${item.isActive}" class="label label-success" >Hoạt động</label>
+                                                        <label th:if="${!item.isActive}" class="label label-danger">Tạm dừng</label>
+                                                    </td>
+                                                    <td class="text-center" >
+                                                        <div class="btn btn-group btn-xs" >
+                                                            <a th:href="${T(com.gms.components.UrlUtils).siteUpdate(item.ID)}" class="btn btn-primary btn-xs" 
+                                                               th:data-role="${T(com.gms.components.UrlUtils).siteUpdate(item.ID)}">
+                                                                <i class="fa fa-edit"></i>
+                                                                Sửa
+                                                            </a>
+                                                            <a th:href="${T(com.gms.components.UrlUtils).siteStaff(item.ID)}" class="btn btn-default btn-xs"
+                                                               >
+                                                                <i class="fa fa-user"></i>
+                                                                Nhân viên
+                                                            </a>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

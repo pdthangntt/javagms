@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .dear{
+                margin-top: 20px;
+            }
+            .confidential{
+                line-height: 30px;
+            }
+            .non-bold{
+                font-weight: normal;
+            }
+            .table-full {
+                font-size: 12px;            
+            }
+            .table-report .tbl-sent-address{
+                width: 200px !important;
+            }
+            .table-report .tbl-sent-obj{
+                width: 150px !important;
+            }
+            .table-report tr {page-break-inside: avoid;  page-break-after: auto ;}
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+            @media print {
+                .content #page-break { 
+                    page-break-after: always !important;
+                }
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu()"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="clear-fix" >&nbsp;</div>
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <div class="row text-normal">
+                            <p>
+                                <span class="point" th:text="${form.confirmTime == null ? '............................................' : form.confirmTime}" ></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div data-th-replace="report/pac/widget :: table-new()"></div>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <div>
+                                    <p>&nbsp;</p>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br>
+                                        <span class="chu-ky" >(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="text-normal" >
+                                </p>
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                            ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky" >(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

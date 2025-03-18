@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var false_key = [[${false_key}
+            ]];
+        </script>
+        <style>
+            .width-col {
+                width: 10%!important;
+            }
+            .col {
+                width: 4% !important;
+            }
+            .object {
+                width: 5.5% !important;
+            }
+            .reda {
+                background-color: #d9edf7 !important;
+            }
+            ;
+
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <small th:text="${title_small}" ></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmReportDrugPlanIndex() + '?tab=' + tab}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="qpm__report" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12"  >
+                        <div class="nav-tabs-custom margin-bottom-none">
+                            <ul class="nav nav-tabs" >
+                                <li th:class="${tab == 'x' ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).pqmReportDrugPlanIndex()+ '?tab=x'}">Tổng hợp thuốc ARV dự trù an toàn</a>
+                                </li>  
+                                <li >
+                                    <a th:href="${T(com.gms.components.UrlUtils).pqmReportDrugEstimateIndex()+ '?tab=x'}">Tổng hợp thuốc ARV đã cấp</a>
+                                </li>   
+                                <li th:class="${tab == 'detail' ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).pqmReportDrugPlanIndex() + '?tab=detail'}">Xem chi tiết thuốc ARV dự trù an toàn</a>
+                                </li>
+                                <li>
+                                    <a th:href="${T(com.gms.components.UrlUtils).pqmReportDrugEstimateIndex() + '?tab=detail'}">Xem chi tiết thuốc ARV đã cấp</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pqmReportDrugPlanIndex() + '?tab=' + tab}" method="GET" name="form" id="search">
+                                    <input type="hidden" th:value="${tab}" name="tab" >
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${year != null && year+'' == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--                                        <div class="col-md-3" th:if="${isPAC && tab == 'detail'}">
+                                                                                    <div class="form-group">
+                                                                                        <label>Cơ sở</label>
+                                                                                        <select name="sites" id="sites" class="form-control">
+                                                                                            <option th:each="n : ${form.getSiteSearchOptions()}" 
+                                                                                                    th:selected="${form.sites != null ? #arrays.contains(form.sites, n.key) : false}"
+                                        
+                                                                                                    th:value="${n.key}" th:text="${n.value}"/>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>-->
+                                        <!--                                                                                <div class="col-md-3" th:if="${isPAC}">
+                                                                                                                            <div class="form-group">
+                                                                                                                                <label>Cơ sở đã gửi báo cáo</label>
+                                                                                                                                <select name="siteSend" id="siteSend" class="form-control">
+                                                                                                                                    <option th:each="n : ${form.getSiteSendOptions()}" 
+                                                                                                                                            th:selected="${form.siteSends != null ? #arrays.contains(form.siteSends, n.key) : false}"
+                                                                                
+                                                                                                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                                                                                                </select>
+                                                                                                                            </div>
+                                                                                                                        </div>-->
+                                        <input type="hidden"  name="month" th:value="${month}" />
+                                        <div class="col-md-12 text-center">
+                                            <div class="btn btn-group">
+                                                <button ng-click="month('1')" type="button"  th:class="${month != 1 ? 'btn btn-default' : 'btn btn-primary'}"> <span>Tháng 1</span></button>
+                                                <button ng-click="month('2')" type="button"  th:class="${month != 2 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 2</span></button>
+                                                <button ng-click="month('3')" type="button"  th:class="${month != 3 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 3</span></button>
+                                                <button ng-click="month('4')" type="button"  th:class="${month != 4 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 4</span></button>
+                                                <button ng-click="month('5')" type="button"  th:class="${month != 5 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 5</span></button>
+                                                <button ng-click="month('6')" type="button"  th:class="${month != 6 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 6</span></button>
+                                                <button ng-click="month('7')" type="button"  th:class="${month != 7 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 7</span></button>
+                                                <button ng-click="month('8')" type="button"  th:class="${month != 8 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 8</span></button>
+                                                <button ng-click="month('9')" type="button"  th:class="${month != 9 ? 'btn btn-default' : 'btn btn-primary'}"> <span >Tháng 9</span></button>
+                                                <button ng-click="month('10')" type="button" th:class="${month != 10 ? 'btn btn-default' : 'btn btn-primary'}"><span>Tháng 10</span></button>
+                                                <button ng-click="month('11')" type="button" th:class="${month != 11 ? 'btn btn-default' : 'btn btn-primary'}"><span >Tháng 11</span></button>
+                                                <button ng-click="month('12')" type="button" th:class="${month != 12 ? 'btn btn-default' : 'btn btn-primary'}"><span >Tháng 12</span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 text-center" th:if="${tab == 'x' && isPAC}">
+                                            <button type="button" ng-click="synthetic()" class="btn btn-primary">
+                                                <i class="fa  fa-sitemap"></i>
+                                                Tổng hợp
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <!--                                    <span th:text="${isPAC ? (form.donvi == '' ? 'Bảng tổng hợp theo chỉ số ' : 'Bảng chỉ số ' ) : 'Bảng chỉ số '}"></span><span class="text-danger" th:utext="${'tháng ' + (form.month < 10 ? '0'+form.month : form.month) + ' năm ' + form.year}" ></span>
+                                                                        <span th:text="${form.donvi == '' ? '' : ' - ' + form.donvi}"></span>
+                                                                        <span th:if="${!isPAC}" th:text="${monthKey.get(form.month + '') == '0' ? ' - Đã nhập liệu'  : monthKey.get(form.month + '') == '3' ? ' - Đã tổng hợp' : ' - Chưa nhập liệu'}"></span>-->
+                                </div>
+                                <!--                                <div class="no-margin pull-right" >
+                                                                    <button  class="btn btn-xs btn-primary">
+                                                                        <i class="fa  fa-sitemap"></i>
+                                                                        Tổng hợp
+                                                                    </button>
+                                                                </div>-->
+                            </div>
+                            <div class="box-body">
+                                <p>Bảng tổng hợp theo chỉ số tháng [[${month}]] năm [[${year}]]</p>
+                                <div  class="table-responsive">
+                                    <table class="table table-bordered table-hover table-full" >
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle ">STT</th>
+                                                <th class="text-center vertical-align-middle " >Tên thuốc</th>
+                                                <th class="text-center vertical-align-middle " >Đơn vị tính</th>
+                                                <th class="text-center vertical-align-middle " >Số lượng thuốc tồn cuối kỳ</th>
+                                                <th class="text-center vertical-align-middle " >Số lượng thuốc để đạt dự trù an toàn 2 tháng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item, iter : ${items}">
+                                                <td class="text-center" > <span th:utext="${iter.index + 1}"></span></td>
+                                                <td class="text-center" ><span th:utext="${item.drugName}"></span></td>
+                                                <td class="text-center" ><span th:utext="${item.unit}"></span></td>
+                                                <td class="text-center"><span th:utext="${item.totalDrugBacklog}"></span></td>
+                                                <td class="text-center"><span th:utext="${item.totalDrugPlan2Month}"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div data-th-include="report/pqm/widget-table :: pqm-update()" ></div>
+        </div>
+    </body>
+</html>

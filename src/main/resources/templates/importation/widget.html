@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs" data-th-fragment="tab()">
+    <script th:inline="javascript">
+        var cols = [[${form.cols}]];
+        var data = [[${form.data}]];
+        var saveUrl = [[${form.saveUrl}]];
+    </script>
+
+    <li th:class="${tab == null ? 'active' : ''}">
+        <a th:href="${form.uploadUrl}">Bước 1: Tải tập tin excel</a>
+    </li>
+    <li th:if="${form.readUrl != null && form.readUrl != form.uploadUrl}" th:class="${tab == 'read' ? 'active' : ''}">
+        <a th:href="${form.readUrl}">Bước 2: Chỉ dẫn dữ liệu</a>
+    </li>
+    <li th:if="${form.validateUrl != null}" th:class="${tab == 'validate' ? 'active' : ''}">
+        <a th:href="${form.validateUrl}">Bước 3: Kiểm tra dữ liệu trước khi lưu</a>
+    </li>
+</ul>
+
+<div class="box-footer text-center navbar-fixed-bottom main-footer" 
+     data-th-fragment="footer_view()">
+    <button class="btn btn-primary" 
+            type="button" 
+            ng-click="save()">
+        <i class="fa fa-edit" ></i> Xác nhận
+    </button>
+    <a th:href="${form.uploadUrl}"
+       class="btn btn-default" 
+       data-confirm="Bạn chắc chắn muốn tải lại tập tin excel khác ?">Làm lại</a>
+</div>
+

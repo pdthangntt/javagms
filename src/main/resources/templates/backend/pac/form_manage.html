@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                        form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+                        var province_id = [[${currentSite.provinceID}
+                        ]];
+                        var district_id = [[${currentSite.districtID}
+                        ]];
+                        var ward_id = [[${currentSite.wardID}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:if="${form.ID == null}" th:href="${T(com.gms.components.UrlUtils).pacNew()}" 
+                       data-confirm="Bạn chắc chắn muốn hủy ?"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <a th:if="${form.ID != null}" th:href="${(form.tab != null && form.tab != '') ? T(com.gms.components.UrlUtils).pacNew(form.tab) : breadcrumbUrl}" 
+                       data-confirm="Bạn chắc chắn muốn hủy ?"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${breadcrumbUrl}"><span th:text="${breadcrumbTitle}"  ></span></a></li>
+                    <li>
+                        <a th:if="${form.ID == null }" th:href="${T(com.gms.components.UrlUtils).pacPatientNew()}"  ><span th:text="${title}" ></span></a>
+                        <a th:if="${form.ID != null }" th:href="${(form.tab != null && form.tab != '') ? T(com.gms.components.UrlUtils).pacNewUpdate(form.tab, form.ID) : formUrl}"  ><span th:text="${title}" ></span></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_patient_manager_new" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${ T(com.gms.components.UrlUtils).pacPatientManageUpdate(form.ID)} " 
+                          th:object="${form}"
+                          method="post"
+                          name="pac_patient_form">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <input type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >
+                                    <label class="text-bold">A. Thông tin quản lý - Tỉnh/Huyện/Xã đang quản lý ca bệnh</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'provinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'districtID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Phường/xã:', 'wardID', true, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <label class="text-bold">B. Nơi đăng ký hộ khẩu thường trú:</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Số nhà:', 'permanentAddressNo', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Đường phố (nếu có):', 'permanentAddressStreet', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Tổ/ấp/Khu phố:', 'permanentAddressGroup', false, '', '')"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'permanentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <th:block th:if="${form.acceptPermanentTime != '' && form.acceptPermanentTime != null}">
+                                                <div data-th-replace="widget/form :: input-hidden('permanentProvinceID')"></div>
+                                            </th:block>
+
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Phường/xã:', 'permanentWardID', true, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <label class="text-bold">C. Nơi cư trú hiện tại</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Số nhà:', 'currentAddressNo', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Đường phố (nếu có):', 'currentAddressStreet', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-text('Tổ/ấp/khu phố:', 'currentAddressGroup', false, '', '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'currentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'currentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Phường/xã:', 'currentWardID', true, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <label class="text-bold">D. Thông tin bổ sung khác</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-date-model('Ngày tạo:', 'createAT', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: input-date-model('Ngày chuyển sang quản lý:', 'reviewProvinceTimeForm', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="box box-default box-solid">
+                                <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                    <button  class="btn btn-primary" type="submit">
+                                        <i class="fa fa-edit" ></i>
+                                        Cập nhật người nhiễm
+                                    </button>
+                                    <a class="btn btn-default" 
+                                       th:href="${T(com.gms.components.UrlUtils).pacPatientIndex()}"
+                                       data-confirm-browsers
+                                       data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

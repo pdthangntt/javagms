@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .body {
+                /*    height: 297mm;
+                    width: 210mm;*/
+                margin-left: 30px;
+                margin-right:  30px;
+                /*color: blue;*/
+                color: #000;
+                /*background: url('in_kim_a5.png');*/
+                /*font-size: 14px;*/
+                font-size: 16.8px;
+                background-color: #fff;
+                /*border: 1px solid #000;*/
+            }
+        </style>
+        <style type="text/css">
+            @page { /*size: A4 landscape;*/}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body">
+            <div class="content">  
+                <div class="header">
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_donvi">
+                        <p th:if="${is_cscq == '1'}" class="text-uppercase conghoa text-normal" ><span th:utext="${form.SiteAgency}" ></span></p>
+                        <p th:utext="${form.siteName}"  ></p>
+                    </div>
+
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <hr class="line" />
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <hr class="line" />
+                        <p class="text-normal text-center text-size-14" >
+                            <i>(Ban hành kèm theo Thông tư số 01/2015/TT-BYT ngày 27 tháng 02 năm 2015 của Bộ trưởng Bộ Y tế)</i>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <div class="">
+                                <label>Họ và tên người được tư vấn:</label> 
+                                <b class="text-uppercase" th:utext="${item.patientName}"></b>
+                                <th:block th:if="${is_code == '1'}">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label>Mã KH:</label> 
+                                    <b class="text-uppercase" th:utext="${item.code}"></b>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Số điện thoại (nếu có):</label> 
+                                <span  th:utext="${item.patientPhone}"></span>
+                                <span  th:if="${item.patientPhone == '' || item.patientPhone == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Số CMND (hoặc giấy tờ tùy thân nếu có):</label> 
+                                <span  th:utext="${item.patientID}"></span>
+                                <span  th:if="${item.patientID == '' || item.patientID == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Dân tộc: </label> 
+                                <span  th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).RACE).get(item.raceID)}"></span>
+                                <span  th:if="${item.raceID == '' || item.raceID == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Giới tính:</label> 
+                                <span  th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID)}"></span>
+                                <span  th:if="${item.genderID == '' || item.genderID == null}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="">
+                                <label>Năm sinh: </label> 
+                                <span  th:utext="${item.yearOfBirth}"></span>
+                                <span  th:if="${item.yearOfBirth == '' || item.yearOfBirth == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Nơi đăng ký hộ khẩu thường trú: </label> 
+                                <span  th:utext="${item.permanentAddressFull}"></span>
+                                <span  th:if="${item.permanentAddressFull == '' || item.permanentAddressFull == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Nơi cư trú hiện tại (nếu khác nơi đăng ký hộ khẩu thường trú): </label> 
+                                <span  th:utext="${item.currentAddressFull}"></span>
+                                <span  th:if="${item.currentAddressFull == '' || item.currentAddressFull == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Nghề nghiệp:</label> 
+                                <span  th:utext="${item.jobID == '' || item.jobID == null ? '' : options.get(T(com.gms.entity.db.ParameterEntity).JOB).get(item.jobID)}"></span>
+                                <span  th:if="${item.jobID == '' || item.jobID == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Đối tượng:</label> 
+                                <span  th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP).get(item.objectGroupID)}"></span><span th:if="${item.laoVariable != null && item.laoVariable != '' }" >:</span>
+                                <span th:if="${item.objectGroupID == '6'}" th:utext="${ item.laoVariable == null || item.laoVariable == '' ? '' : item.laoVariable == '-1' ? item.laoVariableName : options.get(T(com.gms.entity.db.ParameterEntity).LAO_VARIABLE).get(item.laoVariable)}"></span>
+                                <span  th:if="${item.objectGroupID == '' || item.objectGroupID == null}"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Nguy cơ lây truyền HIV:</label> 
+                                <span  th:utext="${risk}"></span>
+                                <span  th:if="${risk == '' || risk == null}"></span>
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <div class="">
+                                <span class="point">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sau khi được tư vấn đầy đủ, rõ ràng về nguy cơ lây nhiễm HIV và lợi ích của việc làm xét nghiệm HIV, tôi hoàn toàn đồng ý tự nguyện làm xét nghiệm HIV.</span>
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                        <!--(Chú ý: Đi kèm phiếu này là trích lục từng kết quả xét nghiệm cho bệnh nhân theo mẫu số 6, phụ lục này).-->
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" style="line-height: 30px;">
+                                    &nbsp;
+                                </p>
+                                <div>
+                                    <p class="box-ky-title" style="line-height: 30px;">
+                                        Đối tượng tư vấn
+                                        <br/>
+                                    </p>
+                                    <p class="text-normal" style="text-align: justify"><i>(Ký và ghi rõ họ tên, trường hợp người bảo hộ cần ghi rõ họ và tên người đại diện hợp pháp và nêu rõ mối quan hệ với người được xét nghiệm HIV)</i></p> 
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" style="line-height: 30px;">
+                                    <i th:if="${date}">
+                                        <span class="point" th:text="${form.siteProvince}"></span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}"></span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}"></span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}"></span>
+                                    </i>
+                                   <i th:if="${!date}">
+                                        <span class="point" th:text="${form.siteProvince}"></span>, 
+                                        ngày <span class="point" >.....</span>
+                                        tháng <span class="point">.....</span> 
+                                        năm <span class="point">..........</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title" style="line-height: 30px;">
+                                        Cán bộ y tế
+                                        <br/>
+                                    </p>
+                                    <p class="text-normal"><i>(Ký, ghi rõ họ tên)</i></p> 
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

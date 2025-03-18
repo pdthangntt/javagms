@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = {};
+                        var urlExcel = "/report/pqm-drug-elmises/excel.html";
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmDrugElmise()}"><span>[[${title}]]</span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pqm_drug_elmise" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).pqmDrugElmise()}" method="get" id="search">
+                        <div class="col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Quý</label>
+                                                <select name="quarter" id="quarter" class="form-control">
+                                                    <option th:each="n : ${quarters}" 
+                                                            th:selected="${quarter != null ? #arrays.contains(quarter, n.key) : false}"
+
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${years}" 
+                                                            th:selected="${year != null ? #arrays.contains(year, n.key) : false}"
+
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Cơ sở</label>
+                                                <select name="sites" id="sites" class="form-control">
+                                                    <option th:each="n : ${siteMap}" 
+                                                            th:selected="${sites != null ? #arrays.contains(sites, n.key) : false}"
+
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).pqmDrugElmise()}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default">
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left">
+                                    </div>
+                                    <div class="no-margin pull-right" id="tableFunction">
+
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <table ng-cloak class="table table-report table-striped table-bordered table-sm" >
+                                        <thead>
+                                            <tr class="success">
+                                                <th class="text-center vertical-align-middle">STT</th>
+                                                <th class="text-center vertical-align-middle">Mã CSKCB	</th>
+                                                <th class="text-center vertical-align-middle">Tên CSKCB	</th>
+                                                <th class="text-center vertical-align-middle">Mã thuốc</th>
+                                                <th class="text-center vertical-align-middle">Tên thuốc</th>
+                                                <th class="text-center vertical-align-middle">Số đăng ký</th>
+                                                <th class="text-center vertical-align-middle">Quyết định thầu</th>
+                                                <th class="text-center vertical-align-middle">Số lượng dự trù</th>
+                                                <th class="text-center vertical-align-middle">Số lượng sử dụng</th>
+                                                <th class="text-center vertical-align-middle">Số lượng tồn kho</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${!#lists.isEmpty(dataPage.data)}" th:each="item,iter : ${dataPage.data}"
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : '' }"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center">[[${iter.index + 1}]]</td>
+                                                            <td class="">[[${item.siteCode}]]</td>
+                                                            <td class="">[[${item.siteName}]]</td>
+                                                            <td class="">[[${item.drugCode}]]</td>
+                                                            <td class="">[[${item.drugName}]]</td>
+                                                            <td class="">[[${item.soDangKy}]]</td>
+                                                            <td class="">[[${item.ttThau}]]</td>
+                                                <td class="text-center"> [[${item.duTru}]]</td>
+                                                <td class="text-center"> [[${item.tongSuDung}]]</td>
+                                                <td class="text-center"> [[${item.tonKho}]]</td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(dataPage.data)}">
+                                                <td colspan="10" class="text-center text-bold text-danger">Không có thông tin</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data.size() != 0  && dataPage.data != null}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> bản ghi.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

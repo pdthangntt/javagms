@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${#request.userPrincipal.principal.site.viewName()}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <style>
+                .dashboard-height {
+                    height: 300px;
+                }
+                .dashboard-height .fa {
+                    margin-top: 100px;
+                }
+            </style>
+<!--<section th:if="${!isPAC  && (host != null && host.contains('hub'))}" class="content">
+                <div class="text-center" style="min-height: 300px;margin-top: 120px;">
+                    <h3 class='mt-5'>Trang quản lý hệ thống HUB cho tỉnh</h3>
+                    <p>Vui lòng chọn chức năng ở phần điều hướng</p>
+                </div>
+            </section>-->
+            <section th:if="${!isPAC}" class="content">
+                <div class="text-center" style="min-height: 300px;margin-top: 120px;">
+                    <h3 class='mt-5'>Trang quản lý hệ thống HUB cho tỉnh</h3>
+                    <p>Vui lòng chọn chức năng ở phần điều hướng</p>
+                </div>
+            </section>
+            <section th:if="${isPAC}"  class="content-header">
+                <h1>Trang quản lý hệ thống HUB cho tỉnh</h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmIndexs()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                </ol>
+            </section>
+            <section th:if="${isPAC}"  class="content" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span th:text="${'1. Theo dõi tình trạng nhập dữ liệu '}"></span><span class="text-danger" th:utext="${'tháng ' + month + ' năm ' + year}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table table-bordered table-hover table-report" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle " >Loại dữ liệu</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%" >Cơ sở đã nhập dữ liệu</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Cơ sở chưa nhập dữ liệu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <th:block th:each="item, iter : ${items}">
+                                            <tr >
+                                                <td class="text-left" rowspan="2"><span th:utext="${item.service}" ></span></td>
+                                                <td class="text-left" ><span class="text-bold">Số lượng: </span><span th:utext="${item.imported}"></span></td>
+                                                <td class="text-left" ><span class="text-bold">Số lượng: </span><span th:utext="${item.notImport}"></span></td>
+                                            </tr>
+                                            <tr >
+                                                <td class="text-left" ><span class="text-bold">Cơ sở: </span><span th:class="${item.siteImported == '' ? 'text-danger' : ''}" th:utext="${item.siteImported == '' ? 'Không có thông tin' : item.siteImported}"></span></td>
+                                                <td class="text-left" ><span class="text-bold">Cơ sở: </span><span th:class="${item.siteNotImported == '' ? 'text-danger' : ''}" th:utext="${item.siteNotImported == '' ? 'Không có thông tin' : item.siteNotImported}"></span></td>
+                                            </tr>
+                                        </th:block>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span th:text="${'2. Đối chiếu số liệu giữa xét nghiệm nhiễm mới với xét nghiệm sàng lọc'}"> 
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table table-bordered table-hover table-report" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle " >Cơ sở khẳng định</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Số ca có thông tin trong xét nghiệm sàng lọc</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Số ca không có thông tin trong xét nghiệm sàng lọc</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <th:block th:if="${itemConfirms == null || itemConfirms.isEmpty()}">
+                                            <tr >
+                                                <td class="text-center text-bold text-danger" colspan="3" >Không có thông tin</td>
+                                            </tr>
+                                        </th:block>
+                                        <th:block th:each="item, iter : ${itemConfirms}" th:if="${itemConfirms != null && !itemConfirms.isEmpty()}">
+                                            <tr >
+                                                <td class="text-left" ><span th:utext="${item.service}" ></span></td>
+                                                <td class="text-center" ><span th:utext="${item.imported}"></span></td>
+                                                <td class="text-center" ><a href="/backend/pqm-vct-recency/index.html?tab=notSame"><span th:utext="${item.siteImported}"></span></a></td>
+                                            </tr>
+                                        </th:block>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+<!--            <section th:if="${host == null || !host.contains('hub')}"   class="content-header">
+                <h1>Ứng dụng quản lý thông tin trực tuyến (HIV-IMS)</h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                </ol>
+            </section>
+            <section th:if="${host == null || !host.contains('hub')}" class="content" ng-controller="index" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-md-6">
+                        <div class="box box-solid">
+                            <div class="box-body text-center">
+                                <div class="dashboard-height" id="index-chart">
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                                <h3 class="text-info text-size-12 text-center">Hướng dẫn sử dụng</h3>
+                                <ul class="nav nav-stacked text-left">
+                                    <li th:each="item,iter : ${view.getSupports()}" >
+                                        <a  th:href="${item.value}">
+                                            <span th:text="${item.key}" ></span>
+                                            <span th:if="${iter.index == 0}" class="pull-right badge bg-blue">Gọi</span>
+                                            <span th:if="${iter.index != 0}" class="pull-right badge bg-green">Chi tiết</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box-footer text-right navbar-fixed-bottom main-footer" id="amchart-color" style="z-index: 9999999">
+                                <img th:src="@{/static/backend/images/Vietnamese_usaid_logo_banner.jpg}" style="max-height: 30px;"/>
+                                <ul class="hidden-xs theme-switcher"></ul>
+                                <button type="button" class="btn btn-primary" ng-click="clearCache()">
+                                    <i class="fa fa-refresh"></i>
+                                    Làm mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <img th:src="@{/static/auth/images/bg7.jpg}" style="width: 100%; margin-bottom: 5px;" />
+                        <ul class="timeline" th:if="${dataPage != null && dataPage.data != null}">
+                            <li class="time-label">
+                                <span class="bg-green">
+                                    Thông báo
+                                </span>
+                            </li>
+                            <li th:if='${dataPage.data == null || dataPage.data.size() == 0}'>
+                                <i class="fa fa-comment-o bg-aqua"></i>
+                                <div class="timeline-item">
+                                    <p class="timeline-header text-center">Không có thông báo</p>
+                                </div>
+                            </li>
+                            <li th:each="item : ${dataPage.data}">
+                                <i class="fa fa-envelope-o bg-aqua"></i>
+                                <i th:if="${item.read}" class="fa fa-envelope-open-o bg-green"></i> 
+                                <div class="timeline-item">
+                                    <span class="time">
+                                        <i class="fa fa-clock-o"></i> 
+                                        <span th:utext="${#dates.format(item.time, 'hh:mm dd/MM/yyyy')}" ></span>
+                                    </span>
+                                    <p class="timeline-header" th:utext="${item.title}"></p>
+                                    <div class="timeline-body">
+                                        <span th:utext="${item.content}"></span>
+                                        <a th:if="${item.url != null}" th:href="${item.url}" target="_blank" >Chi tiết</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>-->
+        </div>
+    </body>
+</html>

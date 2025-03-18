@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" >
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title data-layout-title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE"></title>
+        <link rel="shortcut icon" th:href="@{/static/backend/images/favicon.ico}" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link data-th-replace="backend/layouts/widget-layout :: widget-css"  />
+    </head> 
+
+    <body ng-controller="body" ng-init="init()" 
+          class="skin-blue sidebar-collapse sidebar-mini">
+        <div class="wrapper">
+            <header class="main-header" th:if="${#request.userPrincipal != null}">
+                <a th:href="${T(com.gms.components.UrlUtils).backendHome()}" class="logo">
+                    <span class="logo-mini">
+                        <span th:utext="${#request.userPrincipal.principal.site.viewName()}" ></span>
+                    </span>
+                    <span class="logo-lg">
+                        <span th:utext="${#request.userPrincipal.principal.site.viewName()}" ></span>
+                    </span>
+                </a>
+                <nav class="navbar navbar-static-top" data-th-fragment="top-navigation">
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+                    <div data-th-replace="backend/layouts/widget-layout :: top-navigation"></div>
+                </nav>
+            </header>
+            <div data-th-replace="backend/layouts/widget-layout :: sidebar-menu"></div>
+            <div data-layout-fragment="content"></div>
+            <div data-th-replace="backend/layouts/widget-layout :: footer-content"></div>
+            <div class="control-sidebar-bg"></div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+            var app_security = [[${view.security}]];
+            var user_action = [[${#request.userPrincipal.principal.roles}]];
+            var site_config = [[${#request.userPrincipal.principal.config}]];
+            var site_province = [[${#request.userPrincipal.principal.siteProvince}]];
+            var user_staff_url_301 = [[${T(com.gms.components.UrlUtils).siteStaff(#request.userPrincipal.principal.site.ID)}]];
+        </script>
+        <script data-th-replace="backend/layouts/widget-layout :: widget-js" ></script>
+    </body>
+</html>

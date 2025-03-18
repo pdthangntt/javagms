@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).htcTarget()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcTarget()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).HTC_TITLE.getLabel()}"></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).targetNew()}"><span >Thêm mới chỉ tiêu TVXN </span></a></li>
+                </ol>
+            </section>
+
+            <section class="content" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+
+                <form th:action="${T(com.gms.components.UrlUtils).targetNew()}" 
+                      th:object="${form}" 
+                      method="post"
+                      name="targetnew"
+                      ng-submit="register(targetnew, $event)" 
+                      ng-validate="validationOptions">
+                    <div class="row" ng-controller="htc_target" ng-init="init()">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div data-th-replace="widget/form :: input-text('Năm ', 'years', true, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div data-th-replace="widget/form :: input-text('Số khách hàng được xét nghiệm HIV ', 'numberCustomer', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div data-th-replace="widget/form :: input-text('Số khách hàng có kết quả xét nghiệm HIV (+) ', 'numberPositive', true, '', '')"></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div data-th-replace="widget/form :: input-text('Số khách hàng xét nghiệm và quay lại nhận kết quả ', 'numberGetResult', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div data-th-replace="widget/form :: input-text('Số khách hàng dương tính và quay lại nhận kết quả ', 'positiveAndGetResult', true, '', '')"></div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div data-th-replace="widget/form :: input-text('Tỷ lệ khách hàng dương tính được chuyển gửi thành công (%)', 'careForTreatment', true, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer text-center">
+                                        <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).htcTarget()}" class="btn btn-default" >Huỷ</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!-- /. box -->
+
+
+
+
+                        </div>
+                    </div>
+
+                </form>  
+
+
+            </section>
+        </div>
+    </body>
+</html>

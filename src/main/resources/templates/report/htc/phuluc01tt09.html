@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title} + ' ' + ${title_small}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).htcTT09PDF()}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).htcTT09Excel()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).htcTT09Email()}]];
+            var urlPrint = '/report/htc-tt09/print.html';
+        </script>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcTT09()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).HTC_TITLE.getLabel()}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcTT09()}"><span th:text="${title_small}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_tt09" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-default">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).htcTT09()}" 
+                                      method="GET" name="htc_form">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-2">
+                                            <div class="form-group">
+                                                <label>Tháng</label>
+                                                <select name="month" class="form-control">
+                                                    <option value="-1">Chọn tháng</option>
+                                                    <option th:each="n : ${#numbers.sequence(1,12)}" 
+                                                            th:selected="${n == form.month}"
+                                                            th:value="${n}" 
+                                                            th:text="'Tháng ' + ${n >= 10? n : '0'+n}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 col-md-2">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option value="-1">Chọn năm</option>
+                                                    <option th:each="n : ${#numbers.sequence(2017,#dates.year(#dates.createNow()))}" 
+                                                            th:selected="${n == form.year}"
+                                                            th:value="${n}" 
+                                                            th:text="${n}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Loại bệnh nhân</label>
+                                                <select class="form-control" name="customer_type" id="customer_type">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).CUSTOMER_TYPE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('customer_type') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="form-group">
+                                                <label>Dịch vụ</label>
+                                                <select name="service" id="service" class="form-control">
+                                                    <option th:each="n : ${serviceOptions}" 
+                                                            th:selected="${#arrays.contains(search_service, n.key)}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+<!--                                        <div class="col-lg-3 col-md-3">
+>>>>>>> 993753e46615e3b991c6e2205708ad80b1831a1f
+                                            <div class="form-group" >
+                                                <label>Mã khách hàng</label>
+                                                <input type="text" class="form-control" th:text="${code}" id="code" name = "code" th:value="${#httpServletRequest.getParameter('code')}">
+                                            </div>
+                                        </div>-->
+                                        <div class="col-lg-12 col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="phuluc02Pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcTT09PDF()}">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="phuluc02Excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcTT09Excel()}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="phuluc02Email()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcTT09Email()}">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Báo cáo 
+                                    <span class="text-danger" >
+                                        tháng <span th:utext="${form.month >= 10 ? form.month : '0' + form.month}" ></span> 
+                                        năm <span th:utext="${form.year}" ></span>
+                                    </span>
+                                    <!--(<span th:utext="${form.startDate}" ></span> - <span th:utext="${form.endDate}" ></span>)-->
+                                    - Cơ sở <span th:utext="${form.siteName}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/tt09/widget-table :: table-phuluc01(${form})"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

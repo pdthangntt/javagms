@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlSynthetic = [[${"/report/pqm-shi/synthetic.html" + "?year=" + form.year + "&month=" + form.month}]];
+            var urlMonth = [[${T(com.gms.components.UrlUtils).pqmShiIndexView()}
+            ]];
+            var mon = [[${form.month}
+            ]];
+            var urlExcel = "/report/pqm-shi/excel.html";
+        </script>
+        <style>
+
+
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${title}"></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmShiIndexView()}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="qpm_shi_report_view" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pqmShiIndexView()}" method="GET" name="form" id="search">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${form.year != null && form.year+'' == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-10 text-center" style="margin-top: 23px;">
+                                            <div class="btn btn-group">
+                                                <button ng-click="month('1')" type="button"  th:class="${form.month != 1 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('1') == '2'  ? 'c-signal is-success' : ''}">Tháng 1</span></button>
+                                                <button ng-click="month('2')" type="button"  th:class="${form.month != 2 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('2') == '2'  ? 'c-signal is-success' : ''}">Tháng 2</span></button>
+                                                <button ng-click="month('3')" type="button"  th:class="${form.month != 3 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('3') == '2'  ? 'c-signal is-success' : ''}">Tháng 3</span></button>
+                                                <button ng-click="month('4')" type="button"  th:class="${form.month != 4 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('4') == '2'  ? 'c-signal is-success' : ''}">Tháng 4</span></button>
+                                                <button ng-click="month('5')" type="button"  th:class="${form.month != 5 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('5') == '2'  ? 'c-signal is-success' : ''}">Tháng 5</span></button>
+                                                <button ng-click="month('6')" type="button"  th:class="${form.month != 6 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('6') == '2'  ? 'c-signal is-success' : ''}">Tháng 6</span></button>
+                                                <button ng-click="month('7')" type="button"  th:class="${form.month != 7 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('7') == '2'  ? 'c-signal is-success' : ''}">Tháng 7</span></button>
+                                                <button ng-click="month('8')" type="button"  th:class="${form.month != 8 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('8') == '2'  ? 'c-signal is-success' : ''}">Tháng 8</span></button>
+                                                <button ng-click="month('9')" type="button"  th:class="${form.month != 9 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('9') == '2'  ? 'c-signal is-success' : ''}">Tháng 9</span></button>
+                                                <button ng-click="month('10')" type="button"  th:class="${form.month != 10 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('10') == '2'  ? 'c-signal is-success' : ''}">Tháng 10</span></button>
+                                                <button ng-click="month('11')" type="button"  th:class="${form.month != 11 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('11') == '2'  ? 'c-signal is-success' : ''}">Tháng 11</span></button>
+                                                <button ng-click="month('12')" type="button"  th:class="${form.month != 12 ? 'btn btn-default' : 'btn btn-primary'}"> <span th:class="${monthKey.get('12') == '2'  ? 'c-signal is-success' : ''}">Tháng 12</span></button>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-12 text-center" style="margin-top: 23px;">
+<!--                                            <button type="button" ng-click="synthetic()" class="btn btn-primary">
+                                                <i class="fa  fa-sitemap"></i>
+                                                Tổng hợp
+                                            </button>-->
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Bảng tổng hợp theo chỉ số<span class="text-danger"> tháng [[${form.month}]] năm [[${form.year}]]</span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table-report table table-striped table-bordered table-hover" >
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle ">STT</th>
+                                                <th class="text-center vertical-align-middle " >Cơ sở KCB</th>
+                                                <th class="text-center vertical-align-middle "  >Số ca điều trị bằng thẻ BHYT</th>
+                                                <th class="text-center vertical-align-middle "  >Số ca được cấp thuốc từ 3 tháng trở lên qua BHYT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:if="${form.items.size() == 0}" >
+                                                <th colspan="4" class="text-danger text-center" >Không có thông tin</th>
+                                            </tr>                                          
+                                            <tr  th:each="item, iter : ${form.items}">
+                                                <td class="text-center" > <span th:utext="${iter.index + 1}"></span></td>
+                                                <td class="text-left" ><span th:utext="${item.site}"></span></td>
+                                                <td class="text-center"><span th:utext="${form.displayNumber(item.arv)}"></span></td>
+                                                <td class="text-center"><span th:utext="${form.displayNumber(item.drug)}"></span></td>
+                                            </tr>
+                                             <tr  th:if="${form.items.size() != 0}" >
+                                                <td colspan="2" class="text-center" colpan="2"><b>Tổng cộng</b></td>
+                                                <td class="text-center text-bold" th:text="${form.totalArv}"></td>
+                                                <td class="text-center text-bold" th:text="${form.totalDrug}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div class="clearfix"></div>
+                                <div id="table-comment">
+                                    Chú thích màu: 
+                                    <label class="label bg-green color-palette" >Đã tổng hợp</label>
+                                    <!--                                    <label class="label bg-yellow disabled color-palette" >Đã gửi báo cáo</label>
+                                                                        <label class="label label-s bg-gray color-palette" >Đã nhập liệu</label>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div data-th-include="report/pqm/widget-table :: pqm-update()" ></div>
+        </div>
+    </body>
+</html>

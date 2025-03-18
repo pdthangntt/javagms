@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title >Đăng ký cơ sở mới trực thuộc quản lý</title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript">
+                var form = [[${form}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).siteIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${parent_title}"></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteNew()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="site" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).siteNew()}" 
+                          th:object="${form}" 
+                          method="post"
+                          name="site_form"
+                          ng-submit="register(site_form, $event)" 
+                          ng-validate="validationOptions"
+                          >
+                        <div class="col-lg-8 col-md-8">
+                            <div class="box box-widget" >
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Thông tin cơ bản</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: input-text('Tên cơ sở', 'name', true, '','')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: input-text('Mã cơ sở', 'code', true, 'ví dụ: IMS001', 'Mã cơ sở là duy nhất trên hệ thống')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: input-text('Tên viết tắt', 'shortName', false, '','')"></div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: textarea('Mô tả ngắn', 'description', false, '','')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-widget" >
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Địa chỉ</h3>
+                                </div>
+                                <div class="box-body" >
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: input-text('Số nhà/Tên đường/Thôn/Xóm', 'address', true, '','')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('Tỉnh/Thành phố', 'provinceID', true, null, '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('Quận/Huyện', 'districtID', true, null, '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('Phường xã', 'wardID', true, null, '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-widget" >
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Dịch vụ HIV tại cơ sở</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div data-th-replace="widget/form :: select('Dịch vụ', 'service', true, ${services}, 'Dịch vụ có thể chọn nhiều')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select('Cơ sở quản lý', 'parentID', true, ${sites},'Cơ sở quản lý trực tiếp')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select('Phân loại', 'type', true, ${typeLabel},'')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="box box-widget" >
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Liên hệ</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div data-th-replace="widget/form :: input-text('Họ và tên người liên hệ', 'contactName',false, '','')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Chức vụ', 'contactPosition',true, '','')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Email', 'email',true, '','')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Số điện thoại', 'phone', true, '','')"></div>
+                                </div>
+                            </div>
+                            <div class="box box-widget" >
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Khác</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div data-th-replace="widget/form :: input-text('Cơ quan chủ quản', 'parentAgency', true, '','')"></div>
+                                    <div data-th-replace="widget/form :: select('Dự án tài trợ', 'projectID', true, ${projects},'')"></div>
+                                    <div data-th-replace="widget/form :: select('Trạng thái', 'isActive', true, ${activeLabel},'')"></div>
+                                    <div data-th-replace="widget/form :: select('Cấu hình HUB PQM', 'hub', false, ${hubOptions},'')"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer text-center navbar-fixed-bottom main-footer">
+                            <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                            <a th:href="${T(com.gms.components.UrlUtils).siteIndex()}" class="btn btn-default" >Huỷ</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

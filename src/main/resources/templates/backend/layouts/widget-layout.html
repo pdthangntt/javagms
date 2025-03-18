@@ -1,0 +1,279 @@
+<aside class="main-sidebar" data-th-fragment="sidebar-menu">
+    <section class="sidebar sidebar-active-link">
+        <ul class="sidebar-menu" data-widget="tree">
+            <li th:each="item: ${view.getNavigation()}"
+                class="treeview" style="display: none">
+                <a th:href="${item.url}">
+                    <i th:class="${item.icon}"></i> 
+                    <span th:utext="${item.name}" ></span>
+                    <span th:if="${item.childs.size() > 0}" class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul th:if="${item.childs.size() > 0}"
+                    class="treeview-menu">
+                    <li th:each="child: ${item.childs}" style="display: none" 
+                        th:class="${child.line ? 'line-border-bottom': ''}">
+                        <a th:href="${child.url}" th:title="${child.name}">
+                            <i th:class="${child.icon}"></i> 
+                            <span th:utext="${child.name}" ></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+
+<div class="navbar-custom-menu" data-th-fragment="top-navigation">
+    <ul class="nav navbar-nav">
+        <li class="hidden-xs">
+            <a th:href="${T(com.gms.components.UrlUtils).feedbackCompose()}">
+                <i class="fa fa-envelope-o" ></i>
+                Góp ý
+            </a>
+        </li>
+        <li class="hidden-xs dropdown messages-menu" th:if="${view.getSupports() != null && !view.getSupports().isEmpty()}">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-support"></i> HDSD
+                <i class="fa fa-caret-down" ></i>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <ul class="menu">
+                        <li th:each="item: ${view.getSupports()}">
+                            <a th:href="${item.value}" th:utext="${item.key}" target="_blank"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown notifications-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-bell-o"></i>
+                <span class="label label-warning" ng-bind="notifications.totalRecords"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <ul class="menu" >
+                        <li ng-repeat="item in notifications.data">
+                            <a ng-click="read(item.id, item.url, item.title, item.time, item.content)" style="white-space: normal;">
+                                <i ng-show="item.read == false" class="fa fa-square-o"></i> 
+                                <i ng-show="item.read == true" class="fa fa-check-square-o"></i> 
+                                <span ng-bind="item.title"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="footer">
+                    <a  ng-click="read()">Đánh dấu đã đọc</a >
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown user user-menu" th:if="${#request.userPrincipal != null}" >
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img th:src="@{/static/backend/images/avatar-none.jpg}" class="user-image" alt="User Image">
+                <span class="hidden-xs" th:utext="${#request.userPrincipal.principal.user.name}"></span>
+                <i class="fa fa-caret-down" ></i>
+            </a>
+            <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                    <img th:src="@{/static/backend/images/avatar-none.jpg}" class="img-circle" alt="User Image">
+                    <p>
+                        <span th:utext="${#request.userPrincipal.principal.site.name}" ></span>
+                        <small th:utext="${#request.userPrincipal.principal.user.email + '/' + #request.userPrincipal.principal.user.username}" ></small>
+                    </p>
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                    <div class="pull-left">
+                        <a th:href="${T(com.gms.components.UrlUtils).profile()}" class="btn btn-primary btn-flat">Thông tin cá nhân</a>
+                    </div>
+                    <div class="pull-right">
+                        <a th:href="${T(com.gms.components.UrlUtils).logout()}" class="btn btn-default btn-flat"><i class="fa fa-sign-out" ></i> Đăng xuất</a>
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<footer id="page-footer" class="main-footer text-right" data-th-fragment="footer-content">
+    <div class="pull-left hidden-xs">
+        <img th:src="@{/static/backend/images/Vietnamese_usaid_logo_banner.jpg}" style="max-height: 30px;"/>
+    </div>
+    <div id="table-selected" class="pull-left hidden-xs display-none" style="padding-left: 10px;"></div>
+    <div class="hidden-xs">
+        DataHub
+    </div>
+</footer>
+<!--<footer id="page-footer" class="main-footer text-right" data-th-fragment="footer-content">
+    <div class="pull-left hidden-xs">
+        <img th:src="@{/static/backend/images/Vietnamese_usaid_logo_banner.jpg}" style="max-height: 30px;"/>
+    </div>
+    <div id="table-selected" class="pull-left hidden-xs display-none" style="padding-left: 10px;"></div>
+    <div class="hidden-xs">
+        <b><span th:text="#{site.code}" ></span> Version <span th:text="#{site.version}" ></span></b> 
+        - <span th:text="${@environment.getProperty('spring.profiles.active')}" ></span>
+    </div>
+</footer>-->
+
+<div data-th-fragment="widget-css">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/bootstrap/css/bootstrap.min.css'}" />
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/font-awesome/4.7.0/css/font-awesome.min.css'}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/ionicons/2.0.1/css/ionicons.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/dist/css/AdminLTE.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/dist/css/skins/_all-skins.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/plugins/morris/morris.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/plugins/jvectormap/jquery-jvectormap-1.2.2.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/plugins/daterangepicker/daterangepicker.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/adminlte/2.3.11/plugins/iCheck/all.css'}">
+
+    <!--<link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/toast/angularjs-toast.min.css'}">-->
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/swal/sweetalert2.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/webjars/select2/4.0.5/css/select2.min.css'}" />
+    <link rel="stylesheet" type="text/css" thref="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/amcharts/main.css'}" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/text-angular.css'}" />
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/colorpicker.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/pace-theme-minimal.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/ng-tags-input.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/select.min.css'}" />
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/treetable/jquery.treetable.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/switch/switchery.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/datatable/dataTables.bootstrap.min.css'}">
+    <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/css/main.css'}">
+</div>
+
+<div data-th-fragment="widget-js">
+    <!-- out API--->
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCu4dR0qPfrhMjQ4iUESZhHxP0a9i7416M&libraries=places&sensor=false"></script>
+    <!--<script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>-->
+
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/core.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/charts.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/maps.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/animated.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/kelly.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/dataviz.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/material.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/frozen.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/moonrisekingdom.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/themes/spiritedaway.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/plugins/forceDirected.js'}"></script>
+    <!-- #END out API--->
+
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/jQuery/jquery-2.2.3.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/jquery-validation/1.17.0-1/jquery.validate.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/jQueryUI/jquery-ui.min.js'}"></script>
+    <script>
+                        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/bootstrap/js/bootstrap.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/morris/morris.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/sparkline/jquery.sparkline.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/knob/jquery.knob.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/daterangepicker/moment.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/daterangepicker/daterangepicker.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/datepicker/bootstrap-datepicker.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/slimScroll/jquery.slimscroll.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/fastclick/fastclick.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/plugins/iCheck/icheck.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/adminlte/2.3.11/dist/js/app.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/webjars/select2/4.0.5/js/select2.min.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/angular.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/ngMask.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/mask.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/angular-animate.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/angular-validate.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/angular-ui-bootstrap.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/text-angular-sanitize.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/bootbox.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/pace.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/maxlength.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/angular-local-storage.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/angulajs/select.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/treetable/jquery.treetable.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/switch/switchery.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/scrollup/jquery.scrollUp.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/datatable/datatables.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/datatable/dataTables.fixedColumns.min.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/datatable/dataTables.rowsGroup.js'}"></script>
+    <!--<script type="text/javascript" th:src="@{'/static/backend/plugin/toast/angularjs-toast.min.js'}"></script>-->
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/swal/sweetalert2.all.min.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/backend/js/main.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/utils.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/app.js'}"></script>
+    <!--<script type="text/javascript" th:src="@{'/static/backend/plugin/toast/main.js'}"></script>-->
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/swal/main.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/plugin/amcharts/main.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/backend/js/staff.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/parameter.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/site.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/role.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/profile.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/emailoutbox.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/location.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/htc.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/htc_form.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/htc_confirm.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/htc_laytest.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/feedback.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/his_hiv.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_new.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_opc.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_review.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/dashboard_htc.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/dashboard_pac.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/dashboard_ql.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/dashboard_opc.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_patient.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_accept.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_arv.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_stage.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_test.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_visit.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_viral.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_dashboard.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pac_outprovince.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/opc_qr.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pqm.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/backend/js/pqm_shi.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/report/js/htc.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/htc_confirm.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/laytest.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_accept.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_new.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_review.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_patient.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/indicator.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_earlyhiv.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_detecthiv.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_dead.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/opc_tt03.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/opc_mer.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/opc_arv.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/report.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/pac_ward.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/opc_insurance.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/report/js/opc_quick_treatment.js'}"></script>
+
+    <script type="text/javascript" th:src="@{'/static/importation/js/import.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/importation/js/pac_patient.js'}"></script>
+    <script type="text/javascript" th:src="@{'/static/importation/js/opc_arv.js'}"></script>
+    <script src="https://cdn.rawgit.com/aparshin/leaflet-boundary-canvas/f00b4d35/src/BoundaryCanvas.js"></script>
+
+</div>

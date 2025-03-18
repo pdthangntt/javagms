@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .content {
+                padding: 30px;
+                padding-bottom: 0px;
+            }
+            .col-width-80 { width: 140px; float: left}
+            .col-offset-80 { margin-left: 140px;}
+            * { font-size: 16px!important; line-height: 25px;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Tên đơn vị: 
+                        </div>
+                        <div class="col-offset-80">
+                            <b class="text-uppercase" th:utext="${form.siteName}" ></b>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Địa chỉ:
+                        </div>
+                        <div class="col-offset-80">
+                            <span class="point" th:utext="${form.siteAddress == '' ? '.....................' : form.siteAddress}"></span>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-width-80">
+                            Số điện thoại:
+                        </div>
+                        <div class="col-offset-80">
+                            <span class="point" th:utext="${form.sitePhone == '' ? '.....................' : form.sitePhone}"></span>
+                        </div>
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <h3 class="text-uppercase text-title text-center" th:utext="${form.title}"></h3>
+                    <div class="clear-fix" >&nbsp;</div>
+                </div>
+                <div class="mid text-size-18">
+                    <div class="info-time">
+                        <p>Mã số đối tượng tư vấn: <b class="text-uppercase" th:utext="${form.patientCode}"></b></p>
+                        <p>Ngày đăng ký xét nghiệm: <span class="text-normal" th:utext="${form.preTestTime}"></span></p>
+                        <p>Ngày trả lời kết quả xét nghiệm: <span class="text-normal" th:utext="${form.receiveTime == null ? '....../....../...........' : form.receiveTime}"></span></p>
+                        <p class="text-normal"><i>Lưu ý: Khi lấy kết quả cần mang theo chứng minh thư nhân dân.</i></p> 
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" >&nbsp;</p>
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Tư vấn viên</span>
+                                    </p>
+                                    <div class="box-ky-title">
+                                        <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                    </div>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

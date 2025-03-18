@@ -1,0 +1,229 @@
+<div data-th-fragment="filter()">
+    <style type="text/css">
+        .checkbox {
+            margin-top: 0px;
+        }
+    </style>
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Chỉ số</h3>
+        </div>
+        <div class="box-body">
+            <select class="form-control" name="indicator" id="indicator"
+                    ng-model="filter.indicatorName" ng-change="report('indicator')">
+                <option ng-repeat="(key, value) in options.indicator" ng-value="key" ng-bind="value" ng-selected="filter.indicatorName == key" ></option>
+            </select>
+        </div>
+    </div>
+
+    <div class="box box-solid" style="display: none" >
+        <div class="box-body">
+            <div class="form-group">
+                <label class="text-bold">
+                    Tỉnh thành
+                </label>
+                <select class="form-control" name="provinceID" id="provinceID"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-solid" ng-show="filter.indicatorName == 'pac'">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                Số người nhiễm ước tính
+            </h3>
+        </div>
+        <div class="box-body">
+            <input type="text" class="form-control" name="quantityPatient" ng-model="filter.quantityPatient"/>
+        </div>
+    </div>
+    
+    <div class="box box-solid" ng-show="filter.indicatorName != 'pac' && filter.indicatorName != 'pac-02' && filter.indicatorName.indexOf('pac') != -1">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                Thời gian báo cáo
+            </h3>
+        </div>
+        <div class="box-body">
+            <input type="text" class="form-control" 
+                   ui-mask="99/99/9999" 
+                   placeholder="dd/mm/yyyy"
+                   id='day'
+                   name="day" ng-model="filter.day"/>
+        </div>
+    </div>
+    
+    <div class="box box-solid" ng-show="options.quarter">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-quarter"/>&nbsp;
+                Thời gian báo cáo
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options.quarter">
+                <label>
+                    <input type="checkbox" name="quarter" class="switch-quarter" id="{{k}}"/>
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-solid" ng-show="options.year">
+        <div class="box-header with-border">
+            <h3 class="box-title">Thời gian báo cáo</h3>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <select class="form-control" name="year" id="year"
+                        ng-model="filter.year" ng-change="report()">
+                    <option ng-show="filter.indicatorName == 'pac-02'" value="-1">Tất cả</option>
+                    <option ng-repeat="(key, value) in options.year" 
+                            ng-value="key" ng-bind="value" 
+                            ng-selected="filter.year == key" ></option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-solid" ng-show="options.districts">
+        <div class="box-header with-border">
+            <h3 class="box-title"><input type="checkbox" class="switch-all-districtID"/>&nbsp;Quận huyện</h3>
+        </div>
+        <div class="box-body" ng-if="filter.provinceID">
+            <div class="checkbox" ng-repeat="item in options.districts">
+                <label>
+                    <input type="checkbox" class="minimal switch-districtID" 
+                           id="{{item.value}}" id-name="{{item.text}}" />&nbsp;
+                    <span ng-bind="item.text" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-repeat="(key, item) in options.wards" ng-show="options.wards && item.items.length > 0" >
+        <div class="box-header with-border">
+            <h3 class="box-title"><input type="checkbox" ng-class="'switch-all-ward-' + key"/>&nbsp;{{item.name}}</h3>
+        </div>
+        <div class="box-body" >
+            <div class="checkbox" ng-repeat="item in item.items">
+                <label>
+                    <input type="checkbox" class="minimal switch-districtID" 
+                           ng-class="'minimal switch-ward-' + key"
+                           id="{{item.value}}" id-name="{{item.text}}" />&nbsp;
+                    <span ng-bind="item.text" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options.sites">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-siteID"/>&nbsp;
+                Cơ sở
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="item in options.sites" >
+                <label ng-show="item.show">
+                    <input type="checkbox" name="siteID" class="checkbox-switch switch-siteID"
+                           id="{{item.id}}" data-show="{{item.show}}"/>&nbsp;
+                    <span ng-bind="item.shortName" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options['service-test']">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-serviceTest"/>&nbsp;
+                Dịch vụ
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options['service-test']">
+                <label>
+                    <input type="checkbox" name="serviceTest" class="checkbox-switch switch-serviceTest"
+                           id="{{k}}"/>&nbsp;
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options['ages']">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-ages"/>&nbsp;
+                Nhóm tuổi
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options['ages']">
+                <label>
+                    <input type="checkbox" name="age" class="checkbox-switch switch-ages"
+                           id="{{k}}"/>&nbsp;
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options['gender']">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-gender"/>&nbsp;
+                Giới tính
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options['gender']">
+                <label>
+                    <input type="checkbox" name="gender" class="checkbox-switch switch-gender"
+                           id="{{k}}"/>&nbsp;
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options['modes-of-transmision']">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-mot"/>&nbsp;
+                Đường lây
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options['modes-of-transmision']">
+                <label>
+                    <input type="checkbox" name="modesOfTransmision" class="checkbox-switch switch-mot"
+                           id="{{k}}"/>&nbsp;
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="box box-solid" ng-show="options['test-object-group'] && filter.indicatorName.indexOf('pac') != -1">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <input type="checkbox" class="switch-all-tog"/>&nbsp;
+                Đối tượng
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="checkbox" ng-repeat="(k, v) in options['test-object-group']" style="overflow: hidden;white-space: nowrap;">
+                <label>
+                    <input type="checkbox" name="testObjectGroup" class="checkbox-switch switch-tog"
+                           id="{{k}}"/>&nbsp;
+                    <span ng-bind="v" ></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-footer text-center navbar-fixed-bottom main-footer" id="amchart-color" style="z-index: 9999999">
+        <ul class="hidden-xs theme-switcher"></ul>
+        <button type="button" class="btn btn-primary" ng-click="report()">
+            <i class="fa fa-pie-chart"></i>
+            Xem báo cáo
+        </button>
+    </div>
+</div>

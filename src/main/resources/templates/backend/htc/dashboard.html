@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title + ' ' + smallTitle}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <style>
+                .dashboard-height {
+                    height: 300px;
+                }
+
+                .dashboard-height .fa {
+                    margin-top: 120px;
+                }
+            </style>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcDashboard()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).HTC_TITLE.getLabel()}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcDashboard()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_dashboard" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).htcDashboard()}" 
+                                      method="get">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Dịch vụ</label>
+                                                <select name="service" id="service" class="form-control">
+                                                    <option th:each="n : ${serviceOptions}" 
+                                                            th:selected="${services == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 text-left">
+                                            <button type="submit" class="btn btn-primary margin-top-30">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- So sánh chỉ tiêu-->
+                    <section class="col-lg-6 col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title">So sánh chỉ tiêu số lượt XN với kết quả thực tế</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-targetChartTest"  style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center" >
+                                <div class="dashboard-height" id="targetChartTest">
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- So sánh chỉ tiêu-->
+                    <section class="col-lg-6 col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title">So sánh chỉ tiêu số người dương tính với kết quả thực tế</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-targetChartPositive" style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center">
+                                <div class="targetChart dashboard-height" id="targetChartPositive">
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="row">
+                    <!-- Biểu đồ lượt xét nghiệm -->
+                    <section class="col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title">Số lượt xét nghiệm & số người khẳng định dương tính theo tháng</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-visitChart" style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center">
+                                <div id="visitChart" class="dashboard-height">
+                                    <i class="fa fa-sun-o fa-spin" ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Biểu đồ đối tượng xn theo tháng -->
+                    <section class="col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title">Đối tượng xét nghiệm</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-objectQuarterChart" style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center">
+                                <div id="objectQuarterChart" class="dashboard-height">
+                                    <i class="fa fa-sun-o fa-spin" ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="row">
+                    <!-- Tỷ lệ khách hàng tư vấn xét nghiệm theo độ tuổi -->
+                    <section class="col-lg-6 col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title" >Khách hàng dương tính theo nhóm đối tượng</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-positiveObjectGroup" style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center">
+                                <div class="positiveObjectGroup dashboard-height" id="positiveObjectGroup" >
+                                    <i class="fa fa-sun-o fa-spin" ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section> 
+
+                    <!-- Thống kê khách hàng dương tính chuyển gửi điều trị theo tháng -->
+                    <section class="col-lg-6 col-md-6">
+                        <div class="box box-solid">
+                            <!--                            <div class="box-header with-border">
+                                                            <h3 class="box-title" >Khách hàng dương tính chuyển gửi điều trị thành công</h3>
+                                                            <div class="box-tools pull-right" data-toggle="tooltip" title="Tải ảnh">
+                                                                <a class="btn btn-box-tool" id="dowload-positiveTrans" style="display: none">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>-->
+                            <div class="box-body text-center">
+                                <div class="positiveTrans dashboard-height" id="positiveTrans" >
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                                <div ></div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+                <div class="row">
+                    <!-- Tỷ lệ khách hàng tư vấn xét nghiệm theo độ tuổi -->
+                    <section class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body text-center" >
+                                <div class="positiveObjectGroupPercent dashboard-height" id="positiveObjectGroupPercent">
+                                    <i class="fa fa-sun-o fa-spin" ></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

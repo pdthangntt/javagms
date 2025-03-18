@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).siteIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <small class="hidden-xs" th:text="${site.shortName}"></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteStaffNew(site.ID)}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-3 col-md-3" style="display: none">
+                        <div data-th-include="backend/site/widget_site :: staff-left(${site})"></div>
+
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Chú thích Icon</h3>
+                            </div>
+                            <div class="box-body no-padding" style="">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="javascript:;"><i class="fa fa-barcode" ></i> Mã nhân viên</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-user" ></i> Họ và tên</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-phone" ></i> Số điện thoại</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-at" ></i> Email</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-user-md" ></i> Tên đăng nhập</a></li>
+                                    <li><a href="javascript:;"><i class="fa fa-clock-o" ></i> Đăng nhập lần cuối</a></li>
+                                </ul>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li th:class="${#httpServletRequest.getParameter('tab') == null ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}">
+                                        Tất cả
+                                        <span th:if="${#httpServletRequest.getParameter('tab') == null}" 
+                                              th:utext="${'('+dataPage.data.size()+')'}" ></span>
+                                    </a>
+                                </li>
+                                <li th:class="${#httpServletRequest.getParameter('tab') == 'remove' ? 'active' : ''}">
+                                    <a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID, 'remove')}">Đã khoá</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" >
+                                    <table class="table table-scroll table-bordered table-striped" data-scrollY="auto">
+                                        <thead>
+                                            <tr class="success">
+                                                <th class="text-center vertical-align-middle">Tài khoản</th>
+                                                <th class="text-center vertical-align-middle">Quyền hạn</th>
+                                                <th class="text-center vertical-align-middle" style="width: 100px;">Trạng thái</th>
+                                                <th class="text-center vertical-align-middle" style="width: 150px;">Đăng nhập lần cuối</th>
+                                                <th class="text-center vertical-align-middle" style="width: 120px;">
+                                                    <div class="box-tools" th:if="${#httpServletRequest.getParameter('tab') == null}" >
+                                                        <a  th:href="${T(com.gms.components.UrlUtils).siteStaffNew(site.ID)}" class="btn btn-primary btn-xs"
+                                                            th:data-role="${T(com.gms.components.UrlUtils).siteStaffNew(site.ID)}">
+                                                            <i class="fa fa-plus"></i> 
+                                                            Thêm mới
+                                                        </a>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tr th:if="${dataPage.data.size() == 0}" >
+                                            <th colspan="4" class="text-red text-center">Không có thông tin</th>
+                                        </tr>
+                                        <tr th:each="item : ${dataPage.data}"
+                                            th:class="${success_id != null && success_id == item.ID ? 'success' : '' }">
+                                            <td>
+                                                <p><b>Mã: </b>#[[${item.ID}]]</p>
+                                                <p><b>Tên đăng nhập: </b><span class="text-danger" >[[${item.username}]]</span></p>
+                                                <p><b>Họ và tên: </b><span>[[${item.name}]]</span></p>
+                                                <p><b>SĐT: </b><span>[[${item.phone}]]</span></p>
+                                                <p th:if="${item.email != null && item.email != ''}"><b>Email: </b><span>[[${item.email}]]</span></p>
+                                                <i th:if="${site.serviceIDs != null && #lists.contains(site.serviceIDs, T(com.gms.entity.constant.ServiceEnum).HTC.getKey())}" >
+                                                    [[${serviceTests.getOrDefault(item.serviceVisitID == '' ? null : item.serviceVisitID, 'Xem tất cả')}]]
+                                                </i>
+                                            </td>
+                                            <td>
+                                                <span th:each="assginRole,iter : ${item.userRoles}">
+                                                    <span th:utext="${assginRole.role == null ? '' : assginRole.role.name }" ></span>
+                                                    <br/>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <label th:if="${!item.isActive}" class="label label-danger" >Tạm khoá</label>
+                                                <label th:if="${item.isActive}" class="label label-success" >Hoạt động</label>
+                                            </td>
+                                            <td class="text-center">[[${item.lastLoginTime == null ? 'Chưa đăng nhập' :  #dates.format(item.lastLoginTime, 'hh:mm dd/MM/yyyy')}]]</td>
+                                            <td class="text-center">
+                                                <a style="width: 100px; margin-bottom: 5px;" th:href="${T(com.gms.components.UrlUtils).siteStaffUpdate(site.ID,item.ID)}" class="btn btn-primary btn-xs" 
+                                                   th:data-role="${T(com.gms.components.UrlUtils).siteStaffUpdate(site.ID,item.ID)}">
+                                                    <i class="fa fa-edit"></i>
+                                                    Sửa
+                                                </a>
+                                                <br/>
+                                                <a style="width: 100px; margin-bottom: 5px;" th:href="${T(com.gms.components.UrlUtils).siteStaffChangePwd(site.ID,item.ID)}" class="btn btn-info btn-xs" 
+                                                   th:data-role="${T(com.gms.components.UrlUtils).siteStaffChangePwd(site.ID,item.ID)}">
+                                                    <i class="fa fa-key"></i>
+                                                    Đổi mật khẩu
+                                                </a>
+                                                <br/>
+                                                <a style="width: 100px;" th:href="${T(com.gms.components.UrlUtils).siteStaffHistory(site.ID,item.ID)}" class="btn btn-default btn-xs"
+                                                   th:data-role="${T(com.gms.components.UrlUtils).siteStaffHistory(site.ID,item.ID)}">
+                                                    <i class="fa fa-lock"></i>
+                                                    Hoạt động
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

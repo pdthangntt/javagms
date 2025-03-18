@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-layout-decorate="~{backend/layouts/top-nav}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1 th:text="${title}" ></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).backendDashboard()}" th:text="${parent_title}"></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).dashboardHtc()}" th:text="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="dashboard_htc" ng-init="init()" ng-cloak>
+                <style>
+                    .dashboard-height {
+                        height: 400px;
+                    }
+
+                    .dashboard-height .fa {
+                        margin-top: 150px;
+                    }
+                </style>
+                <script th:inline="javascript">
+                            var urlIndicator = '/service/dashboard-htc/indicator.json';
+//                            var amchartTheme = false;
+                            var form = {};
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="row" ng-show="filter.indicatorName == 'htc'">
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="dashboard-chart01">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="dashboard-chart02">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="dashboard-chart03">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="dashboard-chart04">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="filter.indicatorName != 'htc'">
+                            <div class="col-md-12">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart01">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart02">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart03">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart04">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart05">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="box box-solid">
+                                    <div class="box-body text-center">
+                                        <div class="dashboard-height" id="indicator-chart06">
+                                            <i class="fa fa-sun-o fa-spin"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="box-filter">
+                        <div data-th-include="backend/dashboard/widget :: filter" ></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

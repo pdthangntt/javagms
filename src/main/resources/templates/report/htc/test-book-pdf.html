@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+        <style type="text/css" th:if="${!print}">
+            @page { size: A3 landscape;}
+            .table-full { font-size: 12px; }
+        </style>
+        <style type="text/css">
+            .table-range-time{ margin-left: 520px; width: 100%;}
+            .parent-small { width: 500px; }
+            .parent-custom { width: 400px; }
+            .parent-test { width: 110px; }
+            .parent-result-first { width: 180px; }
+            .small-text { width: 50px; }
+            .parent-result-nhan-kq { width: 350px;}
+            .rotate-vertical {
+                text-align:center;
+                white-space:nowrap;
+                g-origin:50% 50%;
+                -webkit-transform: rotate(90deg);
+                -moz-transform: rotate(90deg);
+                -ms-transform: rotate(90deg);
+                -o-transform: rotate(90deg);
+                transform: rotate(90deg);
+
+            }
+            .rotate-vertical p {
+                margin:0 -100% ;
+                display:inline-block;
+            }
+            .rotate-vertical p:before{
+                content:'';
+                width:0;
+                padding-top:110%;/* takes width as reference, + 10% for faking some extra padding */
+                display:inline-block;
+                vertical-align:middle;
+            }
+            .first {
+                height: 25px; width: 100px; border: none; text-align: center; margin-left: 15px;
+            }
+            .input-first {
+                height: 25px; width:250px; border: 1px solid black; margin-left: 10px; text-align: center;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div>Tên cơ sở tư vấn xét nghiệm: <span th:utext="${form.siteName}"></span></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="">
+                        <p>&nbsp;</p>
+                        <table class="table-range-time">
+                            <tr>
+                                <td class="first">TỪ</td>
+                                <td class="input-first" th:utext="${form.start}"></td>
+                                <td id="sec" style="height: 25px; width: 100px; border: none; text-align: center; margin-left: 10px;" >ĐẾN</td>
+                                <td id="input-sec" style="height: 25px; width:250px; border: 1px solid black;margin-left: 10px; text-align: center; " th:utext="${form.end}"></td>
+                            </tr>
+                        </table>
+                        <p>&nbsp;</p>
+                        <div data-th-replace="report/htc/widget :: table-test-book(form=${form})"></div>
+                        <p>&nbsp;</p>
+                    </div>
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

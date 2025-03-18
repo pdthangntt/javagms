@@ -1,0 +1,84 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).feedbackIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}"></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).feedbackIndex()}">Góp ý</a></li>
+                    <li class="active"><span th:text="${title}" ></span></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="feedBack" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).feedbackUpdate()}" 
+                          th:object="${form}" 
+                          method="post"
+                          name="feedback_form"
+                          ng-submit="register(feedback_form, $event)" 
+                          ng-validate="validationOptions">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Thông tin góp ý</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div data-th-replace="widget/form :: input-hidden('ID')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('siteID')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('name')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('sendEmail')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('sendPhone')"></div>
+                                    <div data-th-replace="widget/form :: input-hidden('content')"></div>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Họ và tên:</label>
+
+                                        <div class="col-sm-10">
+                                            <label th:text="${form.name}"></label>
+                                        </div>
+                                    </div><br/>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Email:</label>
+
+                                        <div class="col-sm-10">
+                                            <label th:text="${form.sendEmail}"></label>
+                                        </div>
+                                    </div><br/>
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="col-sm-2 control-label">Số điện thoại:</label>
+
+                                        <div class="col-sm-10">
+                                            <label th:text="${form.sendPhone}"></label>
+                                        </div>
+                                    </div><br/>
+                                    <div class="form-group col-sm-12">
+                                        <div data-th-replace="widget/form :: select('Trạng thái', 'status', true, ${types}, '')"></div>
+                                    </div>
+                                    <div class="form-group col-sm-12">
+                                        <span>Nội dung</span>
+                                        <pre><span th:text="${form.content}"></span></pre>
+                                    </div>
+                                    
+                                </div>
+                                <div class="box-footer">
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Cập nhật</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).feedbackIndex()}" onclick="return confirm('Bạn chắc chắn muốn hủy')" class="btn btn-default btn-sm" >Huỷ</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section> 
+        </div>
+    </body>
+</html>

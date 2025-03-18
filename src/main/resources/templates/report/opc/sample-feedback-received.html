@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--<title th:utext="${form.fileName} + '.pdf'"></title>-->
+        <title>Phiếu phản hồi tiếp nhận điều trị</title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .page-height-a4 {
+                position: relative;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman";'>
+        <p>&nbsp;</p>
+        <div class="body page-height-a4">
+            <div class="content">
+                <div class="header">
+                    <p>&nbsp;</p>
+                    <div class="row">&emsp;&emsp;<span th:utext="${form.siteAgency == null ? 'Sở Y tế: ..............' : form.siteAgency}" ></span></div>
+                    <div class="row">&emsp;&emsp;<b><span th:utext="${form.siteName}" ></span></b></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title">PHIẾU PHẢN HỒI TIẾP NHẬN ĐIỀU TRỊ</p>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="mid" style="padding-left: 1cm;">
+                    <div class="row">Kính gửi: <span th:utext="${sourceSiteName}"></span></div>
+                    <div class="row">Cơ sở điều trị: <span th:utext="${form.siteName}"></span> đã tiếp nhận:</div>
+                    <div class="row">
+                        <div class="col-50">Ông/bà: <span th:utext="${form.fullName == null ? '...........................................................' : form.fullName}"></span></div>
+                        <div class="col-25">Năm sinh: <span th:utext="${form.dob != null && form.dob != '' ? form.dob.substring(6, 10) : '..................'}"></span></div>
+                        <div class="col-20">Nam/Nữ:&nbsp;<span th:utext="${form.genderID == '1' ? 'Nam' : form.genderID == '2' ? 'Nữ' : '.........'}"></span></div>
+                    </div>
+                    <div class="row">Mã số người bệnh: <span th:utext="${form.code == null ? '..................................................................................................................' : form.code}"></span> </div>
+                    <div class="row">Địa chỉ hiện tại: <span th:utext="${form.currentAddressFull == null || form.currentAddressFull == '' ? '.......................................................................................................................' : form.currentAddressFull}"></span> </div>
+                    <div class="row">Địa chỉ thường trú: <span th:utext="${form.permanentAddressFull == null || form.permanentAddressFull == '' ? '.......................................................................................................................' : form.permanentAddressFull}"></span> </div>
+                    <div class="row">Chuyển đến theo phiếu chuyển ngày: <span th:utext="${#dates.format(#dates.createNow(),'dd')}"></span>/<span th:utext="${#dates.format(#dates.createNow(),'MM')}"></span>/<span th:utext="${#dates.format(#dates.createNow(),'yyyy')}"></span> </div>
+                    <div class="info-time">
+                        <p class="" >&nbsp;</p>
+                        <div class="row">
+                            <div class="col-30"><p>&nbsp;</p></div>
+                            <div class="col-30"><p>&nbsp;</p></div>
+                            <div class="col-40 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        Cán bộ tiếp nhận
+                                        <br/>
+                                        <i><span class="chu-ky" >(Ký, ghi rõ họ tên)</span></i>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

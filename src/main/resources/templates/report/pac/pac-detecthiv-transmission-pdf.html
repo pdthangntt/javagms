@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+
+            .width-60 {
+                width: 60px;
+            }
+            .width-80 {
+                width: 80px;
+            }
+            .table-report tr {page-break-inside: avoid;  page-break-after: auto ;}
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+            @media print {
+                .content #page-break { 
+                    page-break-after: always !important;
+                }
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu()"></div>
+
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="box_title">
+                        <p class="text-uppercase text-title">Báo cáo người nhiễm phát hiện <span th:utext="${form.manageStatus == '1' ? 'chưa rà soát' : form.manageStatus == '2' ? 'cần rà soát' : form.manageStatus == '3' ? 'đã rà soát' : form.manageStatus == '4' ? 'được quản lý' : ''}"></span> theo đường lây nhiễm</p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <div class="row">
+                            <p>&nbsp;</p>
+                            <div class="table-responsive">
+                                <table class="table-report table table-bordered table-hover" 
+                                       th:with="lastItem = ${form.table != null && form.table.size() > 0 ? form.table[form.table.size() -1] : item}">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center vertical-align-middle success text-uppercase" rowspan="2">STT</th>
+                                            <th class="min-width-240 text-center vertical-align-middle success" rowspan="2">Đơn vị báo cáo</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Lây qua đường máu</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Lây qua đường tình dục</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Mẹ truyền sang con</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Không rõ</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Không có thông tin</th>
+                                            <th class="min-width-80 text-center vertical-align-middle success" colspan="2">Tổng</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >Số ca</th>
+                                            <th class="min-width-40 text-center vertical-align-middle success" >%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody th:if="${lastItem != null && lastItem.tong > 0}">
+                                        <tr th:if="${isVAAC && (form.province == null || form.province == '') && (form.levelDisplay == 'province' || form.levelDisplay == '')}">
+                                            <td></td> 
+                                            <td colspan="13"><b>Toàn quốc</b></td> 
+                                        </tr>
+                                        <th:block th:each="item, iter : ${form.table}">
+                                            <tr th:if="${item.provinceID != 'all' && (form.levelDisplay == 'province' || form.levelDisplay == '') && ! isTYT && !isTTYT && !isPAC}">
+                                                <td  class="text-center" th:utext="${item.stt}"></td> 
+                                                <td ><span th:utext="${item.displayName}"></span></td>
+                                                <td  class="text-center" th:utext="${item.blood == 0 ? 0 : form.displayNumber(item.blood)}"></td>
+                                                <td  class="text-center" th:utext="${item.bloodPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.sexuality == 0 ? 0 : form.displayNumber(item.sexuality)}"></td>
+                                                <td  class="text-center" th:utext="${item.sexualityPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.momtochild == 0 ? 0 : form.displayNumber(item.momtochild)}"></td>
+                                                <td  class="text-center" th:utext="${item.momtochildPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.unclear == 0 ? 0 : form.displayNumber(item.unclear)}"></td>
+                                                <td  class="text-center" th:utext="${item.unclearPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.noinformation == 0 ? 0 : form.displayNumber(item.noinformation)}"></td>
+                                                <td  class="text-center" th:utext="${item.noinformationPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.tong == 0 ? 0 : form.displayNumber(item.tong)}"></td>
+                                                <td  class="text-center" th:utext="${item.getTongPercent(lastItem.tong)}"></td>
+                                            </tr>
+                                            <tr th:if="${(item.provinceID != 'all' && form.levelDisplay != 'province' && form.levelDisplay != '') || (item.provinceID != 'all' && (isTTYT || isPAC || isTYT))}">
+                                                <td class="text-center" ><b><span th:utext="${item.stt}"></span></b></td> 
+                                                <td colspan="13" ><b><span th:utext="${item.displayName}"></span></b></td>
+                                            </tr>   
+                                            <th:block th:if='item.childs'  th:each="pChild : ${item.childs}" >
+                                                <tr th:if="${(isVAAC || isPAC) && item.provinceID != 'all' && form.levelDisplay != 'ward'}">
+                                                    <td  class="text-center"></td> 
+                                                    <td  th:utext="${item.displayName == 'Tỉnh khác' ? pChild.displayName : '&nbsp;&nbsp;&nbsp;&nbsp;' + pChild.displayName}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.blood == 0 ? 0 : form.displayNumber(pChild.blood)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.bloodPercent}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.sexuality == 0 ? 0 : form.displayNumber(pChild.sexuality)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.sexualityPercent}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.momtochild == 0 ? 0 : form.displayNumber(pChild.momtochild)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.momtochildPercent}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.unclear == 0 ? 0 : form.displayNumber(pChild.unclear)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.unclearPercent}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.noinformation == 0 ? 0 : form.displayNumber(pChild.noinformation)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.noinformationPercent}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.tong == 0 ? 0 : form.displayNumber(pChild.tong)}"></td>
+                                                    <td  class="text-center" th:utext="${pChild.getTongPercent(lastItem.tong)}"></td>
+                                                </tr>
+                                                <tr th:if="${form.levelDisplay == 'ward' && item.displayName != 'Tỉnh khác'}">
+                                                    <td></td> 
+                                                    <td colspan="13"><b><i>&nbsp;&nbsp;&nbsp;&nbsp;[[${pChild.displayName}]]</i></b></td>
+                                                </tr>  
+                                                <th:block th:if='pChild.childs != null'  th:each="dChild : ${pChild.childs}">
+                                                    <tr>
+                                                        <td class="text-center"></td> 
+                                                        <td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${dChild.displayName}]]</td>
+                                                        <td  class="text-center" th:utext="${dChild.blood == 0 ? 0 : form.displayNumber(dChild.blood)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.bloodPercent}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.sexuality == 0 ? 0 : form.displayNumber(dChild.sexuality)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.sexualityPercent}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.momtochild == 0 ? 0 : form.displayNumber(dChild.momtochild)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.momtochildPercent}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.unclear == 0 ? 0 : form.displayNumber(dChild.unclear)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.unclearPercent}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.noinformation == 0 ? 0 : form.displayNumber(dChild.noinformation)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.noinformationPercent}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.tong == 0 ? 0 : form.displayNumber(dChild.tong)}"></td>
+                                                        <td  class="text-center" th:utext="${dChild.getTongPercent(lastItem.tong)}"></td>
+                                                    </tr>
+                                                </th:block>
+                                                <th:block th:if="${form.levelDisplay == 'ward' && item.childs != null && #lists.size(item.childs) > 1 && item.displayName != 'Tỉnh khác'}">
+                                                    <tr class="font-weight-bold font-italic">
+                                                        <td ></td>
+                                                        <td ><b><i>&nbsp;&nbsp;&nbsp;&nbsp;Tổng huyện</i></b></td>
+                                                        <td  class="text-center" th:utext="${pChild.blood == 0 ? 0 : form.displayNumber(pChild.blood)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.bloodPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.sexuality == 0 ? 0 : form.displayNumber(pChild.sexuality)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.sexualityPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.momtochild == 0 ? 0 : form.displayNumber(pChild.momtochild)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.momtochildPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.unclear == 0 ? 0 : form.displayNumber(pChild.unclear)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.unclearPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.noinformation == 0 ? 0 : form.displayNumber(pChild.noinformation)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.noinformationPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.tong == 0 ? 0 : form.displayNumber(pChild.tong)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.getTongPercent(lastItem.tong)}"></td>
+                                                    </tr>
+                                                </th:block>
+                                                <th:block th:if="${(item.provinceID != 'all' && form.levelDisplay == 'ward' && pChild.childs == null) || 
+                                                          (isTYT && item.provinceID != form.province && pChild.childs == null)}">
+                                                    <tr>
+                                                        <td ></td>
+                                                        <td>[[${pChild.displayName}]]</td>
+                                                        <td  class="text-center" th:utext="${pChild.blood == 0 ? 0 : form.displayNumber(pChild.blood)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.bloodPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.sexuality == 0 ? 0 : form.displayNumber(pChild.sexuality)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.sexualityPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.momtochild == 0 ? 0 : form.displayNumber(pChild.momtochild)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.momtochildPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.unclear == 0 ? 0 : form.displayNumber(pChild.unclear)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.unclearPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.noinformation == 0 ? 0 : form.displayNumber(pChild.noinformation)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.noinformationPercent}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.tong == 0 ? 0 : form.displayNumber(pChild.tong)}"></td>
+                                                        <td  class="text-center" th:utext="${pChild.getTongPercent(lastItem.tong)}"></td>
+                                                    </tr>
+                                                </th:block>
+                                            </th:block>
+                                            <th:block  th:if="${form.levelDisplay != 'province' && #lists.size(form.table) > 2 && item.displayName != 'Tỉnh khác' && item.provinceID != 'all'}">
+                                                <tr class="font-weight-bold">
+                                                    <td ></td>
+                                                    <td ><b>Tổng tỉnh</b></td>
+                                                    <td  class="text-center" th:utext="${item.blood == 0 ? 0 : form.displayNumber(item.blood)}"></td>
+                                                    <td  class="text-center" th:utext="${item.bloodPercent}"></td>
+                                                    <td  class="text-center" th:utext="${item.sexuality == 0 ? 0 : form.displayNumber(item.sexuality)}"></td>
+                                                    <td  class="text-center" th:utext="${item.sexualityPercent}"></td>
+                                                    <td  class="text-center" th:utext="${item.momtochild == 0 ? 0 : form.displayNumber(item.momtochild)}"></td>
+                                                    <td  class="text-center" th:utext="${item.momtochildPercent}"></td>
+                                                    <td  class="text-center" th:utext="${item.unclear == 0 ? 0 : form.displayNumber(item.unclear)}"></td>
+                                                    <td  class="text-center" th:utext="${item.unclearPercent}"></td>
+                                                    <td  class="text-center" th:utext="${item.noinformation == 0 ? 0 : form.displayNumber(item.noinformation)}"></td>
+                                                    <td  class="text-center" th:utext="${item.noinformationPercent}"></td>
+                                                    <td  class="text-center" th:utext="${item.tong == 0 ? 0 : form.displayNumber(item.tong)}"></td>
+                                                    <td  class="text-center" th:utext="${item.getTongPercent(lastItem.tong)}"></td>
+                                                </tr>
+                                            </th:block>
+                                        </th:block>
+                                        <th:block th:with="item = ${form.table.size() == 0 ? item : form.table[form.table.size() -1]}">
+                                            <tr class="font-weight-bold">
+                                                <td colspan="2" class="text-center"><b>TỔNG CỘNG</b></td>
+                                                <td  class="text-center" th:utext="${item.blood == 0 ? 0 : form.displayNumber(item.blood)}"></td>
+                                                <td  class="text-center" th:utext="${item.bloodPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.sexuality == 0 ? 0 : form.displayNumber(item.sexuality)}"></td>
+                                                <td  class="text-center" th:utext="${item.sexualityPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.momtochild == 0 ? 0 : form.displayNumber(item.momtochild)}"></td>
+                                                <td  class="text-center" th:utext="${item.momtochildPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.unclear == 0 ? 0 : form.displayNumber(item.unclear)}"></td>
+                                                <td  class="text-center" th:utext="${item.unclearPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.noinformation == 0 ? 0 : form.displayNumber(item.noinformation)}"></td>
+                                                <td  class="text-center" th:utext="${item.noinformationPercent}"></td>
+                                                <td  class="text-center" th:utext="${item.tong == 0 ? 0 : form.displayNumber(item.tong)}"></td>
+                                                <td  class="text-center" th:utext="${item.getTongPercent(item.tong)}"></td>
+                                            </tr>
+                                        </th:block>
+                                    </tbody>
+                                    <tbody th:if="${lastItem == null || lastItem.tong == 0}">
+                                        <tr>
+                                            <td class="text-center text-danger" colspan="14"><b>Không có thông tin</b></td> 
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                    </div>
+
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" >
+                                    <i>
+                                        <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

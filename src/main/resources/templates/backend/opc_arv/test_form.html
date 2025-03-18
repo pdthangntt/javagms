@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${form.ID == null ? 'Thêm mới lượt xét nghiệm' : 'Cập nhật lượt xét nghiệm'}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                            form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}" 
+                       data-confirm="Bạn chắc chắn muốn hủy ?"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:utext="${title}"></span><small th:text="${small_title}" ></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcIndex()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).OPC_ARV.getLabel()}"></span></a></li>
+                    <!--<li><a th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}"><span >Thông tin khác</span></a></li>-->
+                    <li>
+                        <a th:href="${form.ID == null ? T(com.gms.components.UrlUtils).opcTestNew(arvID) : T(com.gms.components.UrlUtils).opcTestUpdate(arvID, form.ID)}" th:text="${form.ID == null ? 'Thêm mới lượt xét nghiệm' : 'Cập nhật lượt xét nghiệm'}"></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_test_new_form" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/opc_arv/widget :: opc-tab('other', ${arvID})" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${form.ID == null ? T(com.gms.components.UrlUtils).opcTestNew(arvID) : T(com.gms.components.UrlUtils).opcTestUpdate(arvID, form.ID)} " 
+                          th:object="${form}"
+                          method="post"
+                          name="opc_test_form_new">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        Thông tin sàng lọc, điều trị dự phòng Lao và nhiễm trùng cơ hội
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <input th:if="${form.ID != null}" type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Giai đoạn điều trị:', 'stageID', true, ${stages}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Trạng thái điều trị:', 'statusOfTreatmentID', true, ${options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Sàng lọc Lao:', 'lao', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày sàng lọc:', 'laoTestTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Các biểu hiện nghi Lao:', 'laoSymptoms', false, ${options.get('lao-symtom')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Triệu chứng khác:', 'laoOtherSymptom', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Triệu chứng nghi ngờ:', 'suspiciousSymptoms', false, ${options.get(T(com.gms.entity.db.ParameterEntity).SUSPICIOUS_SYMPTOMS)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/gridview :: select-model('Chuyển gửi khám và xét nghiệm:', 'examinationAndTest', false, ${options.get('has')}, '')" ></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày xét nghiệm Lao:', 'laoTestDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Kết quả xét nghiệm Lao:', 'laoResult', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Chẩn đoán loại hình Lao:', 'laoDiagnose', false, ${options.get(T(com.gms.entity.db.ParameterEntity).LAO_DIAGNOSE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Điều trị Lao:', 'laoTreatment', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày bắt đầu điều trị Lao:', 'laoStartTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày kết thúc điều trị Lao:', 'laoEndTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Điều trị dự phòng INH:', 'inh', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày bắt đầu INH:', 'inhFromTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày kết thúc INH:', 'inhToTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Lý do kết thúc:', 'inhEndCauses', false, ${options.get('lao-end-case')}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('Điều trị NTCH:', 'ntch', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: select('Các biểu hiện NTCH:', 'ntchSymptoms', false, ${options.get('ntch-symtom')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div data-th-replace="widget/form :: input-text('Triệu chứng khác:', 'ntchOtherSymptom', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày bắt đầu Cotrimoxazole:', 'cotrimoxazoleFromTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày kết thúc Cotrimoxazole:', 'cotrimoxazoleToTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Lý do kết thúc:', 'cotrimoxazoleEndCauses', false, ${options.get('ntch-end-case')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('D18.1. Lý do kết thúc khác (nếu có):', 'cotrimoxazoleOtherEndCause', false, '', '')"></div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        Thông tin xét nghiệm CD4
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày lấy mẫu:', 'cd4SampleTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày xét nghiệm:', 'cd4TestTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Nơi xét nghiệm:', 'cd4TestSiteID', false, ${options.get('siteCd4')}, '')"></div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Khác (Ghi rõ):', 'cd4TestSiteName', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Lý do xét nghiệm:', 'cd4Causes', false, ${options.get('cd4-symtom')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Kết quả xét nghiệm:', 'cd4Result', false, '', 'Đơn vị đo: Tế bào/mm<sup>3</sup>')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày nhận kết quả:', 'cd4ResultTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày hẹn xét nghiệm:', 'cd4RetryTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> 
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        Thông tin xét nghiệm viêm gan
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Xét nghiệm HBV:', 'hbv', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày xét nghiệm HBV:', 'hbvTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Kết quả XN HBV:', 'hbvResult', false, ${options.get('test-results')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Lý do XN HBV:', 'hbvCase', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Xét nghiệm HCV:', 'hcv', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày xét nghiệm HCV:', 'hcvTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Kết quả XN HCV:', 'hcvResult', false, ${options.get('test-results')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Lý do XN HCV:', 'hcvCase', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row" >
+                                        <div class="form-group col-md-12">
+                                            <div data-th-replace="widget/form :: textarea('Ghi chú:', 'note', false, 'Nội dung ghi chú', '')"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div> 
+
+                            <div class="box-footer text-center navbar-fixed-bottom main-footer " > 
+                                <button th:if="${isOPC}" ng-show="examinationAndTest=='1'" type="submit" name="print" id="print" value="xxxxx" class="btn btn-primary">
+                                    <i class="fa fa-print" ></i> In phiếu chuyển gửi Lao
+                                </button>
+                                <button ng-cloak class="btn btn-primary" type="submit">
+                                    <i class="fa fa-edit" ></i> 
+                                    <span >Lưu thông tin</span>
+                                </button>
+                                <a th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}" 
+                                   class="btn btn-default" 
+                                   data-confirm-browsers
+                                   data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>
+                            </div>
+                            <!--col-12-end-->
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

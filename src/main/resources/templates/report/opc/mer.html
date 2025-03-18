@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).htcMERPdf()}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).htcMERExcel()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).htcMEREmail()}]];
+            var search = {
+                        fromTime : [[${form.startDate}]],
+                        toTime : [[${form.endDate}]]
+            };
+        </script>
+        <style>
+            .table-report .duongtinh{
+                background-color:#F8CBAD !important;
+                width: 100px;
+            }
+            .title-table{
+                color: red;
+                font-weight: bold;
+            }
+            .table-report .amtinh{
+                background-color:#A9D08E !important;
+                width: 100px;
+            }
+            
+            .table-report .amtinh-title{
+                width: 1600px;
+            }
+            
+            .table-report .duongtinh-title{
+                width: 1600px;
+            }
+            .table-report .object-size{
+                width:150px;
+            }
+            .table-report .huyen-dichvu{
+                width:200px;
+            }
+            .table-report .b2-title-width{
+                width:500px;
+            }
+            .title-non-color{
+                background-color:white !important;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcMER()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).HTC_TITLE.getLabel()}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcMER()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_mer" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom margin-bottom-none">
+                            <ul class="nav nav-tabs">
+                                <li th:class="active">
+                                    <a th:href="${T(com.gms.components.UrlUtils).opcMerReport()}">Báo cáo tháng</a>
+                                </li>
+                                <li >
+                                    <a th:href="${T(com.gms.components.UrlUtils).opcMerQuaterlyReport()}">Báo cáo quý</a>
+                                </li>
+                                <li >
+                                    <a th:href="${T(com.gms.components.UrlUtils).opcMerReport()}">Báo cáo 06 tháng</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).opcMerReport()}" 
+                                      method="GET" name="mer_form">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="form-group">
+                                                <label>Thời gian từ</label>
+                                                <input type="text" class="form-control" name="from_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="fromTime" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="form-group">
+                                                <label>Thời gian đến</label>
+                                                <input type="text" class="form-control" name="to_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="toTime" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="form-group" th:if="${form.opcManager}">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="therapySiteID" id="therapySiteID">
+                                                    <option th:each="instance : ${options.get('treatment-facility')}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('therapy-site') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                            <div class="col-lg-12 col-md-12 text-center">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fa fa-search"></i> Xem báo cáo
+                                                </button>
+                                                <button ng-click="merExcel()" type="button" class="btn btn-primary margin-left-5"
+                                                        th:data-role="${T(com.gms.components.UrlUtils).htcMERExcel()}">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                                </button>
+                                                <button ng-click="merEmail()" type="button" class="btn btn-primary margin-left-5"
+                                                        th:data-role="${T(com.gms.components.UrlUtils).htcMEREmail()}">
+                                                    <i class="fa fa-inbox"></i> Gửi đến Email
+                                                </button>
+                                            </div>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+                               <div class="box-title">
+                                    Báo cáo MER từ
+                                    <span class="text-danger" th:utext="${form.startDate == '' || form.startDate == null ? '__' : form.startDate}" ></span> 
+                                    đến
+                                    <span class="text-danger" th:utext="${form.endDate == '' || form.endDate == null ? '__' : form.endDate }" ></span>
+                                </div> 
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/opc/widget-mer-table :: table-mer-one-arv()"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

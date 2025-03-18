@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content"
+             th:with="tab=${#request.getParameter('tab') == '' ? null : #request.getParameter('tab')}">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${parentTitle}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcOpcConnect()}"><span th:text="${smallTitle}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="arv_htc_receive" ng-init="init()">
+                <script th:inline="javascript">
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).htcOpcConnect()}" method="get">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body" th:if="${#maps.size(errors) > 0}">
+                                    <h3 > Thành công: [[${i}]], Lỗi: [[${#maps.size(errors)}]]</h3>
+                                    <p th:each="instance : ${errors}">
+                                        <span th:text="${instance.key + ': ' + instance.value}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left" >
+                                        <a class="btn btn-primary btn-xs table-function" 
+                                           th:href="${T(com.gms.components.UrlUtils).htcOpcConnect() + '?confirm=1'}" 
+                                           data-confirm="Bạn chắc chắn muốn kết nối các bản ghi này?">
+                                            <i class="fa  fa-connectdevelop"></i> Kết nối
+                                        </a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <table class="table table-bordered table-sm table-full"  
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">Mã</th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Năm sinh</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center">Số thẻ BHYT</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Địa chỉ hiện tại</th>
+                                                <th class="text-center">Mã XN khẳng định</th>
+                                                <th class="text-center">Ngày XN khẳng định</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}">
+                                                <td class=""><span th:text="${item.ID}"></span></td>
+                                                <td class=""><span th:text="${item.patientName != null ? item.patientName : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.yearOfBirth != null ? item.yearOfBirth : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patientID != null ? item.patientID : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.healthInsuranceNo != null ? item.healthInsuranceNo : ''}"></span></td>
+                                                <td class=""><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class=""><span th:text="${item.currentAddressFull}"></span></td>
+                                                <td class="text-center"><span th:text="${item.confirmTestNo == null ? '' : item.confirmTestNo}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

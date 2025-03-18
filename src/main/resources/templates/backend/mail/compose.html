@@ -1,0 +1,76 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).mailIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).mailIndex()}">Hộp thư</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).mailCompose()}"><span th:text="${title}"></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="emailOutbox" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-md-12">
+
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Soạn email mới</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+
+                                <form th:action="${T(com.gms.components.UrlUtils).mailCompose()}" 
+                                      th:object="${form}" 
+                                      method="post"
+                                      name="emailOutbox_form"
+                                      ng-submit="register(emailOutbox_form, $event)" 
+                                      ng-validate="validationOptions">
+                                    <div class="form-group">
+                                        <!--<input class="form-control" placeholder="To:">-->
+                                        <div data-th-replace="widget/form :: input-text('Người nhận', 'to', true, 'To:','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <!--<input class="form-control" placeholder="Subject:">-->
+                                        <div data-th-replace="widget/form :: input-text('Tiêu đề', 'subject', true, 'Subject:','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: textarea('Nội dung', 'content', true, '','')"></div>
+                                    </div>
+                                    <div class="text-center">
+                                        <a th:href="${T(com.gms.components.UrlUtils).mailCompose()}">
+                                            <button type="submit" class="btn btn-primary"><i class="fa fa-send"></i> Gửi email</button>
+                                        </a>
+                                        <a th:href="${T(com.gms.components.UrlUtils).mailIndex()}" 
+                                           class="btn btn-default" 
+                                           data-confirm-browsers
+                                           data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.box-body -->
+
+                            <!-- /.box-footer -->
+                        </div>
+                        <!-- /. box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+
+                <!-- /.row -->
+
+            </section> 
+        </div>
+    </body>
+</html>

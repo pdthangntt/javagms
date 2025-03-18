@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript">
+                var ward_id = [[${options}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li>
+                        <a  th:href="${T(com.gms.components.UrlUtils).pqmExport()}"  ><span th:text="${title}" ></span></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pqm_exprotssss" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-default">
+                            <div class="box-body">
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số XN-ĐT-PrEP
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month1a" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year1a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month1b" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year1b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel1('/report/pqm/excel.html?t=1')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số Thuốc ARV dự trù an toàn (HMED)
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month2a" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year2a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month2b" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year2b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel2('/report/pqm/excel.html?t=2')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số Thuốc ARV đã cấp (HMED)
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month3a" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year3a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month3b" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year3b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel3('/report/pqm/excel.html?t=3')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số Thuốc ARV (HMED)
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month4a" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year4a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month4b" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year4b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel4('/report/pqm/excel.html?t=4')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số Thuốc ARV (eLMIS)
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month5a" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year5a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month5b" class="form-control">
+                                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                                            th:selected="${quarter != null && quarter +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year5b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel5('/report/pqm/excel.html?t=5')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box box-default box-solid">
+                                    <div class="box-header with-border">
+                                        <h4 class="box-title">
+                                            Chỉ số BHYT (eLMIS)
+                                        </h4>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian từ:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month6a" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year6a" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label style="font-size: 17px;">Thời gian đến:</label>
+                                                <fieldset class="form-fieldset">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Tháng</label>
+                                                                <select   id="month6b" class="form-control">
+                                                                    <option th:each="n : ${options.get('months')}" 
+                                                                            th:selected="${month != null && month +'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label>Năm</label>
+                                                                <select   id="year6b" class="form-control">
+                                                                    <option th:each="n : ${options.get('years')}" 
+                                                                            th:selected="${year != null && year+'' == n.key}"
+                                                                            th:value="${n.key}" 
+                                                                            th:text="${n.value}"/>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <br/>
+                                                <br/>
+                                                <br/>
+                                                <button ng-click="excel6('/report/pqm/excel.html?t=6')" type="button" class="btn btn-primary" style="margin-top: 10px;">
+                                                    <i class="fa fa-file-excel-o"></i> Xuất số liệu
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

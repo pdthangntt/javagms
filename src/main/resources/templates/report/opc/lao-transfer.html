@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="'PhieuChuyenGuiLao' + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .body {
+                /*    height: 297mm;
+                    width: 210mm;*/
+                margin-left: 30px;
+                margin-right:  30px;
+                /*color: blue;*/
+                color: #000;
+                /*background: url('in_kim_a5.png');*/
+                /*font-size: 14px;*/
+                /*font-size: 16.8px;*/
+                font-size: 13px;
+                background-color: #fff;
+                /*border: 1px solid #000;*/
+            }
+            .margin-left-10 {
+                margin-left: 10px;
+            }
+            .font-25 {
+                margin-top: 25px;
+            }
+            .min-height-100{
+                min-height: 90px;
+            }
+            .min-height-125{
+                min-height: 110px;
+            }
+        </style>
+        <style type="text/css">
+            @page { /*size: A4 landscape;*/}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body">
+            <p>&nbsp;</p>
+
+            <div  style="border: 1px solid !important;">
+                <div class="row ">
+                    <div class="col-50 min-height-100" style="border-right: 1px solid !important;border-bottom: 1px solid !important;">
+                        <div class="row text-center">
+                            <b>ĐƠN VỊ CHUYỂN</b>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Tên đơn vị: <span th:utext="${site.name}"></span></span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Địa chỉ: <span th:utext="${address}"></span></span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Điện thoại liên hệ: <span th:utext="${site.phone}"></span></span>
+                        </div>
+                    </div>
+                    <div class="col-50 min-height-100" style="border-bottom: 1px solid !important;">
+                        <div class="row text-center">
+                            <b>ĐƠN VỊ NHẬN</b>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Tên đơn vị: .........................................................................</span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Địa chỉ: ...............................................................................</span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Điện thoại liên hệ: ..............................................................</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid !important;">
+                    <div class="text-bold text-center text-uppercase"><span>PHIẾU CHUYỂN GỬI</span></div>
+                    <div class="text-italic text-center"><span>(LIÊN 1: giữ lại tại cơ sở TVXNHIV)</span></div>
+                    <span> &nbsp;Kính gửi: Phòng khám chuyên khoa HIV/AIDS</span>
+                </div>
+                <div class="row" >
+                    <div class="col-50">
+                        <span class="text-bold">&nbsp;Mã số/Tên khách hàng: <span class="text-uppercase" th:utext="${arv.patient.fullName}"></span></span>
+                    </div>
+                    <div class="col-50">
+                        <span class="text-bold text-right"><span class="text-uppercase" th:utext="${arv.code}"></span> (MSKĐ: <span class="text-uppercase" th:utext="${arv.patient.confirmCode}"></span>)</span>
+                    </div>
+                </div>
+                <div class="row " style="border-bottom: 1px solid !important;">
+                    <div class="col-100">
+                        <span class="">&nbsp;Lý do chuyển gửi:</span>
+                    </div>
+                    <div class="col-50 min-height-125">
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Không chuyển gửi:</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Chăm sóc điều trị HIV/AIDS</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Điều trị lao</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Dự phòng lây truyền mẹ-con</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> KHHGĐ</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Chăm sóc y tế khác</label> 
+                        </div>
+                    </div>
+                    <div class="col-50 min-height-125">
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Tiếp cận cộng đồng</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Nhóm hỗ trợ</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Cai nghiện cộng đồng </label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Tư vấn giảm nguy cơ bổ sung</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Lấy máu, xét nghiệm khẳng định HIV</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Khác, đề nghị nghi rõ: ...........................................</label> 
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="border-top: 1px solid !important;">
+                    <div class="col-50" style="border-right: 1px solid !important;">
+                        <br/><br/><br/>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Ngày chuyển gửi: ngày........tháng........năm.........</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Người chuyển gửi</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-italic ">
+                            <label> (Ký, ghi rõ họ tên)</label> 
+                        </div>
+                        <br/><br/><br/>
+                    </div>
+                    <div class="col-50" >
+                        <div class="row margin-left-10 text-center text-italic">
+                            <label> Xin vui lòng phản hồi qua điện thoại khi khách đến cơ sở anh/chị, và gửi lại cho chúng tôi phiếu này (sau khi điền thông tin dưới đây)</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Ngày nhận khách hàng: ngày........tháng........năm........</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label>Người nhận</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-italic">
+                            <label>(Ký, ghi rõ họ tên)</label> 
+                        </div>
+                        <br/><br/><br/>
+                    </div>
+                </div>
+                <div class="row" ><!--&nbsp;--></div>
+            </div>
+            <p>&nbsp;</p>
+            <hr/>
+            <p>&nbsp;</p>
+            <div  style="border: 1px solid !important;">
+                <div class="row ">
+                    <div class="col-50 min-height-100" style="border-right: 1px solid !important;border-bottom: 1px solid !important;">
+                        <div class="row text-center">
+                            <b>ĐƠN VỊ CHUYỂN</b>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Tên đơn vị: <span th:utext="${site.name}"></span></span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Địa chỉ: <span th:utext="${address}"></span></span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Điện thoại liên hệ: <span th:utext="${site.phone}"></span></span>
+                        </div>
+                    </div>
+                    <div class="col-50 min-height-100" style="border-bottom: 1px solid !important;">
+                        <div class="row text-center">
+                            <b>ĐƠN VỊ NHẬN</b>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Tên đơn vị: .........................................................................</span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Địa chỉ: ...............................................................................</span>
+                        </div>
+                        <div class="row">
+                            <span class=""> &nbsp;Điện thoại liên hệ: ..............................................................</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="border-bottom: 1px solid !important;">
+                    <div class="text-bold text-center text-uppercase"><span>PHIẾU CHUYỂN GỬI</span></div>
+                    <div class="text-italic text-center"><span>(LIÊN 2: giao khách hàng mang đến cơ sở được chuyển gửi)</span></div>
+                    <span> &nbsp;Kính gửi: Phòng khám chuyên khoa HIV/AIDS</span>
+                </div>
+                <div class="row" >
+                    <div class="col-50">
+                        <span class="text-bold">&nbsp;Mã số/Tên khách hàng: <span class="text-uppercase" th:utext="${arv.patient.fullName}"></span></span>
+                    </div>
+                    <div class="col-50">
+                        <span class="text-bold text-right"><span class="text-uppercase" th:utext="${arv.code}"></span> (MSKĐ: <span class="text-uppercase" th:utext="${arv.patient.confirmCode}"></span>)</span>
+                    </div>
+                </div>
+                <div class="row " style="border-top: 1px solid;">
+                    <div class="col-100">
+                        <span class="">&nbsp;Lý do chuyển gửi:</span>
+                    </div>
+                    <div class="col-50 min-height-125" style="border-bottom: 1px solid !important;">
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Không chuyển gửi:</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Chăm sóc điều trị HIV/AIDS</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Điều trị lao</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Dự phòng lây truyền mẹ-con</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> KHHGĐ</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Chăm sóc y tế khác</label> 
+                        </div>
+                    </div>
+                    <div class="col-50 min-height-125" style="border-bottom: 1px solid !important;">
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Tiếp cận cộng đồng</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Nhóm hỗ trợ</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Cai nghiện cộng đồng </label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Tư vấn giảm nguy cơ bổ sung</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Lấy máu, xét nghiệm khẳng định HIV</label> 
+                        </div>
+                        <div class="row margin-left-10">
+                            <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Khác, đề nghị nghi rõ: ...........................................</label> 
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-50" style="border-right: 1px solid !important;">
+                        <br/><br/><br/>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Ngày chuyển gửi: ngày........tháng........năm.........</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Người chuyển gửi</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-italic ">
+                            <label> (Ký, ghi rõ họ tên)</label> 
+                        </div>
+                        <br/><br/><br/>
+                    </div>
+                    <div class="col-50" >
+                        <div class="row margin-left-10 text-center text-italic">
+                            <label> Xin vui lòng phản hồi qua điện thoại khi khách đến cơ sở anh/chị, và gửi lại cho chúng tôi phiếu này (sau khi điền thông tin dưới đây)</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label> Ngày nhận khách hàng: ngày........tháng........năm........</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-bold">
+                            <label>Người nhận</label> 
+                        </div>
+                        <div class="row margin-left-10 text-center text-italic">
+                            <label>(Ký, ghi rõ họ tên)</label> 
+                        </div>
+                        <br/><br/><br/>
+                    </div>
+                </div>
+                <div class="row" ><!--&nbsp;--></div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+<div data-th-fragment="js-print()" xmlns:th="http://www.w3.org/1999/xhtml">
+    <script type="text/javascript" th:inline="javascript" th:if="${print}">
+        var method = eval([[${init}]]);
+        method();
+    </script>
+</div>

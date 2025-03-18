@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).opcQuickTreatment('pdf')}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).opcQuickTreatment('excel')}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).opcQuickTreatment('email')}]];
+            var search = {
+            fromTime : [[${form.startDate}]],
+                    toTime : [[${form.endDate}]]
+            };
+        </script>
+        <style type="text/css">
+            .width-60 {
+                width: 100px;
+            }
+            .width-80 {
+                width: 120px;
+            }
+            td.diagonalRising
+            {
+                background: linear-gradient(to right bottom, #ffffff 0%,#ffffff     
+                    49.9%,#000000 50%,#000000 51%,#ffffff 51.1%,#ffffff 100%);
+            }
+
+            td.diagonalFalling
+            {
+                background: linear-gradient(to right top, #fff 0%,#fff 49.9%,#000000    
+                    50%,#000000 51%,#fff 51.1%,#fff 100%);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}"></span>
+<!--                    <small th:if="${isOpc}">Cơ sở điều trị</small>
+                    <small th:if="${isOpcManager}">Khoa điều trị</small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${T(com.gms.entity.constant.BreadCrumbEnum).OPC_ARV.getLabel()}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcTT03('index')}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_quick_treatment" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).opcQuickTreatment('index')}" method="GET" name="opc_form">
+                                    <input type="hidden" name='tab' id="tab" th:value="${tab}" />
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Thời gian từ</label>
+                                                <input type="text" class="form-control" name="from_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="fromTime" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Thời gian đến</label>
+                                                <input type="text" class="form-control" name="to_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="toTime" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 text-center" style="padding-top: 20px;">
+                                            <div class="btn btn-group"
+                                                 th:with="util=${T(org.apache.commons.lang3.time.DateUtils)}">
+                                                <button type="button" class="btn btn-default"
+                                                        th:with="m1=${util.addMonths(#dates.createToday(), -1)}" 
+                                                        th:data-start="${#calendars.format(T(com.gms.components.TextUtils).getFirstDayOfMonth(m1), 'dd/MM/yyyy')}"
+                                                        th:data-end="${#calendars.format(T(com.gms.components.TextUtils).getLastDayOfMonth(m1), 'dd/MM/yyyy')}"
+                                                        ng-click="setTime($event)">Tháng trước</button>
+                                                <button type="button" class="btn btn-default"
+                                                        th:data-start="${#calendars.format(T(com.gms.components.TextUtils).getFirstDayOfMonth(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        th:data-end="${#calendars.format(T(com.gms.components.TextUtils).getLastDayOfMonth(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        ng-click="setTime($event)">Tháng này</button>
+                                                <button type="button" class="btn btn-default"
+                                                        th:data-start="${#calendars.format(T(com.gms.components.TextUtils).getFirstDayOfQuarter(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        th:data-end="${#calendars.format(T(com.gms.components.TextUtils).getLastDayOfQuarter(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        ng-click="setTime($event)">Quý này</button>
+                                                <button type="button" class="btn btn-default"
+                                                        th:data-start="${#calendars.format(T(com.gms.components.TextUtils).getFirstDayOfYear(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        th:data-end="${#calendars.format(T(com.gms.components.TextUtils).getLastDayOfYear(#dates.createNow()), 'dd/MM/yyyy')}"
+                                                        ng-click="setTime($event)">Năm nay</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center" style="padding-top: 6px;">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcQuickTreatment('pdf')}">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcTT03('excel')}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).opcTT03('email')}">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Báo cáo từ
+                                    <span class="text-danger" th:utext="${form.startDate}" ></span> 
+                                    đến
+                                    <span class="text-danger" th:utext="${form.endDate}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/opc/widget-table :: quick-treatment-table()"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

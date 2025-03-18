@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-layout-decorate="~{backend/layouts/top-nav}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/leaflet/leaflet.css'}" />
+            <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/leaflet/plugin/markercluster-master/MarkerCluster.css'}" />
+            <script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/leaflet.js'}"></script>
+            <script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/plugin/markercluster-master/leaflet.markercluster.js'}"></script>
+
+            <section class="content-header">
+                <h1  >   [[${title}]] <small>Cập nhật lần cuối [[${lastUpdate == null ? 'Chưa cập nhật' : lastUpdate}]]</small></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).backendDashboard()}" th:text="${parent_title}"></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).dashboardQL()}" th:text="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="dashboard_ql" ng-init="init()" ng-cloak>
+                <style>
+                    .dashboard-height {
+                        height: 650px;
+                        overflow-y: auto;
+                    }
+
+                    .dashboard-height2 {
+                        height: 400px;
+                        overflow-y: auto;
+                    }
+
+                    .dashboard-height .fa {
+                        margin-top: 150px;
+                    }
+                    /*                    .success {
+                                            background-color: #7eab55!important;
+                                        }*/
+                    .danger {
+                        background-color: #c8002a!important;
+                        color:white;
+                    }
+                    .warning {
+                        background-color: #f5c242!important;
+                    }
+                    .head {
+                        background-color: #4f71be!important;
+                        color:white;
+                    }
+                </style>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" id="box-filter">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <div class="row" style="margin-top: 13px;" >
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <select class="form-control" name="month" id="month"
+                                                    ng-model="filter.month">
+                                                <option ng-repeat="(key, value) in options.month" 
+                                                        ng-value="key" ng-bind="value" 
+                                                        ng-selected="filter.month == key" ></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <select class="form-control" name="year" id="year"
+                                                    ng-model="filter.year">
+                                                <option ng-repeat="(key, value) in options.year" 
+                                                        ng-value="key" ng-bind="value" 
+                                                        ng-selected="filter.year == key" ></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-left" >
+                                        <button type="button" class="btn btn-primary" ng-click="report()">
+                                            <i class="fa fa-pie-chart"></i>
+                                            Xem báo cáo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-solid">
+                            <div class="box-header text-center with-border">
+                                <h3 class="box-title text-uppercase text-bold" style="font-size: 13px;">Bản đồ số ca phát hiện mới trong năm</h3>
+                            </div>
+                            <div class="box-body text-center">
+                                <div class="dashboard-height" id="dashboard-chart01" style="overflow-y: hidden;">
+                                    <!--<i class="fa fa-sun-o fa-spin"></i>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="box box-solid">
+                            <div class="box-header text-center with-border">
+                                <h3 class="box-title text-uppercase  text-bold" style="font-size: 13px;">Bảng cảnh báo dữ liệu HIV tại địa phương trong 3 tháng gần nhất</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="dashboard-height" id="dashboard-chart02">
+                                    <div ng-if="levelDisplay == 'province'" class="table-responsive">
+                                        <table class="table table-condensed table-bordered table-hover table-striped" style="font-size: 12px;">
+                                            <thead>
+                                                <tr class=" head">
+                                                    <th class="text-center vertical-align-middle" style="width: 17%">Tỉnh</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['1']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['2']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['3']}}</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 17%">Tỉnh</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['1']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['2']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['3']}}</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 17%">Tỉnh</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['1']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['2']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['3']}}</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="(index, item) in itemp" >
+                                                    <td class="primaryx text-bold">{{item.provinceName1}}</td>
+                                                    <td ng-class="item.color1 == 4 ? 'danger text-center vertical-align-middle' : item.color1 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID1, months['1'], '1', item.provinceName1)">{{item.month1}}</td>
+                                                    <td ng-class="item.color2 == 4 ? 'danger text-center vertical-align-middle' : item.color2 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID1, months['2'], '2', item.provinceName1)">{{item.month2}}</td>
+                                                    <td ng-class="item.color3 == 4 ? 'danger text-center vertical-align-middle' : item.color3 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID1, months['3'], '3', item.provinceName1)">{{item.month3}}</td>
+                                                    <td class="primaryx text-bold">{{item.provinceName2}}</td> 
+                                                    <td ng-class="item.color4 == 4 ? 'danger text-center vertical-align-middle' : item.color4 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID2, months['1'], '1', item.provinceName2)">{{item.month4}}</td>
+                                                    <td ng-class="item.color5 == 4 ? 'danger text-center vertical-align-middle' : item.color5 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID2, months['2'], '2', item.provinceName2)">{{item.month5}}</td>
+                                                    <td ng-class="item.color6 == 4 ? 'danger text-center vertical-align-middle' : item.color6 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID2, months['3'], '3', item.provinceName2)">{{item.month6}}</td>
+                                                    <td class="primaryx text-bold">{{item.provinceName3}}</td> 
+                                                    <td ng-class="item.color7 == 4 ? 'danger text-center vertical-align-middle' : item.color7 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID3, months['1'], '1', item.provinceName3)">{{item.month7}}</td>
+                                                    <td ng-class="item.color8 == 4 ? 'danger text-center vertical-align-middle' : item.color8 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID3, months['2'], '2', item.provinceName3)">{{item.month8}}</td>
+                                                    <td ng-class="item.color9 == 4 ? 'danger text-center vertical-align-middle' : item.color9 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" ng-click="detaill(item.provinceID3, months['3'], '3', item.provinceName3)">{{item.month9}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                    <div ng-if="levelDisplay != 'province'" class="table-responsive">
+                                        <table class="table table-condensed table-bordered table-hover table-striped" style="font-size: 12px;">
+                                            <thead>
+                                                <tr class="head">
+                                                    <th class="text-center vertical-align-middle" >Huyện</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['1']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['2']}}</th> 
+                                                    <th class="text-center vertical-align-middle cos"> {{months['3']}}</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="(index, item) in itemd" >
+                                                    <td class="text-bold">{{item.districtName}}</td>
+                                                    <td ng-class="item.color1 == 4 ? 'danger text-center vertical-align-middle' : item.color1 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" >{{item.month1}}</td>
+                                                    <td ng-class="item.color2 == 4 ? 'danger text-center vertical-align-middle' : item.color2 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" >{{item.month2}}</td>
+                                                    <td ng-class="item.color3 == 4 ? 'danger text-center vertical-align-middle' : item.color3 == 3 ? 'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'" >{{item.month3}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="box box-solid">
+                            <div class="box-header text-center with-border">
+                                <h3 class="box-title text-uppercase  text-bold" style="font-size: 13px;">Biểu đồ số phát hiện mới và số tử vong qua các năm </h3>
+                            </div>
+                            <div class="box-body text-center">
+                                <div style="height: 400px;" id="dashboard-chart03">
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="box box-solid">
+                            <div class="box-header text-center with-border">
+                                <h3 class="box-title  text-bold" style="font-size: 13px;">SỐ CA CHẨN ĐOÁN NHIỄM MỚI TỪ ĐẦU NĂM TỚI HIỆN TẠI</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="dashboard-height2" id="dashboard-chart04">
+                                    <i ng-if="qlItemLoading" class="fa fa-sun-o fa-spin"></i>
+                                    <div ng-else class="table-responsive">
+                                        <table class="table table-condensed table-bordered table-hover table-striped" style="font-size: 12px;">
+                                            <thead>
+                                                <tr class="head">
+                                                    <th class="text-center vertical-align-middle">Tỉnh</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 14%" >Số phát hiện mới</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 14%" >Số làm XN nhiễm mới</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 14%" >Tỷ lệ XN nhiễm mới</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 14%" >Số có phản ứng</th> 
+                                                    <th class="text-center vertical-align-middle" style="width: 14%" >Tỷ lệ dương tính với XN sàng lọc mới nhiễm</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="(index, item) in qlItem4" >
+                                                    <td class="text-bold">{{item.name}}</td>
+                                                    <td class="text-center vertical-align-middle">{{item.phat_hien}}</td>
+                                                    <td class="text-center vertical-align-middle">{{item.xn_moi_nhiem}}</td>
+                                                    <td class="text-center vertical-align-middle">{{item.ty_le_xn_moi_nhiem + '%'}}</td>
+                                                    <td class="text-center vertical-align-middle">{{item.co_phan_ung}}</td>
+                                                    <td class="text-center vertical-align-middle">{{item.ti_le_duong_tinh + '%'}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div>
+                <script type="text/ng-template" id="detaill">
+                    <div class="modal-header">
+                    <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title  text-bold">Bảng cảnh báo dữ liệu HIV tại {{provinceName}} tháng {{time}}</h4>
+                    </div>
+                    <div class="modal-body" ng-init="init()">
+                    <div  class="table-responsive">
+                    <table class="table table-condensed table-bordered table-hover table-striped" style="font-size: 12px;">
+                    <thead>
+                    <tr class="head">
+                    <th class="text-center vertical-align-middle">Huyện</th> 
+                    <th class="text-center vertical-align-middle">Số ca phát hiện </th> 
+                    <th class="text-center vertical-align-middle">Số ca nhiễm mới</th> 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="(index, it) in item" >
+                    <td class="text-bold">{{it.districtName}}</td>
+                    <td ng-class="it.colorD == 4 ? 'danger text-center vertical-align-middle' : it.colorD == 3 ?  'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'">{{it.valueD}}</td>
+                    <td ng-class="it.valueE >= 2 ? 'danger text-center vertical-align-middle' : it.valueE == 1 ?  'warning text-center vertical-align-middle' : 'success text-center vertical-align-middle'">{{it.valueE}}</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn btn-default" type="button" ng-click="cancel()">Đóng</button>
+                    </div>
+                </script>
+            </div>
+
+
+        </div>
+    </body>
+</html>

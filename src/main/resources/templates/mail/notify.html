@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html data-layout-decorate="~{mail/layouts/main}">
+    <head>
+        <title>Thông báo tự động từ hệ thống</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body >
+        <div data-layout-fragment="content" > 
+            <div th:utext="${contents}" ></div>
+            <p>Lưu ý: Đây là email được gửi tự động, nếu bạn trả lời email này chúng tôi sẽ không thể đọc được.</p>
+        </div>
+    </body>
+</html>

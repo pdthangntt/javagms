@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="'PhieuChuyenTuyen' + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .body {
+                /*    height: 297mm;
+                    width: 210mm;*/
+                /*margin-left: 30px;*/
+                /*margin-right:  30px;*/
+                /*color: blue;*/
+                color: #000;
+                /*background: url('in_kim_a5.png');*/
+                /*font-size: 14px;*/
+                /*font-size: 16.8px;*/
+                font-size: 15px;
+                background-color: #fff;
+                /*border: 1px solid #000;*/
+            }
+            .mid {
+                font-size: 15px;
+            }
+        </style>
+        <style type="text/css">
+            @page { /*size: A4 landscape;*/}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body">
+            <div class="header">
+                <p>&nbsp;</p>
+                <div class="box_donvi_1">
+                    <p class="text-uppercase text-normal text-size-13" ><span th:utext="${site.parentAgency}"></span></p>
+                    <p class="text-bold text-size-13"><span th:utext="${site.shortName}"></span></p>
+                    <p class="text-normal text-size-13">Số: ... ... ../20.../GCT</p>
+                </div>
+                <div class="box_id_1">
+                    <p class="text-uppercase conghoa">Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</p>
+                    <p class="text-capitalize doclap"><span>Độc lập - Tự do - Hạnh phúc</span></p>
+                </div>
+                <div class="box_donvi_1">
+                    <p class="text-bold ">Số hồ sơ: ...</p>
+                    <p class="text-bold ">Vào sổ chuyển tuyến số: ...</p>
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+                <div class="box_title" >
+                    <p class="text-uppercase text-title">GIẤY CHUYỂN TUYẾN</p>
+                </div>
+            </div>
+            <div class="mid">
+                <div class="row text-center"><span class=" text-bold">Kính gửi:&nbsp;</span><span th:utext="${transferSiteName}"></span></div>
+                <div class="row">Cơ sở KBCB<sup>2</sup>: <span th:utext="${site.name}"></span> trân trọng giới thiệu:</div>
+                <div class="row">- Họ và tên người bệnh:&nbsp;<span th:utext="${arv.patient.fullName}"></span> <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> Nam/Nữ: <span th:utext="${arv.patient.genderID == null || arv.patient.genderID == '' ? '' : options.get('gender').get(arv.patient.genderID)}"></span>  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span> Tuổi:&nbsp;<span th:utext="${T(Integer).parseInt(#dates.format(#dates.createNow(), 'yyyy'))-T(Integer).parseInt(#dates.format(arv.patient.dob, 'yyyy'))}"></span> </div>    
+                <div class="row">- Địa chỉ:&nbsp;<span th:utext="${arv.permanentAddressFull == null || arv.permanentAddressFull == '' ? '.............................................................................' : arv.permanentAddressFull}"></span></div>    
+                <div class="row">- Dân tộc:&nbsp;<span th:utext="${arv.patient.raceID == null || arv.patient.raceID == '' ? '' : options.get('race').get(arv.patient.raceID)}"></span> <span>&emsp;&emsp;</span>  Quốc tịch: .....................................................................................................................................</div>    
+                <div class="row">- Nghề nghiệp:&nbsp;<span th:utext="${arv.jobID == null || arv.jobID == '' ? '...............................................................................................................................................................'  : options.get('job').get(arv.jobID)}"></span></div>  
+                <div class="row">- Nơi làm việc: ................................................................................................................................................................</div>
+                <div class="row">- BHYT: giá trị từ ...../...../......... đến <span th:utext="${arv.insuranceExpiry == null ? '...../...../.........' : #dates.format(arv.insuranceExpiry, 'dd/MM/yyyy')}"></span><span>&emsp;&emsp;</span> Số thẻ:&nbsp;<span th:utext="${arv.insuranceNo == null || arv.insuranceNo == '' ? '....................................................................................' : arv.insuranceNo}"></span></div>    
+                <div class="row">Đã được khám bệnh/điều trị:</div>  
+                <div class="row">+ Tại:&nbsp;<span th:utext="${site.name}"></span> (Tuyến.........) Từ ngày <span th:utext="${arv.treatmentTime == null ? '...../...../.........' : #dates.format(arv.treatmentTime, 'dd/MM/yyyy')}"></span> đến ngày <span th:utext="${arv.tranferFromTime == null ? '...../...../.........' : #dates.format(arv.tranferFromTime, 'dd/MM/yyyy')}"></span></div>    
+                <div class="row">+ Tại: .............. (Tuyến........) Từ ngày ...../...../......... đến ngày ...../...../.........</div>    
+                <div class="row text-bold text-uppercase">Tóm tắt bệnh án:</div>
+                <div class="row">- Dấu hiệu lâm sàng: .......................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div> 
+                <div class="row">- Kết quả xét nghiệm, cận lâm sàng<sup>3</sup>:</div> 
+                <div class="row">&emsp; + &ensp;HIV (+) ngày <span th:utext="${arv.patient.confirmTime == null ? '...../...../.........' : #dates.format(arv.patient.confirmTime, 'dd/MM/yyyy')}"></span> &ensp; Nơi KĐ: <span th:utext="${confirmSiteName == null || confirmSiteName == '' ? '.................................................................................................................' : confirmSiteName}"></span></div> 
+                <div class="row">&emsp; + &ensp;CD4 lần cuối: ngày XN <span th:utext="${arv.cd4Time == null ? '...../...../.........' : #dates.format(arv.cd4Time, 'dd/MM/yyyy')}"></span>  - Kết quả: <span th:utext="${arv.cd4Result == null || arv.cd4Result == '' ? '.................................................................................................' : arv.cd4Result}"></span></div> 
+                <div class="row">&emsp; + &ensp;TLVR lần cuối: ngày XN <span th:utext="${arv.viralLoadTime == null ? '...../...../.........' : #dates.format(arv.viralLoadTime, 'dd/MM/yyyy')}"></span> - Kết quả: <span th:utext="${arv.viralLoadResult == null || arv.viralLoadResult == '' ? '.............................................................................................' : options.get('virus-load').get(arv.viralLoadResult)}"></span></div> 
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">- Chẩn đoán: <span th:utext="${lastVisit == null ? '....................................................................................................................................................................' : (lastVisit.diagnostic == '' ? '....................................................................................................................................................................' : lastVisit.diagnostic)}"></span></div> 
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">- Phương pháp, thủ thuật, kỹ thuật, thuốc đã sử dụng trong điều trị: .............................................................................</div> 
+                <div class="row">Ngày đầu tiên ARV: <span th:utext="${arv.firstTreatmentTime == null ? '...../...../.........' : #dates.format(arv.firstTreatmentTime, 'dd/MM/yyyy')}"></span>&ensp; Phác đồ ban đầu <span th:utext="${arv.firstTreatmentRegimenID == null || arv.firstTreatmentRegimenID == '' ? '.....................................................................................................' : options.get('treatment-regimen').get(arv.firstTreatmentRegimenID)}"></span></div> 
+                <div class="row">Ngày điều trị ARV: <span th:utext="${arv.treatmentTime == null ? '...../...../.........' : #dates.format(arv.treatmentTime, 'dd/MM/yyyy')}"></span>&ensp; Phác đồ hiện tại <span th:utext="${arv.treatmentRegimenID == null || arv.treatmentRegimenID == '' ? '.......................................................................................................' : options.get('treatment-regimen').get(arv.treatmentRegimenID)}"></span></div> 
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">- Tình trạng người bệnh lúc chuyển tuyến: .....................................................................................................................</div> 
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">- Lí do chuyển tuyến: Khoanh tròn vào lý do chuyển tuyến phù hợp sau đây:</div>
+                <div class="row">1. Đủ điều kiện chuyển tuyến.</div>
+                <div class="row">2. Theo yêu cầu của người bệnh hoặc người đại diện hợp pháp của người bệnh.</div>
+                <div class="row">- Hướng điều trị<sup>4</sup>: <span th:utext="${arv.treatmentRegimenID == null || arv.treatmentRegimenID == '' ? '............................................................................................................................................................' : options.get('treatment-regimen').get(arv.treatmentRegimenID)}"></span></div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+                <div class="row">- Chuyển tuyến hồi: .....giờ .....phút, ngày <span th:utext="${arv.tranferFromTime == null ? '.....' : #dates.format(arv.tranferFromTime, 'dd')}"></span> tháng <span th:utext="${arv.tranferFromTime == null ? '.....' : #dates.format(arv.tranferFromTime, 'MM')}"></span> năm <span th:utext="${arv.tranferFromTime == null ? '.........' : #dates.format(arv.tranferFromTime, 'yyyy')}"></span></div>
+                <div class="row">- Phương tiện vận chuyển: ..............................................................................................................................................</div>
+                <div class="row">- Họ tên, chức danh, trình độ chuyên môn của người hộ tống: .......................................................................................</div>
+                <div class="row">....................................................................................................................................................................................................................................................................................................</div>
+            </div>
+            <div class="info-time">
+                <p class="" >&nbsp;</p>
+                <div class="row">
+                    <div class="col-50  text-center footer">
+                        <p>&nbsp;</p><div>
+                            <p class="box-ky-title">
+                                Y, BÁC SĨ KHÁM, ĐIỀU TRỊ
+                                <br/>
+                                <i><span class="chu-ky" >(Ký, ghi rõ họ tên)</span></i>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-50 text-center footer">
+                        <div>
+                            <p class="text-normal" >
+                                <i>
+                                    Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                    tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                    năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                </i>
+                            </p>
+                            <p class="box-ky-title">
+                                NGƯỜI CÓ THẨM QUYỀN CHUYỂN TUYẾN<sup>5</sup>
+                                <br/>
+                                <i><span class="chu-ky" >(Ký tên, đóng dấu)</span></i>
+                            </p>
+                        </div>
+                    </div>
+                </div> 
+            </div> 
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <div class="mid">
+                <div class="row text-bold text-underline">Ghi chú:</div>
+                <div class="row">1. Cơ quan chủ quản: Bộ Y tế/Sở Y tế/Cục Y tế (đối với y tế bộ, ngành)... <br>
+                2. Cơ sở KB, CB: Bệnh viện/ Phòng khám/ Trạm Y tế... <br>
+                3. Kết quả xét nghiệm, cận lâm sàng: bao gồm xét nghiệm sinh hóa, huyết học, GPB, thăm dò chức năng, chẩn đoán hình ảnh...<br>
+                4. Hướng điều trị: đối với trường hợp cơ sở khám bệnh, chữa bệnh tuyến trên chuyển người bệnh về tuyến dưới điều trị.<br>
+                5. Người có thẩm quyền chuyển tuyến là người đứng đầu cơ sở khám bệnh, chữa bệnh hoặc người chịu trách nhiệm chuyên môn hoặc người được ủy quyền.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

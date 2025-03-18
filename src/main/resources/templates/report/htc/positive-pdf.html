@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .top-secret{
+                line-height: 30px;
+                position: absolute;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 50px;
+                height: 30px;
+                text-align: center;
+                left: 10%;
+                top: 110px;
+            }
+
+        </style>
+        <style type="text/css" th:if="${!print}">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince}, dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <div class="top-secret" >MẬT</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <p class="text-size-13">
+                            Từ <span th:utext="${form.start}" ></span> 
+                            đến <span th:utext="${form.end}" ></span>
+                        </p>
+                        <p>&nbsp;</p>
+                        <div class="row text-normal dear">
+                            <p>
+                                Kính gửi:
+                                <span class="point" >........................................................................</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">  
+                        <p>&nbsp;</p>
+                        <div data-th-replace="report/htc/widget :: table-positive(form=${form})"></div>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <p class="text-normal" >
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

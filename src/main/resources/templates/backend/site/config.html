@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1 th:text="${title}" ></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="site_config" ng-init="init()" ng-cloak id="config-form" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom" style="box-shadow: none;">
+                            <div class="tab-content" style="background: #ecf0f5; ">
+                                <div class="tab-pane active" id="tab_d">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Nhận thông báo</h3>
+                                                <div>
+                                                    Địa chỉ email nhận thông báo khi có vấn đề gì xảy ra trên hệ thống, thông báo tiếp nhận, ...
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Email của cơ sở <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_SITE_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_SITE_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_SITE_EMAIL.getKey())}" />
+                                                        </div>
+                                                        <div th:if="${isHtc}" class="form-group">
+                                                            <label>Email nhận thông báo Tư vấn & Xét nghiệm <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_HTC_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_HTC_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_HTC_EMAIL.getKey())}" />
+                                                        </div>
+                                                        <div th:if="${isPac}" class="form-group">
+                                                            <label>Email nhận thông báo giám sát phát hiện <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_GSPH_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_GSPH_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_GSPH_EMAIL.getKey())}" />
+                                                        </div>
+                                                        <div th:if="${isConfirm}" class="form-group">
+                                                            <label>Email nhận thông báo khẳng định <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_CONFIRM_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_CONFIRM_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_CONFIRM_EMAIL.getKey())}" />
+                                                        </div>
+                                                        <div th:if="${isOpc}" class="form-group">
+                                                            <label>Email nhận thông báo điều trị ngoại trú <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_EMAIL.getKey())}" />
+                                                        </div>
+                                                        <div th:if="${isOpcManager}" class="form-group">
+                                                            <label>Email nhận thông báo khoa điều trị <span class="loading_config" ></span></label>
+                                                            <input type="text" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_MANAGER_EMAIL.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_MANAGER_EMAIL.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).ALERT_OPC_MANAGER_EMAIL.getKey())}" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isLaytest}">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">XN tại cộng đồng</h3>
+                                                <div>Các tham số cấu hình sử dụng cho dịch vụ</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Sinh phẩm sử dụng <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.SiteConfigEnum).LAYTEST_BIOLOGY_PRODUCT.getKey()), ',')}"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).LAYTEST_BIOLOGY_PRODUCT.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).LAYTEST_BIOLOGY_PRODUCT.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).LAYTEST_BIOLOGY_PRODUCT.getKey()}">
+                                                                <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST)}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}" 
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}"></option>
+                                                            </select>
+                                                        </div>    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isHtc}">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Tư vấn & xét nghiệm</h3>
+                                                <div>Các tham số cấu hình sử dụng cho dịch vụ</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-6" >
+                                                        <div class="form-group"> 
+                                                            <label>Số ngày hẹn trả kết quả <span class="loading_config" ></span></label>
+                                                            <input type="number" class="form-control"  
+                                                                   th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RETURN_DAY.getKey()}" 
+                                                                   th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RETURN_DAY.getKey()}"
+                                                                   th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_RETURN_DAY.getKey())}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getKey()}"
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getKey()}">
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                        th:utext="${'Hiển thị'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                        th:utext="${'Tạm ẩn'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_RQ_ID.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group"> 
+                                                            <label>Sinh phẩm sử dụng <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_BIOLOGY_PRODUCT.getKey()), ',')}"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).HTC_BIOLOGY_PRODUCT.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_BIOLOGY_PRODUCT.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_BIOLOGY_PRODUCT.getKey()}">
+                                                                <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST)}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}" 
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}"></option>
+                                                            </select>
+                                                        </div>  
+                                                        <div class="form-group" >
+                                                            <label>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getKey()}"
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getKey()}">
+                                                                <option th:value="${'2'}"
+                                                                        th:utext="${'Dự án SHIFT'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getKey())=='2'}"></option>
+                                                                <option th:value="${'1'}" 
+                                                                        th:utext="${'Quốc gia'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_PHIEU_XN.getKey())=='1'}"></option>
+                                                            </select>
+                                                        </div>  
+                                                        <div class="form-group" >
+                                                            <label>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getKey()}"
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getKey()}">
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                        th:utext="${'Hiển thị'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                        th:utext="${'Tạm ẩn'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CODE.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group" >
+                                                            <label>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getKey()}"
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getKey()}">
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                        th:utext="${'Hiển thị'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                                <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                        th:utext="${'Tạm ẩn'}" 
+                                                                        th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_TICKET_CSCQ.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group"> 
+                                                                    <label>
+                                                                        <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PRINT_ANSWER_RESULT.getLabel()}" ></span> 
+                                                                        <span class="loading_config" ></span>
+                                                                    </label>
+                                                                    <select class="form-control"
+                                                                            th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PRINT_ANSWER_RESULT.getKey()}" 
+                                                                            th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_PRINT_ANSWER_RESULT.getKey()}"
+                                                                            th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_PRINT_ANSWER_RESULT.getKey())}">
+                                                                        <option value="">Tạm ẩn</option>
+                                                                        <option value="1">Hiển thị phần ký thủ trưởng đơn vị cơ sở</option>
+                                                                        <option value="2">Hiển thị phần ký Lãnh đạo khoa/Lãnh đạo trại giam</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group"> 
+                                                                    <label>
+                                                                        <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).HTC_CSCQ_ANSWER_RESULT.getLabel()}" ></span> 
+                                                                        <span class="loading_config" ></span>
+                                                                    </label>
+                                                                    <input type="text" class="form-control"  
+                                                                           th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).HTC_CSCQ_ANSWER_RESULT.getKey()}" 
+                                                                           th:name="${T(com.gms.entity.constant.SiteConfigEnum).HTC_CSCQ_ANSWER_RESULT.getKey()}"
+                                                                           th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).HTC_CSCQ_ANSWER_RESULT.getKey())}" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <i class="fa fa-qrcode" ></i>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).VISIT_QR.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).VISIT_QR.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).VISIT_QR.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).VISIT_QR.getKey())}">
+                                                                <option value="">Tạm ẩn</option>
+                                                                <option value="1">Sử dụng</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isConfirm}" >
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Xét nghiệm khẳng định</h3>
+                                                <div>Các tham số cấu hình sử dụng cho dịch vụ</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Sinh phẩm sử dụng <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.SiteConfigEnum).BIOLOGY_PRODUCT_TEST.getKey()), ',')}"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).BIOLOGY_PRODUCT_TEST.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).BIOLOGY_PRODUCT_TEST.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).BIOLOGY_PRODUCT_TEST.getKey()}">
+                                                                <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST)}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}" 
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}"></option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <i class="fa fa-qrcode" ></i>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getKey())}">
+                                                                <option value="">Tạm ẩn</option>
+                                                                <option value="1">Sử dụng</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group"> 
+                                                            <label>Phần chữ ký mẫu phiếu in <b>Trả kết quả xét nghiệm</b> <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_PRINT_ANSWER_RESULT.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_PRINT_ANSWER_RESULT.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_PRINT_ANSWER_RESULT.getKey())}">
+                                                                <option value="">Tạm ẩn</option>
+                                                                <option value="1">Hiển thị phần ký thủ trưởng đơn vị cơ sở</option>
+                                                                <option value="2">Hiển thị phần ký Lãnh đạo khoa/Lãnh đạo trại giam</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group"> 
+                                                            <label>Mẫu phiếu in <b>Trả kết quả xét nghiệm</b> <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_ANSWER_RESULT.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_ANSWER_RESULT.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_ANSWER_RESULT.getKey())}">
+                                                                <option value="1">Mẫu số 6B</option>
+                                                                <option value="2">Mẫu theo TT 02/2020/TT-BYT</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isPac}">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Quản lý người nhiễm</h3>
+                                                <div>Các tham số cấu hình sử dụng cho dịch vụ</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-info">
+                                                <div class="box-body row">
+                                                    <div class="col-md-6 form-group" >
+                                                        <label>
+                                                            <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getLabel()}" ></span> 
+                                                            <span class="loading_config" ></span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                                th:id="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getKey()}"
+                                                                th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getKey()}"
+                                                                th:name="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getKey()}">
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                    th:utext="${'Cho phép'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                    th:utext="${'Tạm chặn'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_HTC.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 form-group" >
+                                                        <label>
+                                                            <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getLabel()}" ></span> 
+                                                            <span class="loading_config" ></span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                                th:id="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getKey()}"
+                                                                th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getKey()}"
+                                                                th:name="${T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getKey()}">
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                    th:utext="${'Cho phép'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                    th:utext="${'Tạm chặn'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_FROM_CONFIRM.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 form-group" >
+                                                        <label>
+                                                            <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getLabel()}" ></span> 
+                                                            <span class="loading_config" ></span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                                th:id="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey()}"
+                                                                th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey()}"
+                                                                th:name="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey()}">
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                    th:utext="${'Hiển thị'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                    th:utext="${'Tạm ẩn'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6 form-group" >
+                                                        <label>
+                                                            <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getLabel()}" ></span> 
+                                                            <span class="loading_config" ></span>
+                                                        </label>
+                                                        <input type="text" class="form-control"  
+                                                               th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getKey()}" 
+                                                               th:name="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getKey()}"
+                                                               th:value="${items==null? '' : items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getKey())}" />
+                                                    </div>
+                                                    <div class="col-md-12 form-group" >
+                                                        <label>
+                                                            <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getLabel()}" ></span> 
+                                                            <span class="loading_config" ></span>
+                                                        </label>
+                                                        <select class="form-control"
+                                                                th:id="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()}"
+                                                                th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()}"
+                                                                th:name="${T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()}">
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()}" 
+                                                                    th:utext="${'Hiển thị'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey())==(T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}"></option>
+                                                            <option th:value="${T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()}" 
+                                                                    th:utext="${'Tạm ẩn'}" 
+                                                                    th:selected="${items.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey())==(T(com.gms.entity.constant.BooleanEnum).FALSE.getKey()+'')}"></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${isOpc}">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Điều trị ngoại trú</h3>
+                                                <div>Các tham số cấu hình sử dụng cho dịch vụ</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).OPC_REGIMEN.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:with="bios=${#strings.arraySplit(items.get(T(com.gms.entity.constant.SiteConfigEnum).OPC_REGIMEN.getKey()), ',')}"
+                                                                    th:id="${T(com.gms.entity.constant.SiteConfigEnum).OPC_REGIMEN.getKey()}"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).OPC_REGIMEN.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).OPC_REGIMEN.getKey()}">
+                                                                <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN)}" 
+                                                                        th:value="${instance.key}" 
+                                                                        th:utext="${instance.value}" 
+                                                                        th:selected="${#arrays.contains(bios, instance.key)}"></option>
+                                                            </select>
+                                                        </div>    
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <i class="fa fa-qrcode" ></i>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR_LIST.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR_LIST.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR_LIST.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).OPC_QR_LIST.getKey())}">
+                                                                <option value="">Tạm ẩn</option>
+                                                                <option value="1">Sử dụng</option>
+                                                            </select>
+                                                        </div>   
+                                                    </div>
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>
+                                                                <i class="fa fa-qrcode" ></i>
+                                                                <span th:utext="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR.getLabel()}" ></span> 
+                                                                <span class="loading_config" ></span>
+                                                            </label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).OPC_QR.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).OPC_QR.getKey())}">
+                                                                <option value="">Tạm ẩn</option>
+                                                                <option value="1">Sử dụng</option>
+                                                            </select>
+                                                        </div>   
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Giao diện</h3>
+                                                <div>Tuỳ chọn hiển thị một số lựa chọn cho giao diện</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="box box-solid">
+                                                <div class="box-body row">
+                                                    <div class="col-md-12" >
+                                                        <div class="form-group"> 
+                                                            <label>Hiển thị cột chức năng <span class="loading_config" ></span></label>
+                                                            <select class="form-control"
+                                                                    th:data-type="${T(com.gms.entity.constant.SiteConfigEnum).SHOW_FUNCTION.getKey()}" 
+                                                                    th:name="${T(com.gms.entity.constant.SiteConfigEnum).SHOW_FUNCTION.getKey()}"
+                                                                    th:value="${items==null? '0' : items.get(T(com.gms.entity.constant.SiteConfigEnum).SHOW_FUNCTION.getKey())}">
+                                                                <option value="0">Tạm ẩn</option>
+                                                                <option value="1">Hiển thị</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.tab-pane -->
+
+                            </div>
+                            <!-- /.tab-content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

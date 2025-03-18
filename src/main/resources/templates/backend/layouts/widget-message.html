@@ -1,0 +1,11 @@
+<div data-th-fragment="widget-message">
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <i class="fa fa-warning" ></i> <span th:utext="${error}" ></span>
+    </div>
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        <i class="fa fa-check" ></i> <span th:utext="${success}" ></span>
+    </div>
+    <div th:if="${warning}" class="alert alert-warning" role="alert">
+        <i class="fa fa-warning" ></i> <span th:utext="${warning}" ></span>
+    </div>
+</div>

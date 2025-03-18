@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = {
+                        permanent_district_id: [[${#httpServletRequest.getParameter('permanent_district_id')}]],
+                                permanent_ward_id: [[${#httpServletRequest.getParameter('permanent_ward_id')}]],
+                                detect_province_id: [[${#httpServletRequest.getParameter('detect_province_id')}]],
+                                permanent_province_id: [[${#httpServletRequest.getParameter('permanent_province_id')}]]
+                        };
+                        var urPatienLog = [[${T(com.gms.components.UrlUtils).pacNewLog()}]];
+                        var urlPatienLogCreate = [[${T(com.gms.components.UrlUtils).pacNewLogCreate()}]];
+                        var urlGet = [[${T(com.gms.components.UrlUtils).pacNewGet()}]];
+                        var urlRequest = [[${T(com.gms.components.UrlUtils).request()}]];
+                        var urlPacTransfer = [[${T(com.gms.components.UrlUtils).pacTransfer()}]];
+                        var urlPacDoTransfer = [[${T(com.gms.components.UrlUtils).pacDoTransfer()}]];
+                        var urlTransferProvince = [[${T(com.gms.components.UrlUtils).pacNewTransfer()}]];
+                        var urlPdf = [[${T(com.gms.components.UrlUtils).inPacNew()}]];
+                        var urlFilter = [[${T(com.gms.components.UrlUtils).pacNewFillter()}]];
+                        var urlPatientView = [[${T(com.gms.components.UrlUtils).pacPatientView(0)}]];
+                        var urlAcceptView = [[${T(com.gms.components.UrlUtils).pacAcceptView(0)}]];
+                        var urlReviewView = [[${T(com.gms.components.UrlUtils).pacReviewView(0)}]];
+                        var urlNewView = [[${T(com.gms.components.UrlUtils).pacPatientView("new_in_province", 0)}]];
+                        var urlExcel = [[${T(com.gms.components.UrlUtils).excelPacNew()}]];
+                        var urlExcelAIDS = '/report/pac-new/excel-aids.html';
+                        var urlEmail = [[${T(com.gms.components.UrlUtils).emailPacNew()}]];
+                        var urlConnect = [[${T(com.gms.components.UrlUtils).pacNewConnect()}]];
+                        var urlUpdateConnected = [[${T(com.gms.components.UrlUtils).pacUpdateConnected()}]];
+                        var urlUpdateConnectedArv = [[${T(com.gms.components.UrlUtils).pacUpdateConnectedArv()}]];
+                        var urlOpcView = [[${T(com.gms.components.UrlUtils).pacOpcView("", 0)}]];
+                        var urlDelete = [[${T(com.gms.components.UrlUtils).pacNewDelete()}]];
+                        var isVAAC = [[${isVAAC}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <!--<small><span th:text="${smallTitle}"></span></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacNew()}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacNew()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_new_index" ng-init="init()"
+                     th:with="tab=${(#request.getParameter('tab') == '' || #request.getParameter('tab') == null ) ? 'new_in_province' : #request.getParameter('tab')}">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).pacNew()}" method="get" id="search">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs" >
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' || #request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey() ? 'active' : T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey()}"
+                                        th:if ="${isVAAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNew() + '?tab=' + T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey()}">Tất cả</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' || #request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey() ? 'active' : T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey()}"
+                                        th:if ="${!isVAAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNew() + '?tab=' + T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey()}">Phát hiện trong tỉnh (<span class="text-danger" th:utext="${totalInProvince}" ></span>)</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey() ? 'active' : ''}"
+                                        th:if ="${!isVAAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNew() + '?tab=' + T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey()}">Tỉnh khác phát hiện (<span class="text-danger" th:utext="${totalOtherProvince}" ></span>)</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey() ? 'active' : ''}"
+                                        th:if ="${!isVAAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNew() + '?tab=' + T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}">Phát hiện ngoại tỉnh (<span class="text-danger" th:utext="${totalOutProvince}" ></span>)</a>
+                                    </li>
+                                    <li th:if ="${isPAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNewVaac()}">Trung ương yêu cầu rà soát (<span class="text-danger" th:utext="${totalVAACNew}" ></span>)</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == T(com.gms.entity.constant.PacTabEnum).DELETE.getKey() ? 'active' : ''}"
+                                        th:if ="${!isVAAC}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pacNew() + '?tab=' + T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}">Đã xóa</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <!--Tìm kiếm theo cơ sở quản lý Quyền VAAC-->
+                                        <th:block th:if="${isVAAC}">
+                                            <div class="col-md-2" >
+                                                <div class="form-group">
+                                                    <label>Tỉnh/TP thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            name="permanent_province_id" id="permanent_province_id"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>Quận/Huyện thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                            name="permanent_district_id" id="permanent_district_id"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" >
+                                                <div class="form-group">
+                                                    <label>Xã/Phường thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            name="permanent_ward_id" id="permanent_ward_id"></select>
+                                                </div>
+                                            </div>
+                                        </th:block>
+
+                                        <!-- Tìm theo tỉnh thành quận huyện-->
+                                        <th:block th:if="${!isVAAC}">
+                                            <div class="col-md-2" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}">
+                                                <div class="form-group">
+                                                    <label>Tỉnh/TP thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            name="permanent_province_id" id="permanent_province_id"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" th:if="${tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}">
+                                                <div class="form-group">
+                                                    <label>Quận/Huyện thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                            name="permanent_district_id" id="permanent_district_id"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey() || tab == null || tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey() || tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}">
+                                                <div class="form-group">
+                                                    <label>Xã/Phường thường trú</label>
+                                                    <select class="form-control" 
+                                                            data-title="Tất cả"
+                                                            name="permanent_ward_id" id="permanent_ward_id"></select>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Mã người nhiễm</label>
+                                                <input type="text" class="form-control" name = "id" th:value="${#httpServletRequest.getParameter('id')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Họ tên</label>
+                                                <input type="text" class="form-control" name = "fullname" th:value="${#httpServletRequest.getParameter('fullname')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Năm sinh</label>
+                                                <input type="text" class="form-control" 
+                                                       th:text="${yearOfBirth}" name = "year_of_birth" 
+                                                       ui-mask="9999"
+                                                       th:value="${#httpServletRequest.getParameter('year_of_birth')}"
+                                                       ng-model="yearOfBirth"
+                                                       placeholder="yyyy">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Giới tính</label>
+                                                <select class="form-control" name="gender_id" id="gender_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('gender_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}">
+                                            <div class="form-group" >
+                                                <label>Số CMND</label>
+                                                <input type="text" class="form-control" name = "identity_card" th:value="${#httpServletRequest.getParameter('identity_card')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày XNKĐ từ</label>
+                                                <input type="text" class="form-control" name = "confirm_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày XNKĐ đến</label>
+                                                <input type="text" class="form-control" name = "confirm_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeTo" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey()}">
+                                            <div class="form-group">
+                                                <label>Tỉnh thành phát hiện</label>
+                                                <select class="form-control" 
+                                                        name="detect_province_id" 
+                                                        data-title="Tất cả"
+                                                        id="detect_province_id"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}">
+                                            <div class="form-group">
+                                                <label>Trạng thái phát hiện</label>
+                                                <select class="form-control" name="tab_remove">
+                                                    <option th:each="instance : ${tabRemoveOption}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('tab_remove') == instance.key}"
+                                                            th:utext="${instance.key == '' ? '0' :instance.value}" ></option>
+                                                </select>
+                                            </div> 
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Cơ sở lấy mẫu</label>
+                                                <select class="form-control" name="blood_base" id="blood_base">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).BLOOD_BASE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('blood_base') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Nguồn thông tin</label>
+                                                <select class="form-control" name="service" id="service">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).SERVICE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('service') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Cơ sở khẳng định</label>
+                                                <select class="form-control" name="siteConfirmID" id="siteConfirmID">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).PLACE_TEST)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('siteConfirmID') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Nơi điều trị</label>
+                                                <select class="form-control" name="siteTreatmentFacilityID" id="siteTreatmentFacilityID">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('siteTreatmentFacilityID') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Tìm theo tỉnh thành quận huyện--> 
+                                        <div class="col-md-12 text-center" ng-controller="report_pac_new">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${tab == null ? T(com.gms.components.UrlUtils).pacNew()+'?tab=new_in_province' : T(com.gms.components.UrlUtils).pacNew()+'?tab='+tab}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                            <div class="pull-right" th:if="${tab == 'new_out_province'}"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                            <div class="pull-right" th:if="${tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}">
+                                                <div class="btn-group" id = "actionButton" >
+                                                    <button type="button" class="btn btn-default" data-toggle="dropdown" aria-expanded="false">Hành động</button>
+                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <span class="caret"></span>
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li  ><a href="javascript:;" ng-click="pdf()"><i class="fa fa-print"></i> In</a></li>
+                                                        <li  ><a href="javascript:;" ng-click="excel()"><i class="fa fa-file-excel-o"></i> Xuất Excel</a></li>
+                                                        <li th:if="${tab == 'new_out_province'}"  ><a href="javascript:;" ng-click="excelAIDS()"><i class="fa fa-file-excel-o"></i> Xuất Excel mẫu cục AIDS</a></li>
+                                                        <li  ><a href="javascript:;" ng-click="email()"><i class="fa fa-inbox"></i> Gửi đến Email</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default">
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left" th:if="${!isVAAC}">
+                                        <!--Nút bên trái-->
+                                        <button type="button" 
+                                                th:attr="ng-click='requestReview(\'\')'" 
+                                                th:data-role="${T(com.gms.components.UrlUtils).request()}" 
+                                                th:if="${dataPage.data.size() > 0 && tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey() && tab != T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}" 
+                                                class="btn btn-primary btn-xs table-function">
+                                            <i class="fa fa-check"></i>&nbsp;Yêu cầu rà soát
+                                        </button>
+                                        <!--                                        <button type="button" 
+                                                                                        th:attr="ng-click='transferOtherProvince()'" 
+                                                                                        th:data-role="${T(com.gms.components.UrlUtils).pacNewTransfer()}" 
+                                                                                        th:if="${dataPage.data.size() > 0 && tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}" 
+                                                                                        class="btn btn-primary btn-xs table-function" >
+                                                                                    <i class="fa fa-arrow-right"></i>&nbsp;Chuyển gửi tỉnh khác
+                                                                                </button>-->
+                                    </div>
+                                    <div class="no-margin pull-right" id="tableFunction" >
+                                        <a class="btn btn-default btn-xs disabled" >
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                        <a class="btn btn-default btn-xs disabled" href="javascript:;" th:if="${!isVAAC}">
+                                            <i class="fa fa-edit"></i> Sửa
+                                        </a>
+                                        <a class="btn btn-danger btn-xs disabled" href="javascript:;" th:if="${!isVAAC}">
+                                            <i class="fa fa-remove"></i> Xoá
+                                        </a>
+                                        <button type="button" class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-comment"></i>
+                                            Lịch sử
+                                        </button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <table ng-cloak class="table table-striped table-bordered table-sm table-full" 
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0" >
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Mã</th>
+                                                <th class="text-center" th:if="${isVAAC}">Tỉnh quản lý</th>
+                                                <th class="text-center" th:if="${!isVAAC && tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey()}">Ngày Vaac chuyển</th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Năm sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center">Số thẻ BHYT</th>
+                                                <th class="text-center">Số điện thoại</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Địa chỉ hiện tại</th>
+                                                <th class="text-center">Cơ sở lấy mẫu</th>
+                                                <th class="text-center">Ngày XN khẳng định</th>
+                                                <th class="text-center">Cơ sở khẳng định</th>
+                                                <th class="text-center" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}">Trạng thái</th>
+                                                <th class="text-center">Nguồn thông tin</th>
+                                                <th class="text-center">Ngày nhập liệu</th>
+                                                <th class="text-center">Tỉnh phát hiện</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}"
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : (tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey() && item.status != null ? (item.status == T(com.gms.entity.constant.PacPatientStatusEnum).NEW.getKey() ? 'warning' : 'info') : '')}"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td class=""><span th:text="${item.ID}"></span></td>
+                                                <td class="text-left" th:if="${isVAAC}"><span th:text="${item.provinceID == null || item.provinceID == '' ? '' : allProvinces.get(item.provinceID)}"></span></td>
+                                                <td class="text-center" th:if="${!isVAAC && tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey()}" th:text="${#dates.format(item.requestVaacTime, 'dd/MM/yyyy')}" ></td>
+                                                <td class=""><span th:text="${item.fullname}"></span></td>
+                                                <td class="text-center"><span th:text="${item.yearOfBirth == 0 ? '' : item.yearOfBirth}"></span></td>
+                                                <td class="text-center"><span th:text="${item.genderID == null || item.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID)}"></span></td>
+                                                <td class="text-center"><span th:text="${item.identityCard}"></span></td>
+                                                <td class="text-center"><span th:text="${item.healthInsuranceNo}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patientPhone}"></span></td>
+                                                <td class="text-left"><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class="text-left"><span th:text="${item.currentAddressFull}"></span></td>
+                                                <td class="text-left"><span th:text="${item.bloodBaseID == null || item.bloodBaseID == '' ? '' :  options.get(T(com.gms.entity.db.ParameterEntity).BLOOD_BASE).get(item.bloodBaseID)}"></span></td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-left"><span th:text="${item.siteConfirmID == null || item.siteConfirmID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).PLACE_TEST).get(item.siteConfirmID)}"></span></td>
+                                                <td class="text-center" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}">
+                                                    <span th:if="${item.status != null}" 
+                                                          th:class="${item.status ==  T(com.gms.entity.constant.PacPatientStatusEnum).NEW.getKey()? 'text-center text-success' : 'text-center text-info'}" 
+                                                          th:text="${options.get('status').get(item.status)}"></span>
+                                                </td>
+                                                <td class="text-left"><span th:text="${(item.sourceServiceID == null || item.sourceServiceID == '') ? '' : options.get(T(com.gms.entity.db.ParameterEntity).SERVICE).get(item.sourceServiceID)}"></span></td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.createAT, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-left"><span th:text="${item.detectProvinceID == null || item.detectProvinceID == '' ? '' : allProvinces.get(item.detectProvinceID)}"></span></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-xs table-function"
+                                                            th:attr="ng-click='actionFillter('+${item.ID}+')'" 
+                                                            th:data-role="${T(com.gms.components.UrlUtils).pacNewFillter()}" 
+                                                            th:if="${!isVAAC && (tab == T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey() || tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey())}">
+                                                        <i class="fa fa-exchange"></i>
+                                                        Kiểm tra trùng lắp
+                                                    </button>
+                                                    <button type="button" class="btn btn-success btn-xs table-function"
+                                                            th:attr="ng-click='actionTransfer('+${item.ID}+')'" 
+                                                            th:data-role="${T(com.gms.components.UrlUtils).pacTransfer()}" 
+                                                            th:if="${!isVAAC && (tab == T(com.gms.entity.constant.PacTabEnum).NEW_IN_PROVINCE.getKey() || tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey())}">
+                                                        <i class="fa fa-share"></i>
+                                                        Chuyển sang quản lý
+                                                    </button>
+                                                    <a class="btn btn-default btn-xs table-function" th:if="${tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}"
+                                                       th:href="${T(com.gms.components.UrlUtils).pacPatientView(tab, item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).pacPatientView(tab, item.ID)}"  target="_blank">
+                                                        <i class="fa fa-eye"></i> Xem
+                                                    </a>
+                                                    <a class="btn btn-default btn-xs table-function" th:if="${!isVAAC && (tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey() || (tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey() && (item.acceptPermanentTime == null || item.acceptPermanentTime == '')))}"
+                                                       th:href="${T(com.gms.components.UrlUtils).pacNewUpdate(tab, item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).pacNewUpdate(tab, item.ID)}"  >
+                                                        <i class="fa fa-edit"></i> Sửa
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs table-function" th:if="${!isVAAC && (!isVAAC && (tab == T(com.gms.entity.constant.PacTabEnum).NEW_OTHER_PROVINCE.getKey() || (tab != T(com.gms.entity.constant.PacTabEnum).DELETE.getKey() && (item.acceptPermanentTime == null || item.acceptPermanentTime == ''))))}"
+                                                       th:href="${T(com.gms.components.UrlUtils).pacNewRemove(tab, item.ID)}"  
+                                                       th:data-role="${T(com.gms.components.UrlUtils).pacNewRemove(tab, item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn xóa người nhiễm này?">
+                                                        <i class="fa fa-remove"></i> Xoá
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}"
+                                                       th:href="${T(com.gms.components.UrlUtils).restorePacNew(item.ID)}"  
+                                                       th:data-role="${T(com.gms.components.UrlUtils).restorePacNew(item.ID)}"  
+                                                       data-confirm="Bạn chắc chắn muốn khôi phục người nhiễm này?">
+                                                        <i class="fa  fa-undo"></i> Khôi phục
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs table-function" th:if="${tab == T(com.gms.entity.constant.PacTabEnum).DELETE.getKey()}"
+                                                       th:href="${T(com.gms.components.UrlUtils).deletePacNew(item.ID)}"    
+                                                       th:data-role="${T(com.gms.components.UrlUtils).deletePacNew(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn xóa vĩnh viễn người nhiễm này?">
+                                                        <i class="fa fa-remove"></i> Xóa vĩnh viễn
+                                                    </a>
+                                                    <button type="button" 
+                                                            th:attr="ng-click='logs('+${item.ID}+', \''+${item.fullname}+'\')'" 
+                                                            th:data-role="${T(com.gms.components.UrlUtils).pacNewLog()}" 
+                                                            class="btn btn-default btn-xs table-function" >
+                                                        <i class="fa fa-comment"></i>
+                                                        Lịch sử
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="table-comment" th:if="${dataPage.data != null && tab == T(com.gms.entity.constant.PacTabEnum).NEW_OUT_PROVINCE.getKey()}" >
+                                        Chú thích màu: 
+                                        <label class="label label-warning" >Ca mới phát hiện</label>
+                                        <label class="label label-info" >Ca cũ</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/pac/widget :: pac-new-patient-log()" ></div>
+            <div data-th-include="backend/pac/widget :: request-review()" ></div>
+            <div data-th-include="backend/pac/widget :: pac-filter()" ></div>
+        </div>
+    </body>
+</html>

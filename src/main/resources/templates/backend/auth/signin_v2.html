@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${title}"></title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="shortcut icon" th:href="@{/static/backend/images/favicon.ico}" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+        <link rel="shortcut icon" th:href="@{/static/backend/images/favicon.ico}" />
+        <link rel="stylesheet" th:href="@{'/static/auth/css/bootstrap.min.css'}">
+        <link rel="stylesheet" th:href="@{'/static/auth/css/animate.css'}">
+        <link rel="stylesheet" th:href="@{'/static/auth/css/util.css'}">
+        <link rel="stylesheet" th:href="@{'/static/auth/css/main.css'}">
+        <link rel="stylesheet" th:href="@{'/static/auth/fonts/font-awesome-4.7.0/css/font-awesome.min.css'}">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="size1 bg0 where1-parent" >
+            <!-- Coutdown -->
+            <div th:if="${host == null || !host.contains('hub')}" class="flex-c-m bg-img1 size2 where1 overlay1 where2 respon2" style="background-image: url('/static/auth/images/bg03.png');"></div>
+            <div th:if="${host != null && host.contains('hub')}" class="flex-c-m bg-img1 size2 where1 overlay1 where2 respon2" style="background-image: url('/static/auth/images/bg_hub.jpg');"></div>
+<!--            <div class="flex-c-m bg-img1 size2 where1 overlay1 overlay2 where2 respon2" style="background-image: url('/static/auth/images/bg5.jpg');">
+                <div class="wsize2 flex-w flex-c-m cd100 js-tilt chuctet">
+                    Xuân Tân Sửu. 
+                    <br/>Chúc mừng năm mới
+                </div>
+            </div>-->
+
+            <!-- Form: p-t-45  -->
+            <div class="size3 flex-col-sb flex-w p-l-75 p-r-75 p-b-45 respon1">
+                <img th:src="@{/static/backend/images/Vietnamese_usaid_logo_banner.jpg}" style="max-width: 40%"/>
+
+                <!-- p-t-50  -->
+                <div class="p-b-60">
+                    <p class="m1-txt1 p-b-36 text-center">
+                        <i class="fa fa-cogs" ></i>
+                        Đăng nhập 
+                        <b th:if="${host == null || !host.contains('hub')}" th:utext="#{site.code}" ></b>
+                        <b th:if="${host != null && host.contains('hub')}">Cổng dữ liệu PQM</b>
+                    </p>
+
+                    <form class="contact100-form validate-form" action="j_spring_security_check" method="post">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                        </div>
+                        <div class="form-group validate-input" data-validate = "Vui lòng nhập tên đăng nhập">
+                            <input class="form-control"type="username" name="username" placeholder="Tên đăng nhập">
+                            <span class="focus-input100"></span>
+                        </div>
+
+                        <div class="form-group validate-input" data-validate = "Vui lòng nhập mật khẩu">
+                            <input class="form-control" type="password" name="password" placeholder="Mật khẩu">
+                            <span class="focus-input100"></span>
+                        </div>
+
+                        <div class="w-full">
+                            <button type="submit" class="btn btn-success btn-block btn-flat bg1">
+                                Đăng nhập
+                            </button>
+                            <input type="hidden" name="device" id="device" />
+                        </div>
+                        <div class="row" style="margin-top: 5px;">
+                            <div class="col-md-7 col-xs-7">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="remember-me" style="display: initial;" type="checkbox"> 
+                                        Tự động đăng nhập
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-xs-5 text-right">
+                                <a href="/auth/forgot-password.html" style="color: #3c8dbc;">Quên mật khẩu?</a>
+                            </div>
+                        </div>
+                        <div class="w-full"></div>
+                    </form>
+
+                    <div class="s2-txt3 p-t-18">
+                        <div th:if="${isError}" 
+                             th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message == 'Bad credentials' ? 'Mật khẩu không chính xác!':session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+                             class="alert alert-danger" role="alert">
+                            <i class="fa fa-warning" ></i> 
+                            Tên đăng nhập hoặc mật khẩu không chính xác
+                        </div>
+                    </div>
+                    <p>
+                        <a th:each="item,iter : ${view.getSupports()}" 
+                           th:if="${iter.index == 0}"
+                           class="text-success text-center" th:href="${item.value}">
+                            <i class="fa fa-support"></i>
+                            <span th:text="${item.key}" ></span>
+                        </a>
+                    </p>
+                </div>
+                <div class="main-footer hidden-xs" style="font-size: 12px;">
+<!--                    <b><span th:text="#{site.code}" ></span> Version <span th:text="#{site.version}" ></span></b> 
+                    - <span th:text="${@environment.getProperty('spring.profiles.active')}" ></span>-->
+                </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript" th:src="@{'/static/auth/js/jquery-3.2.1.min.js'}"></script>
+        <script type="text/javascript" th:src="@{'/static/auth/js/popper.js'}"></script>
+        <script type="text/javascript" th:src="@{'/static/auth/js/bootstrap.min.js'}"></script>
+        <script type="text/javascript" th:src="@{'/static/auth/js/tilt.jquery.min.js'}"></script>
+        <script type="text/javascript" th:src="@{'/static/auth/js/main.js'}"></script>
+    </body>
+</html>

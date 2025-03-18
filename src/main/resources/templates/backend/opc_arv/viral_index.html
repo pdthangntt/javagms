@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content"
+             th:with="tab=${#request.getParameter('tab') == '' ? 'all' : #request.getParameter('tab')}">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcViralIndex()}">Danh sách xét nghiệm TLVR</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_viral_index" ng-init="init()">
+                <script th:inline="javascript">
+                    var urlLogCreate = [[${T(com.gms.components.UrlUtils).viralLogCreate()}]];
+                    var urLog = [[${T(com.gms.components.UrlUtils).arvViralloadLog()}]];
+                    var isTTYT = [[${isTTYT}]];
+                    var urlGet = '/service/opc-arv/get.json';
+                    var urlPrinted = '/report/opc-arv/print.html';
+                    var form = {
+                    permanent_district_id: [[${#httpServletRequest.getParameter('permanent_district_id')}]],
+                            permanent_ward_id: [[${#httpServletRequest.getParameter('permanent_ward_id')}]],
+                            permanent_province_id: [[${#httpServletRequest.getParameter('permanent_province_id')}]]
+                    };
+                    var options = [[${options}]];
+                    var urlGets = '/service/opc-arv-virals/get.json';
+                    var urlSave = '/service/opc-arv-virals/save.json';
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).opcViralIndex()}" method="get" id="search">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs">
+                                    <li th:class="${#request.getParameter('tab') == 'all' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcViralIndex()  + '?tab=all'}">Tất cả</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == ''  ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcViralIndex()}">Cần xét nghiệm TLVR</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Mã bệnh án</label>
+                                                <input type="text" class="form-control" th:text="${code}" name = "code" th:value="${#httpServletRequest.getParameter('code')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Họ và tên</label>
+                                                <input type="text" class="form-control" th:text="${name}" name = "name" th:value="${#httpServletRequest.getParameter('name')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Số CMND</label>
+                                                <input type="text" class="form-control" th:text="${identityCard}" name = "identity_card" th:value="${#httpServletRequest.getParameter('identity_card')}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Số thẻ BHYT</label>
+                                                <input type="text" class="form-control" th:text="${insuranceNo}" name = "insurance_no" th:value="${#httpServletRequest.getParameter('insurance_no')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Tỉnh/TP thường trú</label>
+                                                <select class="form-control" name="permanent_province_id" 
+                                                        data-title ="Tất cả" 
+                                                        id="permanent_province_id">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <label>Quận/Huyện thường trú</label>
+                                                <select class="form-control" 
+                                                        data-title ="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="permanent_district_id" id="permanent_district_id"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" hidden="true">
+                                            <div class="form-group">
+                                                <label>Xã/Phường thường trú</label>
+                                                <select class="form-control" name="permanent_ward_id" 
+                                                        data-title ="Tất cả" 
+                                                        id="permanent_ward_id">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày điều trị ARV từ</label>
+                                                <input type="text" class="form-control" name = "treatment_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_time_from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày điều trị ARV đến</label>
+                                                <input type="text" class="form-control" name = "treatment_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatment_time_to" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2" th:if="${#request.getParameter('tab') == 'all'}">
+                                            <div class="form-group">
+                                                <label>Ngày xét nghiệm từ</label>
+                                                <input type="text" class="form-control" name = "viral_load_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="viral_load_time_from"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${#request.getParameter('tab') == 'all'}">
+                                            <div class="form-group">
+                                                <label>Ngày xét nghiệm đến</label>
+                                                <input type="text" class="form-control" name = "viral_load_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="viral_load_time_to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${#request.getParameter('tab') != 'all'}">
+                                            <div class="form-group">
+                                                <label>Ngày hẹn XN từ</label>
+                                                <input type="text" class="form-control" name = "viral_load_retry_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="viral_load_retry_from"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${#request.getParameter('tab') != 'all'}">
+                                            <div class="form-group">
+                                                <label>Ngày hẹn XN đến</label>
+                                                <input type="text" class="form-control" name = "viral_load_retry_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="viral_load_retry_to" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2" th:if="${#request.getParameter('tab') == 'all'}">
+                                            <div class="form-group">
+                                                <label>Kết quả xét nghiệm</label>
+                                                <select class="form-control" name="result_id" id="result_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).VIRUS_LOAD)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('result_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${isOpcManager}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="therapy_site_id" id="therapy_site_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('therapy_site_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).opcViralIndex(tabindex)}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                            <div class="pull-right" >
+                                                <div data-th-include="widget/gridview :: export-dropdown(false, true, false)" ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                        <a class="btn btn-default btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-edit"></i> Sửa
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-remove"></i> Xoá
+                                        </a>
+                                        <button type="button" class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-comment"></i>
+                                            Lịch sử
+                                        </button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <table class="table table-bordered table-sm table-full"  
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Mã bệnh án</th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Ngày sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center">Số thẻ BHYT</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Địa chỉ hiện tại</th>
+
+                                                <th class="text-center">Ngày xét nghiệm</th>
+                                                <th class="text-center">Lý do xét nghiệm</th>
+                                                <th class="text-center" th:if="${#request.getParameter('tab') == 'all'}">Kết quả xét nghiệm</th>
+                                                <th class="text-center">Ngày hẹn xét nghiệm</th>
+
+                                                <th class="text-center" th:if="${#request.getParameter('tab') == 'all'}">Số lượt XN TLVR</th>
+
+                                                <th class="text-center">Ngày điều trị ARV</th>
+                                                <th class="text-center">Phác đồ hiện tại</th>
+                                                <th class="text-center">Bậc phác đồ hiện tại</th>
+
+                                                <th class="text-center" th:if="${isOpcManager}">Cơ sở điều trị</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}" 
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : #dates.format(item.viralLoadRetryTime, 'dd/MM/yyyy') == #dates.format(#dates.createNow(), 'dd/MM/yyyy') ? 'warning' : '' }"
+                                                th:data-id="${item.ID}"
+                                                th:data-code="${item.code}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td class="text-center"><span th:text="${item.code}"></span></td>
+                                                <td class=""><span th:text="${item.patient != null ? item.patient.fullName : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient != null && item.patient.dob != null ? #dates.format(item.patient.dob, 'dd/MM/yyyy') : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient == null || item.patient.genderID == null || item.patient.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.patient.genderID)}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient != null && item.patient.identityCard != null ? item.patient.identityCard : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.insuranceNo}"></span></td>
+                                                <td class=""><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class=""><span th:text="${item.currentAddressFull}"></span></td>
+
+                                                <td class="text-center"><span th:text="${#dates.format(item.viralLoadTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="">
+                                                    <span th:each="itemViral,iter : ${item.viralLoadCauses}">
+                                                        <span th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).VIRAL_LOAD_SYMTOM).get(itemViral)}"></span><span th:if="${iter.index != (#lists.size(item.viralLoadCauses) - 1)}">;</span>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center" th:if="${#request.getParameter('tab') == 'all'}"><span th:text="${item.viralLoadResult == null || item.viralLoadResult == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).VIRUS_LOAD).get(item.viralLoadResult + '')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.viralLoadRetryTime, 'dd/MM/yyyy')}"></span></td>
+
+                                                <td class="text-center" th:if="${#request.getParameter('tab') == 'all'}"><span th:text="${countTimeVirals.get(item.ID + '')}"></span></td>
+
+                                                <td class="text-center"><span th:text="${#dates.format(item.treatmentTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.treatmentRegimenID == null || item.treatmentRegimenID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(item.treatmentRegimenID)}"></span></td>
+                                                <td class="text-center"><span th:text="${item.treatmentRegimenStage == null || item.treatmentRegimenStage == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE).get(item.treatmentRegimenStage)}"></span></td>
+                                                <td th:if="${isOpcManager}" class=""><span th:text="${item.siteID == null || item.siteID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(item.siteID.toString())}"></span></td>
+                                                <td class="text-right" >
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${#request.getParameter('tab') == 'all' && !isOpcManager && item.tranferFromTime == null}"  
+                                                       th:attr="ng-click='appointment('+${item.ID}+')'">
+                                                        <i class="fa fa-clock-o"> </i> Hẹn xét nghiệm
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${#request.getParameter('tab') != 'remove' && !isOpcManager && item.tranferFromTime == null}"  
+                                                       th:href="${T(com.gms.components.UrlUtils).opcViralLoad(item.ID) + '&x=new'}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).opcViralLoad(item.ID) + '&x=new'}">
+                                                        <i class="fa fa-plus"> </i> Thêm lượt xét nghiệm
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${#request.getParameter('tab') != 'remove' && !isOpcManager && item.tranferFromTime == null}"  
+                                                       th:href="${T(com.gms.components.UrlUtils).opcViralLoad(item.ID)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).opcViralLoad(item.ID)}">
+                                                        <i class="fa fa-info"> </i> Chi tiết
+                                                    </a>
+                                                    <button type="button" 
+                                                            th:attr="ng-click='logs('+${item.ID}+', \''+${item.code}+'\', \''+${item.patient.fullName}+'\')'" 
+                                                            class="btn btn-default btn-xs table-function" 
+                                                            th:data-role="${T(com.gms.components.UrlUtils).arvLog()}" >
+                                                        <i class="fa fa-comment"></i>
+                                                        Lịch sử
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data != null && dataPage.totalRecords > 0}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="table-comment" th:if="${dataPage.data != null}" >
+                                        Chú thích màu: 
+                                        <label class="label label-warning" >Các bản ghi cần xét nghiệm hôm nay</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/opc_arv/widget :: opc-arv-transfer()" ></div>
+            <div data-th-include="backend/opc_arv/widget :: arv-log-virals()" ></div>
+            <div>
+                <script type="text/ng-template" id="viralAppointmentForms">
+            <div class="modal-header">
+                <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    <b>Xác nhận hẹn lịch xét nghiệm tải lượng virus</b>
+                </h4>
+            </div>
+            <div class="modal-body" ng-init="init()">
+                <form >
+                       <div class="row">
+                            <div class="col-md-6">
+                                <dl class="dl-opc dl-horizontal">
+                                    <dt>Họ và tên:</dt>
+                                    <dd>{{entity.patient.fullName == null ? '__' : entity.patient.fullName}}</dd>
+                                    <dt>Ngày sinh:</dt>
+                                    <dd>{{entity.patient.dob == null ? '__' : entity.patient.dob | date:'dd/MM/yyyy'}}</dd>
+                                    <dt>Giới tính:</dt>
+                                    <dd>{{entity.patient.genderID == null || entity.patient.genderID == '' ? '__' : options['gender'][entity.patient.genderID]}}</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl class="dl-opc dl-horizontal">
+                                    <dt>Mã bệnh án:</dt>
+                                    <dd>{{entity.code == null || entity.code == '' ? '__' : entity.code}}</dd>
+                                    <dt>Mã XN khẳng định:</dt>
+                                    <dd>{{entity.patient.confirmCode == null || entity.patient.confirmCode == '' ? '__' : entity.patient.confirmCode}}</dd>
+                                    <dt>Ngày XN khẳng định:</dt>
+                                    <dd>{{entity.patient.confirmTime == null ? '__' : entity.patient.confirmTime | date:'dd/MM/yyyy'}}</dd>
+                                </dl>
+                            </div>                
+                        </div> 
+                    <fieldset class="form-fieldset">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div ng-class="errors.viralLoadRetryTime ? 'has-error form-group' : 'form-group'">
+                                    <label>Ngày hẹn xét nghiệm: <span class="text-danger">*</span></label>
+                                    <input id="viralLoadRetryTime" type="text" ng-model="item.viralLoadRetryTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                                    <p class="help-block" ng-if="errors.viralLoadRetryTime">{{errors.viralLoadRetryTime}}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div ng-class="errors.viralLoadCauses?'has-error form-group':'form-group'">
+                                    <label>Lý do xét nghiệm: <span class="text-danger">*</span></label>
+                                    <select id="viralLoadCauses" class="form-control">
+                                        <option ng-repeat="(key, val) in options['viralload-symtom']" value="{{key}}">{{val}}</option>
+                                    </select>
+                                    <p class="help-block" ng-if="errors.viralLoadCauses">{{errors.viralLoadCauses}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div ng-class="errors.note?'has-error form-group':'form-group'">
+                                    <label>Ghi chú: </label>
+                                    <textarea  type="text" ng-model="item.note" class="form-control" />
+                                    <p class="help-block" ng-if="errors.note">{{errors.note}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button ng-if="!readonly" class="btn btn-primary" type="button" ng-click="ok()" ng-show="item.action != 'view'" ><i class="fa fa-check"></i> &nbsp;Đồng ý</button>
+                <button class="btn btn-danger" type="button" ng-click="cancel()"><i class="fa fa-close"></i> Không</button>
+            </div>
+        </script>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${
+                T(com.gms.components.UrlUtils).htcConfirmPositivePDF()
+            }
+            ]];
+                    var urlExcel = [[${T(com.gms.components.UrlUtils).htcConfirmPositiveExcel()}
+                    ]];
+                    var urlEmail = [[${T(com.gms.components.UrlUtils).htcConfirmPositiveEmail()}
+                    ]];
+                    var form = [[${form}
+                    ]]
+        </script>
+        <style>
+            .gender{
+                width: 60px;
+            }
+            .year{  
+                width: 120px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcConfirmPositiveView()}"><span >Xét nghiệm khẳng định</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).htcConfirmPositiveView()}"><span th:text="${bread_crumb}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_confirm_positive" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom margin-bottom-none">
+                            <ul th:replace="report/htc_confirm/widget :: positive-header" ></ul>
+                        </div>
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <div class="row">
+                                    <form th:action="${T(com.gms.components.UrlUtils).htcConfirmPositiveView()}" 
+                                          method="GET" 
+                                          name="htc_confirm_positive_form"
+                                          th:object="${form}">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div data-th-replace="widget/form :: input-date-model('XN khẳng định từ ngày ', 'start', false, 'dd/mm/yyyy', '')"></div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div data-th-replace="widget/form :: input-date-model('Đến ngày ', 'end', false, 'dd/mm/yyyy', '')"></div>
+                                        </div>
+
+                                        <div class="col-lg-12 col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="htcConfirmPositivePdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcConfirmPositivePDF()}" >
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="htcConfirmPositiveExcel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcConfirmPositiveExcel()}" >
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="htcConfirmPositiveEmail()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).htcConfirmPositiveEmail()}" >
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header">
+                                <div class="box-title">
+                                    <span >
+                                        Ngày xét nghiệm khẳng định 
+                                    </span>
+                                    từ&nbsp;<span class="text-danger" th:utext="${form.start}" ></span> đến <span class="text-danger" th:utext="${form.end}" ></span>
+                                    - <span th:utext="${form.siteName}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/htc_confirm/widget :: table-htc-confirm-positive(${form})"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

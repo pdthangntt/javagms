@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript"
+                th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                currentSite=${#request.userPrincipal.principal.site}">
+                    var form = {
+                            permanent_district_id: [[${#httpServletRequest.getParameterValues('district_id')}]],
+                            permanent_ward_id: [[${#httpServletRequest.getParameterValues('ward_id')}]],
+                            permanent_province_id: [[${#httpServletRequest.getParameterValues('province_id')}]]
+                    };
+                    var urlPdf = [[${T(com.gms.components.UrlUtils).pacLocalPdf()}]];
+                    var urlExcel = [[${T(com.gms.components.UrlUtils).pacLocalExcel()}]];
+                    var urlEmail = [[${T(com.gms.components.UrlUtils).pacLocalEmail()}]];
+                    var formSearch = [[${form}]];
+        </script>
+        <style type="text/css">
+            .width-60 {
+                width: 100px;
+            }
+            .width-80 {
+                width: 120px;
+            }
+            
+            .nopadding {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            .padding-bottom-label{
+                padding-bottom: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacLocalIndex()}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacLocalIndex()}"  th:text="${titleBreacum}"><span></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_local_report" ng-init="init()" ng-cloak>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pacLocalIndex()}" method="GET" name="pac_local" id="search">
+                                    <div class="row" th:if = "${form.VAAC}">
+                                        <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí hiển thị báo cáo chi tiết:</div>
+                                        <div class="col-md-3" th:if="${form.VAAC}">
+                                            <div class="radio" >
+                                                <label id = "province"><input type="radio"  class="radio-cust" name="level_display" checked th:checked="${form.levelDisplay == 'province' || form.levelDisplay == '' || form.levelDisplay == null}" value="province">&nbsp;&nbsp;&nbsp;Tỉnh</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="radio">
+                                                <label id = "district"><input type="radio"  class="radio-cust" name="level_display" th:checked="${form.levelDisplay == 'district' || ((form.levelDisplay == 'province' || form.levelDisplay == '' || form.levelDisplay == null) && !form.VAAC)}" value="district">&nbsp;&nbsp;&nbsp;Huyện </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="radio">
+                                                <label id = "ward"><input type="radio"  class="radio-cust" name="level_display" th:checked="${form.levelDisplay == 'ward'}" value="ward">&nbsp;&nbsp;&nbsp;Xã </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2" th:if="${form.VAAC}">
+                                            <div class="form-group">
+                                                <label class = "lblProvince">Tỉnh/Thành phố</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="province_id" id="permanent_province_id">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div th:class="${form.VAAC ? 'col-md-2' : 'col-md-3'}">
+                                            <div class="form-group">
+                                                <label>Quận/Huyện</label>
+                                                <select class="form-control"
+                                                        data-title="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="district_id" id="permanent_district_id"></select>
+                                            </div>
+                                            <input th:if="${form.TTYT || form.TYT}" type="hidden" name="district_id" th:value="${form.district}">
+                                        </div>
+                                        <div th:class="${form.VAAC ? 'col-md-2' : 'col-md-3'}" >
+                                            <div class="form-group" >
+                                                <label>Xã/Phường</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        name="ward_id" id="permanent_ward_id"></select>
+                                            </div>
+                                            <input th:if="${form.TYT}" type="hidden" name ="ward_id" th:value="${form.ward}">
+                                        </div>
+                                        <div th:class="${form.VAAC ? 'col-md-2' : 'col-md-3'}">
+                                            <div class="form-group">
+                                                <label>Thời gian từ</label>
+                                                <input type="text" class="form-control" name="from_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="fromTime" />
+                                            </div>
+                                        </div>
+                                        <div th:class="${form.VAAC ? 'col-md-2' : 'col-md-3'}">
+                                            <div class="form-group">
+                                                <label>Thời gian đến</label>
+                                                <input type="text" class="form-control" name="to_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="toTime" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="text-center" ng-controller="report_pac_local">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).deadReportPDF()}">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).deadReportExcel()}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).deadReportEmail()}">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <p>
+                                    <span th:utext="${form.title}"></span>
+                                    <span th:utext="${(form.titleLocationDisplay == null || form.titleLocationDisplay == '') && form.VAAC ? ' - Quốc gia ' : (form.titleLocationDisplay == null || form.titleLocationDisplay == '') && !form.VAAC ? ' - ' + form.provinceName : ' - ' + form.titleLocationDisplay}" class="text-normal"></span>
+                                    <br>
+                                    <span th:if="${form.fromTime != null}" class="text-normal"> Từ </span> 
+                                    <span th:if="${form.fromTime != null}" class="text-danger" th:utext="${form.fromTime}"></span> 
+                                    <span th:if="${form.toTime != null}" class="text-normal"> đến ngày </span> 
+                                    <span th:if="${form.toTime != null}" class="text-danger" th:utext="${form.toTime}"></span> 
+                                </p>
+                                <div class="form-horizontal" th:class="${ form.VAAC ? 'padding-bottom-label':''}" >
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <span class="text-left text-bold" th:utext="${form.VAAC && form.levelDisplay == 'province' ? 'Tổng số tỉnh/thành phố có người nhiễm:' :  form.VAAC && form.levelDisplay == 'district' ? 'Tổng số quận/huyện có người nhiễm:' : 'Tổng số phường/xã có người nhiễm:'}"></span> &nbsp;
+                                            <span th:text="${form.VAAC && form.levelDisplay == 'province' ? form.numberFormat(form.provinceTotal) : form.VAAC && form.levelDisplay == 'district' ? form.numberFormat(form.districtTotal) : form.numberFormat(form.wardTotal)}" ></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-horizontal padding-bottom-label" th:if="${!form.VAAC}">
+                                    <div class="row">
+                                        <div class="col-md-3" th:if="${form.PAC}" >
+                                            <div class="row">
+                                                <div class="col-sm-12"><span class="text-left text-bold">Người nhiễm chưa rà soát:</span> &nbsp; <span th:text="${form.numberFormat(form.notReviewTotal)}" ></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="row">
+                                                <div class="col-sm-12"><span class="text-left text-bold">Người nhiễm cần rà soát:</span> &nbsp; <span th:text="${form.numberFormat(form.needReviewTotal)}"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="row">
+                                                <div class="col-sm-12"><span class="text-left text-bold">Người nhiễm đã rà soát:</span> &nbsp; <span th:text="${form.numberFormat(form.reviewedTotal)}"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="row">
+                                                <div class="col-sm-12"><span class="text-left text-bold">Người nhiễm quản lý:</span> &nbsp; <span th:text="${form.numberFormat(form.sum)}"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div class="row">
+                                                <div class="col-sm-12"><span class="text-left text-bold">Người nhiễm ngoại tỉnh:</span> &nbsp; <span th:text="${form.numberFormat(form.outProvinceTotal)}"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <th:block th:if="${form.VAAC}" >
+                                    <div data-th-replace="report/pac/widget-table :: table-local-vaac()"></div>
+                                </th:block>
+                                <th:block th:if="${!form.VAAC}" >
+                                    <div data-th-replace="report/pac/widget-table :: table-local()"></div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

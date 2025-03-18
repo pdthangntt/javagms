@@ -1,0 +1,52 @@
+<div data-th-fragment="parameter-left(dataModels)">
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                Tham số 
+            </h3>
+
+            <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+                <li th:each="instance : ${dataModels}" th:if="${instance.value.title != ''}"  
+                    th:class="${instance.key == type ? 'active' : ''}">
+                    <a th:href="${T(com.gms.components.UrlUtils).parameterIndex(instance.key)}">
+                        <i th:class="${instance.value.icon}"
+                           data-toggle="tooltip" 
+                           data-placement="top"
+                           th:title="${instance.value.description}"></i>
+                        <span th:utext='${instance.value.title}'></span>
+                        <span class="pull-right-container">
+                            <span th:if="${instance.value.elog == '1'}" class="label label-success pull-right">E</span>
+                            <span th:if="${instance.value.hivinfo == '1'}" class="label label-primary pull-right" style="margin-right:2px;">I</span>
+                            <span th:if="${instance.value.useparent == '1'}" class="label label-warning pull-right" style="margin-right:2px;">P</span>
+                            <span th:if="${instance.value.sitemap == '1'}" class="label label-danger pull-right" style="margin-right:2px;">S</span>
+                            <span th:if="${instance.value.pqm == '1'}" class="label label-info pull-right" style="margin-right:2px;">H</span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Chú thích Icon</h3>
+        </div>
+        <div class="box-body no-padding" style="">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="javascript:;"><span class="label label-success pull-right">E</span> Cấu hình HTC Elog</a></li>
+                <li><a href="javascript:;"><span class="label label-primary pull-right">I</span> Cấu hình HIV Info</a></li>
+                <li><a href="javascript:;"><span class="label label-warning pull-right">P</span> Cấu hình Cha con</a></li>
+                <li><a href="javascript:;"><span class="label label-danger pull-right">S</span> Cấu hình Map cơ sở</a></li>
+                <li><a href="javascript:;"><span class="label label-info pull-right">H</span> Cấu hình Hub</a></li>
+            </ul>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>

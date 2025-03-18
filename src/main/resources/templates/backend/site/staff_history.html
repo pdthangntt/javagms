@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <small th:text="'Quản trị viên ' + ${staff.name} "></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteIndex()}"><span th:text="'Cơ sở '+${site.name}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}"><span th:text="'Quản trị viên'" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).siteStaffHistory(site.ID, staff.ID)}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="timeline">
+                            <li th:each="item : ${dataPage.data}">
+                                <i class="fa fa-file-text-o bg-aqua"></i>
+                                <i th:if="${#strings.contains(item.requestUrl, 'new' )}" class="fa fa-plus bg-blue"></i> 
+                                <i th:if="${#strings.contains(item.requestUrl, 'remove' )}" class="fa fa-remove bg-red"></i> 
+                                <i th:if="${#strings.contains(item.requestUrl, 'update' )}" class="fa fa-edit bg-green"></i> 
+
+                                <div class="timeline-item">
+                                    <span class="time">
+
+                                        <i class="fa fa-clock-o"></i> 
+
+                                        <span th:utext="${#dates.format(item.createAT, 'hh:mm dd/MM/yyyy')}" ></span>
+                                    </span>
+                                    <h3 class="timeline-header" th:utext="${actions[item.requestUrl] == null ? item.requestUrl: actions[item.requestUrl]}"></h3>
+
+                                    <div class="timeline-body">
+                                        UserAgent: <span th:utext="${item.userAgent}" ></span><br/>    
+                                        Ip: <span th:utext="${item.ip}" ></span> 
+                                        <span th:if="${item.expires}">- Expires: <span th:utext="${item.expires}" ></span></span><br/>  
+                                        Method: <span th:utext="${item.requestMethod}" ></span><br/>  
+                                        Url: <i class="text-danger" th:utext="${item.requestUrl}" ></i><br/>
+                                        <pre th:if="${item.requestParameter != null && !#strings.contains(item.requestParameter, 'pwd' ) && !#strings.contains(item.requestParameter, 'password' )}" th:utext="${item.requestParameter}" ></pre>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa fa-clock-o bg-gray"></i>
+                            </li>
+                        </ul>
+                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

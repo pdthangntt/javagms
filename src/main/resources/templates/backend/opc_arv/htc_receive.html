@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content"
+             th:with="tab=${#request.getParameter('tab') == '' ? null : #request.getParameter('tab')}">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${parentTitle}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}"><span th:text="${smallTitle}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="arv_htc_receive" ng-init="init()">
+                <script th:inline="javascript">
+                    var urlLogCreate = [[${T(com.gms.components.UrlUtils).arvLogCreate()}
+                    ]];
+                            var urLog = [[${T(com.gms.components.UrlUtils).arvLog()}
+                            ]];
+                            var isTTYT = [[${isTTYT}
+                            ]];
+                    var urlGetFeedback = '/service/opc-arv/get-feedback.json';
+                    var urlGet = '/service/opc-arv/get.json';
+                    var urlPrinted = '/report/opc-arv/print.html';
+                </script>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}" method="get">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs">
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}">Tất cả</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'not_received' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC() + '?tab=not_received'}">Chưa tiếp nhận</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'received' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC() + '?tab=received'}">Đã tiếp nhận</a>
+                                    </li>
+                                    <li th:class="${#request.getParameter('tab') == 'remove' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC() + '?tab=remove'}">Đã xóa</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Họ và tên</label>
+                                                <input type="text" class="form-control" th:text="${name}" name = "name" th:value="${#httpServletRequest.getParameter('name')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Mã XN khẳng định</label>
+                                                <input type="text" class="form-control" th:text="${confirmTestNo}" name = "confirm_test_no" th:value="${#httpServletRequest.getParameter('confirm_test_no')}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày XN khẳng định</label>
+                                                <input type="text" class="form-control" name = "confirm_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirm_time"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày chuyển gửi</label>
+                                                <input type="text" class="form-control" name = "exchange_time" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="exchange_time" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Cơ sở chuyển gửi</label>
+                                                <select class="form-control" name="transfer_site" id="transfer_site">
+                                                    <option th:each="instance : ${options.get('siteHtc')}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('transfer_site') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${tab == null || tab == ''}">
+                                            <div class="form-group">
+                                                <label>Trạng thái</label>
+                                                <select class="form-control" name="receive_status" id="receive_status">
+                                                    <option th:each="instance : ${options.get('receiveStatus')}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('receive_status') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC(tabIndex)}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                        <a class="btn btn-default btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-edit"></i> Sửa
+                                        </a>
+
+                                        <a class="btn btn-danger btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-remove"></i> Xoá
+                                        </a>
+                                        <button type="button" class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-comment"></i>
+                                            Lịch sử
+                                        </button>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <table class="table table-bordered table-sm table-full"  
+                                           data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Họ và tên</th>
+                                                <th class="text-center">Năm sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center">Số thẻ BHYT</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Địa chỉ hiện tại</th>
+                                                <th class="text-center">Mã XN khẳng định</th>
+                                                <th class="text-center">Ngày XN khẳng định</th>
+                                                <th class="text-center">Nơi XN khẳng định</th>
+                                                <th class="text-center">Ngày chuyển gửi</th>
+                                                <th class="text-center">Cơ sở chuyển gửi</th>
+                                                <th class="text-center" th:if="${tab == null || tab == ''}">Trạng thái</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'received'}">Ngày tiếp nhận</th>
+                                                <th class="text-center" th:if="${tab == null || tab == '' || tab == 'received'}">Ngày phản hồi</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}" 
+                                                th:with="days=${T(java.util.concurrent.TimeUnit).DAYS}, millis=${T(java.util.concurrent.TimeUnit).MILLISECONDS}" 
+                                                th:class="${success_id != null && success_id == item.ID ? 'success' : item.arrivalTime == null ? (days.convert(#dates.createNow().getTime() - item.exchangeTime.getTime(), millis) >= 20 ? 'danger' : '') : item.feedbackReceiveTime == null ? 'info': 'info'}"
+                                                th:data-id="${item.ID}"
+                                                th:data-code="${item.code}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td class=""><span th:text="${item.patientName != null ? item.patientName : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.yearOfBirth != null ? item.yearOfBirth : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.genderID == null || item.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID)}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patientID != null ? item.patientID : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.healthInsuranceNo != null ? item.healthInsuranceNo : ''}"></span></td>
+                                                <td class=""><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class=""><span th:text="${item.currentAddressFull}"></span></td>
+                                                <td class="text-center"><span th:text="${item.confirmTestNo == null ? '' : item.confirmTestNo}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.siteConfirmTest == null || item.siteConfirmTest == '' || siteConfirm.size() == 0 ? '' : siteConfirm.get(item.siteConfirmTest)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.exchangeTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${siteHTC.get(item.siteID.toString())}"></span></td>
+                                                <td th:class="${item.arrivalTime == null ? 'text-center text-success' : 'text-center'}" th:if="${tab == null || tab == ''}"><span th:text="${item.arrivalTime == null ? 'Chưa tiếp nhận' : item.arrivalTime != null ? 'Đã tiếp nhận' : ''}"></span></td>
+                                                <td class="text-center" th:if="${tab == null || tab == '' || tab == 'received'}"><span th:text="${#dates.format(item.arrivalTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center" th:if="${tab == null || tab == '' || tab == 'received'}"><span th:text="${#dates.format(item.feedbackReceiveTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-right" >
+
+                                                    <button type="button" 
+                                                            th:if="${tab != 'remove' && item.arrivalTime != null && item.feedbackReceiveTime != null}" 
+                                                            th:attr="ng-click='print('+${item.ID}+')'"
+                                                            class="btn btn-primary btn-xs table-function" >
+                                                        <i class="fa fa-print"></i>
+                                                        In phiếu phản hồi
+                                                    </button>
+                                                    <button type="button" 
+                                                            th:if="${tab != 'remove' && item.arrivalTime != null && item.feedbackReceiveTime == null}" 
+                                                            th:attr="ng-click='feedbackReceive('+${item.ID}+', 100, 0)'"
+                                                            class="btn btn-primary btn-xs table-function">
+                                                        <i class="fa fa-check"></i>
+                                                        Phản hồi tiếp nhận
+                                                    </button>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${tab != 'remove' && item.arrivalTime == null}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).opcArvNew() + '?htc_id=' + item.ID}">
+                                                        <i class="fa fa-pencil"></i> Tiếp nhận
+                                                    </a>
+                                                    <a class="btn btn-default btn-xs table-function" th:if="${tab != 'remove'}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).viewReceiveHTC(item.ID)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).viewReceiveHTC(item.ID)}">
+                                                        <i class="fa fa-eye"></i> Xem
+                                                    </a>
+                                                    <a class="btn btn-danger btn-xs table-function" th:if="${(tab == null || tab == '' || tab == 'not_received')  && item.arrivalTime == null}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).removeReceiveHTC(item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).removeReceiveHTC(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn xóa khách hàng này?">
+                                                        <i class="fa fa-remove"></i> Xoá
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${tab == 'remove'}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).restoreReceiveHTC(item.ID)}" 
+                                                       th:data-role="${T(com.gms.components.UrlUtils).restoreReceiveHTC(item.ID)}" 
+                                                       data-confirm="Bạn chắc chắn muốn khôi phục khách hàng này?">
+                                                        <i class="fa  fa-undo"></i> Khôi phục
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div id="table-comment" th:if="${dataPage.data != null}" >
+                                        Chú thích màu: 
+                                        <label class="label label-info" >Đã tiếp nhận</label>&nbsp;
+                                        <label class="label label-danger" >Quá 20 ngày chưa tới cơ sở để tiếp nhận</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/opc_arv/widget :: opc-arv-feedback_receive()" ></div>
+        </div>
+    </body>
+</html>

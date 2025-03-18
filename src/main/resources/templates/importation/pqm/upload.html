@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${form.title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${form.title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${form.smallUrl}"><span th:text="${form.smallTitle}" ></span></a></li>
+                    <li><a th:href="${form.uploadUrl}"><span th:text="${form.title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="import_upload_pqm" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul th:replace="importation/widget :: tab" ></ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" >
+                                    <form th:action="${form.readUrl}" 
+                                          method="post" 
+                                          enctype="multipart/form-data">
+                                        <div class="text-center">
+                                            <h3>Tải tập tin excel</h3>
+                                            <small>(Chỉ hỗ trợ tập tin Excel có phần mở rộng <i class="text-danger">.xls</i> và <i class="text-danger">.xlsx</i>)</small>
+                                            <br/>
+                                            <div th:if="${isPac == true}" class="row">
+                                                <div class="col-md-4">
+                                                </div>  
+                                                <div   class="col-md-2">
+                                                    <div class="form-group center" style="margin-top: 8px;">
+                                                        <label><h5 class="text-right">Chọn cơ sở nhập liệu:</h5></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group center">
+                                                        <h4></h4>
+                                                        <select class="form-control" id="sites" name="sites">
+                                                            <option th:each="item : ${sites}" 
+                                                                    th:value="${item.key}" 
+                                                                    th:selected="${#httpServletRequest.getParameter('sites') == item.key}"
+                                                                    th:utext="${item.value}" ></option>
+                                                        </select> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-group" >
+                                                <span class="btn btn-primary btn-file">
+                                                    <i class="fa fa-file-excel-o"></i>
+                                                    <span class="file-custom-name">Chọn tập tin excel </span>
+                                                    <input type="file" name="file" class="file-custom" accept=".xls,.xlsx" />
+                                                </span>
+                                                <button class="btn btn-success btn-file-custom-name display-none" type="submit"  >
+                                                    Tải lên
+                                                </button>
+                                            </div>
+                                            <br/>
+                                            <br/>
+                                            &nbsp;
+                                            <a class="btn btn-link" th:if="${form.template != null}" th:href="${form.template}">Tải tập tin mẫu</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

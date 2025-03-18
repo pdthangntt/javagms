@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title data-layout-title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">Local SI</title>
+        <link rel="shortcut icon" th:href="@{/static/backend/images/favicon.ico}" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link data-th-replace="backend/layouts/widget-layout :: widget-css"  />
+    </head>
+
+    <!--background background_01-->
+    <body class="hold-transition login-page ">
+        <div data-layout-fragment="content"></div>
+
+        <script type="text/javascript" th:inline="javascript">
+            var app_security = [[${
+                view.security
+            }
+            ]];
+        </script>
+        <script data-th-replace="backend/layouts/widget-layout :: widget-js" ></script>
+        <!--<script src="/js/custom.min.js"></script>-->
+    </body>
+</html>

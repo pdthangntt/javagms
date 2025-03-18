@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .body {
+                /*    height: 297mm;
+                    width: 210mm;*/
+                margin-left: 30px;
+                margin-right:  30px;
+                /*color: blue;*/
+                color: #000;
+                /*background: url('in_kim_a5.png');*/
+                /*font-size: 14px;*/
+                font-size: 16.8px;
+                background-color: #fff;
+                /*border: 1px solid #000;*/
+            }
+            .margin-left-10 {
+                margin-left: 10px;
+            }
+            .font-25 {
+                margin-top: 25px;
+            }
+        </style>
+        <style type="text/css">
+            @page { /*size: A4 landscape;*/}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body">
+            <div class="content">  
+                <div class="header">
+                    <div class="box_title" >
+                        <div class="clear-fix" >&nbsp;</div>
+                        <p class="text-uppercase conghoa">Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</p>
+                        <p class="doclap"><span>Độc lập - Tự do - Hạnh phúc</span></p>
+                    </div>
+                    <div class="row"><br/></div>
+                    <div class="box_title" >
+                        <div class="row">
+                            <div class="col-20">&nbsp;</div>
+                            <div class="col-60"><p class="text-uppercase font-25">Phiếu đồng ý tiếp nhận thông tin và nhận hỗ trợ tiếp tục</p></div>
+                            <div class="col-20">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <div class="mid" style="border: 1px solid !important;">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div class="row margin-left-10">
+                            <b>Thông tin về khách hàng:</b>
+                        </div>
+                        <div class="row margin-left-10">
+                            <label>Mã khách hàng:</label> 
+                            <span class="text-uppercase" th:utext="${item.code}"></span>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="">
+                                <label>Họ và tên:</label> 
+                                <span class="text-uppercase" th:utext="${item.patientName}"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="row margin-left-10">
+                            <label>Thông tin liên lạc:</label>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="">
+                                <label>Điện thoại di động (nếu khách hàng ưng thuận):</label> 
+                                <span  th:utext="${item.patientPhone}"></span>
+                                <span  th:if="${item.patientPhone == '' || item.patientPhone == null}">.....................................................................</span>
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="">
+                                <label>Chi tiết liên lạc (nếu khách hàng ưng thuận) .........................................................................</label> 
+                                <span class="point">.................................................................................................................................................</span>
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="">
+                                <label>Tôi đồng ý để cơ sở: </label> 
+                                <span  th:utext="${form.siteName}"></span>
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                        <div class="row margin-left-10">
+                            <div class="col-5">
+                                <label>(1)</label> 
+                            </div>
+                            <div class="col-95">
+                                <label>Gửi tin nhắn/ gọi điện thoại nhắc nhở đến số điện thoại tôi cung cấp ở trên (đối với khách hàng cung cấp số điện thoại)</label>
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="col-5">
+                                <label>(2)</label> 
+                            </div>
+                            <div class="col-95">
+                                <label>Cung cấp thông tin liên lạc và kết quả HIV của tôi cho <i>(đánh dấu lựa chọn đồng ý, lựa chọn nào không đồng ý thì gạch đi)</i>:</label>
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="col-5">&nbsp;</div>
+                            <div class="col-95">
+                                <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Cơ sở chăm sóc điều trị
+                                </label> 
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="col-5">&nbsp;</div>
+                            <div class="col-95">
+                                <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Cán bộ y tế thôn bản
+                                </label> 
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="col-5">&nbsp;</div>
+                            <div class="col-95">
+                                <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Nhân viên hỗ trợ cộng đồng
+                                </label> 
+                            </div>
+                        </div>
+                        <div class="row margin-left-10">
+                            <div class="col-5">&nbsp;</div>
+                            <div class="col-95">
+                                <label><span class="" style="border: 1px solid !important; font-size: 10px;">&ensp;&ensp;&ensp;</span> Khác <i>(Ghi rõ nếu có)</i>
+                                </label> 
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                        <div class="row margin-left-10">
+                            <div class="">
+                                <label>&ensp;&ensp;&ensp;&ensp;Tôi hiểu rằng các thông tin này được dùng vì mục đích hỗ trợ tiếp tục cho tôi.
+                                </label> 
+                            </div>
+                        </div>
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" style="line-height: 30px;">
+                                    &nbsp;
+                                </p>
+                                <div>
+                                    <p class="box-ky-title" style="line-height: 30px;">
+                                        Tư vấn viên
+                                        <br/>
+                                    </p>
+                                    <p class="text-normal"><i>(Ký, ghi rõ họ tên)</i></p> 
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <p class="text-normal" style="line-height: 30px;">
+                                    <i>
+                                        <span class="point">....................</span>, 
+                                        ngày <span class="point">.....</span>
+                                        tháng <span class="point">.....</span> 
+                                        năm <span class="point">20.....</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title" style="line-height: 30px;">
+                                        Người được tư vấn
+                                        <br/>
+                                    </p>
+                                    <p class="text-normal"><i>(Ký, ghi rõ họ tên)</i></p> 
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,14 @@
+<ul class="nav nav-tabs" data-th-fragment="mail-header()">
+    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).mailIndex()}">Tất cả</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'sent' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).mailIndex() + '?tab=sent'}">Đã gửi</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'error' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).mailIndex() + '?tab=error'}">Gửi lỗi</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'not' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).mailIndex() + '?tab=not'}">Chưa gửi</a>
+    </li>
+</ul>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = {};
+                        var urlExcel = "/report/pqm-vct-recency/excel.html";
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmVctRecency()}"><span th:text="${parent_title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pqm_vctss" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).pqmVctRecency()}" method="get" id="search">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul class="nav nav-tabs">
+                                    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pqmVctRecency()}">Tất cả</a>
+                                    </li>
+                                    <li th:if="${isPAC}" th:class="${#request.getParameter('tab') == 'notSame' ? 'active' : ''}">
+                                        <a th:href="${T(com.gms.components.UrlUtils).pqmVctRecency() + '?tab=notSame'}">Không có trong danh sách sàng lọc</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Từ khoá</label>
+                                                <input type="text" class="form-control" name="keyword" th:value="${#httpServletRequest.getParameter('keyword')}" placeholder="Mã, họ và tên ..." />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Giới tính</label>
+                                                <select class="form-control" name="genderID">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('genderID') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Nhóm đối tượng</label>
+                                                <select class="form-control" name="objectGroupID" id="objectGroupID">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('objectGroupID') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày XN nhiễm mới từ			
+                                                </label>
+                                                <input type="text" class="form-control" name="earlyHivDateFrom" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="earlyHivDateFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Ngày XN nhiễm mới đến</label>
+                                                <input type="text" class="form-control" name="earlyHivDateTo" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="earlyHivDateTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Kết luận nhiễm mới			</label>
+                                                <select class="form-control" name="earlyDiagnose" id="earlyDiagnose">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).EARLY_DIAGNOSE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('earlyDiagnose') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:if="${tab == 'notSame'}" class="btn btn-primary" href="/backend/pqm-vct-recency/update.html">
+                                                <i class="fa fa-edit"></i> Cập nhật dữ liệu
+                                            </a>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).pqmVct()}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+<!--                                            <a th:if="${#httpServletRequest.getParameter('tab') == '' || #httpServletRequest.getParameter('tab') == null}" th:href="${T(com.gms.components.UrlUtils).pqmVctImportIndex()}" 
+                                               class="btn btn-primary"  ng-cloak>
+                                                <i class="fa fa-file-excel-o"></i> Nhập dữ liệu nhiễm mới
+                                            </a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default">
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left">
+                                        <!--                                        <a th:href="${T(com.gms.components.UrlUtils).pqmImportVct()}" 
+                                                                                   class="btn btn-primary btn-xs " ng-cloak>
+                                                                                    <i class="fa fa-file-excel-o"></i> Nhập dữ liệu Elog Excel
+                                                                                </a>-->
+                                    </div>
+<!--                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                    </div>-->
+                                    <div class="clearfix"></div>
+                                </div>    
+                                <div class="box-body">
+                                    <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <table ng-cloak class="table table-striped table-bordered table-sm table-full" data-scrollY="auto">
+                                        <thead>
+                                            <tr class="success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <!--<th class="text-center">Nguồn dữ liệu</th>-->
+                                                <th class="text-center vertical-align-middle">Mã khách hàng	</th>
+                                                <th class="text-center vertical-align-middle">Họ và tên	</th>
+                                                <th class="text-center vertical-align-middle">Năm sinh	</th>
+                                                <th class="text-center vertical-align-middle">Giới tính	</th>
+                                                <th class="text-center vertical-align-middle">Nhóm đối tượng	</th>
+                                                <th class="text-center vertical-align-middle">Số CMND	</th>
+                                                <th class="text-center vertical-align-middle">Mã XN khẳng định	</th>
+                                                <th class="text-center vertical-align-middle">Ngày XN nhiễm mới	</th>
+                                                <th class="text-center vertical-align-middle">Kết luận nhiễm mới	</th>
+                                                <th class="text-center vertical-align-middle">Địa chỉ	</th>
+                                                <th class="text-center vertical-align-middle">Cơ sở gửi mẫu	</th>
+                                                <th class="text-center vertical-align-middle">Cơ sở khẳng định</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="checkbox-switch" th:value="${item.ID}" />
+                                                </td>
+                                                <td class="text-center">[[${item.code}]]</td>
+                                                <td>[[${item.patientName}]]</td>
+                                                <td class="text-center">[[${item.yearOfBirth}]]</td>
+                                                <td class="text-center">[[${item.genderID == null || item.genderID == '' ? '' : options.get('gender').get(item.genderID)}]]</td>
+                                                <td>[[${item.objectGroupID == null || item.objectGroupID == '' ? '' : options.get('test-object-group').get(item.objectGroupID)}]]</td>
+                                                <td>[[${item.identityCard}]]</td>
+                                                <td th:class="${item.confirmTestNo != null ? 'text-center' : 'text-center warning' }">[[${item.confirmTestNo}]]</td>
+                                                <td th:class="${(item.earlyDiagnose == '1' || item.earlyDiagnose == '2') && item.earlyHivDate == null ? 'text-center warning'  : 'text-center ' }" th:text="${#dates.format(item.earlyHivDate, 'dd/MM/yyyy')}" ></td>
+                                                <td th:class="${item.earlyDiagnose != null &&  item.earlyDiagnose != '' ? '' : ' warning' }">[[${item.earlyDiagnose == null || item.earlyDiagnose == '' ? '' : options.get('early-diagnose').get(item.earlyDiagnose)}]]</td>
+                                                <td>[[${item.address}]]</td>
+                                                <td>[[${item.siteTesting}]]</td>
+                                                <td>[[${options.get('siteHtcConfirm').getOrDefault(item.siteID == '' ? 'x' : item.siteID + '','')}]]</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data.size() != 0  && dataPage.data != null}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> khách hàng.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/pqm/widget :: pqm-vct-view()" ></div>
+        </div>
+    </body>
+</html>

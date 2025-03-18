@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                        form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+                        var province_id = [[${currentSite.provinceID}
+                        ]];
+                        var district_id = [[${currentSite.districtID}
+                        ]];
+                        var ward_id = [[${currentSite.wardID}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <!--                    <a th:if="${form.ID == null}" th:href="${T(com.gms.components.UrlUtils).pacNew()}" 
+                                           data-confirm="Bạn chắc chắn muốn hủy ?"
+                                           class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                                        <a th:if="${form.ID != null}" th:href="${(form.tab != null && form.tab != '') ? T(com.gms.components.UrlUtils).pacNew(form.tab) : breadcrumbUrl}" 
+                                           data-confirm="Bạn chắc chắn muốn hủy ?"
+                                           class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>-->
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${breadcrumbUrl}"><span th:text="${breadcrumbTitle}"  ></span></a></li>
+                    <li>
+                        <a th:if="${form.ID == null }" th:href="${T(com.gms.components.UrlUtils).pqmNew()}"  ><span th:text="${title}" ></span></a>
+                        <!--<a th:if="${form.ID != null }" th:href="${(form.tab != null && form.tab != '') ? T(com.gms.components.UrlUtils).pacNewUpdate(form.tab, form.ID) : formUrl}"  ><span th:text="${title}" ></span></a>-->
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_patient_new" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).pqmNew()} " 
+                          th:object="${form}"
+                          method="post"
+                          name="pac_patient_form">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Chọn chỉ loại số</label>
+                                                    <select class="form-control" name="indicator" id="indicator">
+                                                        <option th:each="instance : ${indicator}" 
+                                                                th:value="${instance.key}" 
+                                                                th:selected="${#httpServletRequest.getParameter('indicator') == instance.key}"
+                                                                th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Tháng</label>
+                                                    <select name="month" id="month" class="form-control">
+                                                        <option th:each="n : ${#numbers.sequence(1,12)}" 
+                                                                th:selected="${n == form.month}"
+                                                                th:value="${n}" 
+                                                                th:text="'Tháng ' + ${n >= 10? n : '0'+n}"/>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Năm</label>
+                                                    <select name="year" id="year" class="form-control">
+                                                        <option th:each="n : ${options.get('years')}" 
+                                                                th:selected="${form.year != null && form.year+'' == n.key}"
+                                                                th:value="${n.key}" 
+                                                                th:text="${n.value}"/>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <!--<input type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >-->
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <table ng-cloak class="table table-bordered table-sm table-scroll table-striped table-full" data-scrollY="auto" data-rightColumns="0" data-leftColumns="0" >
+                                                <thead>
+                                                    <tr class="text-center vertical-align-middle success">
+                                                        <th class="text-center">Danh mục</th>
+                                                        <th class="text-center">Số báo liệu báo cáo</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                <th:block th:each="instance : ${objectGroups}">
+                                                    <tr class="vertical-align-top"> 
+                                                        <td class="text-left text-bold primary" colspan="2" th:utext="${instance.value}" ></td>
+                                                    </tr>
+                                                    <th:block th:each="age : ${ageGroups}">
+                                                        <tr class="vertical-align-top"> 
+                                                            <td class="text-left text-bold info" colspan="2" th:utext="${'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Nhóm tuổi: ' + age}" ></td>
+                                                        </tr>
+                                                        <tr class="vertical-align-top"> 
+                                                            <td class="text-right" >Nam</td>
+                                                            <td class="text-center wrap" >
+                                                                <input name="quantity"  class="form-control" />
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="vertical-align-top"> 
+                                                            <td class="text-right" >Nữ</td>
+                                                            <td class="text-center wrap" >
+                                                                <input name="quantity"  class="form-control" />
+                                                            </td>
+                                                        </tr>
+                                                    </th:block>
+                                                </th:block>
+
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="box box-default box-solid">
+
+                                <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                    <button class="btn btn-primary" type="submit" 
+                                            th:if="${form.ID == null}">
+                                        <i   class="fa fa-edit" ></i> 
+                                        Thêm mới
+                                    </button>
+                                    <!--                                    <button  class="btn btn-primary"  
+                                                                                 th:if="${form.ID != null}" type="submit">
+                                                                            <i class="fa fa-edit" ></i>
+                                                                            Cập nhật người nhiễm
+                                                                        </button>-->
+                                    <!--                                    <a th:if="${form.ID == null}" th:href="${T(com.gms.components.UrlUtils).pacNew()}" 
+                                                                           class="btn btn-default" 
+                                                                           data-confirm-browsers
+                                                                           data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>-->
+                                    <!--                                    <a th:if="${form.ID != null}" th:href="${(form.tab != null && form.tab != '') ? T(com.gms.components.UrlUtils).pacNew(form.tab) : breadcrumbUrl}"
+                                                                           class="btn btn-default" 
+                                                                           data-confirm-browsers
+                                                                           data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

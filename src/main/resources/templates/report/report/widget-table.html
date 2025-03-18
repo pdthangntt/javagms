@@ -1,0 +1,189 @@
+<div data-th-fragment="tt03-table02(form)" class="table-responsive">
+    <!--text-red-->
+    <p class="text-uppercase text-bold">
+        <span>Bảng 02.&nbsp;</span>
+        <span>Tư vấn, xét nghiệm HIV</span> 
+    </p>
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2" >tt</th>
+                <th class="text-center vertical-align-middle success tt03-width-tr" rowspan="2">Danh mục báo cáo</th>
+                <th class="text-center vertical-align-middle success width-80" rowspan="2" style="min-width: 80px;" >Số người được tư vấn trước xét nghiệm</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người được xét nghiệm HIV</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người nhận được kết quả xét nghiệm</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table02}" 
+                th:if="${item.position > -1}" >
+                <td class="text-center" 
+                    th:utext="${item.oParentID == 0 ? item.stt : ''}" ></td>
+                <td th:utext="${item.danhMucBaoCao}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.tuVanTruocXetNghiem == 0 ? '' : item.tuVanTruocXetNghiem}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.duocXetNghiemTong == 0 ? '' : item.duocXetNghiemTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.duocXetNghiemDuongTinh == 0 ? (item.duocXetNghiemTong > 0 ? '0' : '') : item.duocXetNghiemDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.nhanKetQuaTong == 0 ? '' : item.nhanKetQuaTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.nhanKetQuaDuongtinh == 0 ? (item.nhanKetQuaTong > 0 ? '0' : '') : item.nhanKetQuaDuongtinh}" ></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center"><b>Tổng cộng</b></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![tuVanTruocXetNghiem])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaDuongtinh])}"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div data-th-fragment="table-phuluc01(form)" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="3" >STT</th>
+                <th class="text-center vertical-align-middle success tt03-width-tr" rowspan="3">Đối tượng xét nghiệm</th>
+                <th class="text-center vertical-align-middle success" colspan="10" >Nhóm tuổi</th>
+                <th class="text-center vertical-align-middle success" colspan="4" >Giới</th>
+                <th class="text-center vertical-align-middle success" colspan="2" rowspan="2" >Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" colspan="2" ><15</th>
+                <th class="text-center vertical-align-middle success" colspan="2">15- <25</th>
+                <th class="text-center vertical-align-middle success" colspan="2">25-49</th>
+                <th class="text-center vertical-align-middle success" colspan="2">>49</th>
+                <th class="text-center vertical-align-middle success" colspan="2">Không rõ</th>
+                <th class="text-center vertical-align-middle success" colspan="2">Nam</th>
+                <th class="text-center vertical-align-middle success" colspan="2">Nữ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+                <th class="text-center vertical-align-middle success">XN</th>
+                <th class="text-center vertical-align-middle success">(+)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table}" th:if="${item.position > -1}" >
+                <td class="text-center" th:utext="${item.oParentID == 0 ? item.stt : ''}" ></td>
+                <td th:utext="${item.doituongxetnghiem}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age0_15Tong == 0 ? '' : item.age0_15Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age0_15DuongTinh == 0 ? (item.age0_15Tong > 0 ? '0' : '') : item.age0_15DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age15_25Tong == 0 ? '' : item.age15_25Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age15_25DuongTinh == 0 ? (item.age15_25Tong > 0 ? '0' : '') : item.age15_25DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age25_49Tong == 0 ? '' : item.age25_49Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age25_49DuongTinh == 0 ? (item.age25_49Tong > 0 ? '0' : '') : item.age25_49DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age49_maxTong == 0 ? '' : item.age49_maxTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age49_maxDuongTinh == 0 ? (item.age49_maxTong > 0 ? '0' : '') : item.age49_maxDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age_noneTong == 0 ? '' : item.age_noneTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age_noneDuongtinh == 0 ? (item.age_noneTong > 0 ? '0' : '') : item.age_noneDuongtinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderMaleTong == 0 ? '' : item.genderMaleTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderMaleDuongTinh == 0 ? (item.genderMaleTong > 0 ? '0' : '') : item.genderMaleDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderFemaleTong == 0 ? '' : item.genderFemaleTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderFemaleDuongTinh == 0 ? (item.genderFemaleTong > 0 ? '0' : '') : item.genderFemaleDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.tong == 0 ? '0' : item.tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.tongDuongTinh == 0 ? '0' : item.tongDuongTinh}" ></td>
+            </tr> 
+            <tr th:each="item : ${form.table}" 
+                th:if="${item.position == -1 && item.oParentID == 0 && item.tong > 0}" >
+                <td class="text-center"></td>
+                <td th:utext="${'&nbsp;&nbsp;' + item.doituongxetnghiem}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age0_15Tong == 0 ? '' : item.age0_15Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age0_15DuongTinh == 0 ? (item.age0_15Tong > 0 ? '0' : '') : item.age0_15DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age15_25Tong == 0 ? '' : item.age15_25Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age15_25DuongTinh == 0 ? (item.age15_25Tong > 0 ? '0' : '') : item.age15_25DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age25_49Tong == 0 ? '' : item.age25_49Tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age25_49DuongTinh == 0 ? (item.age25_49Tong > 0 ? '0' : '') : item.age25_49DuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age49_maxTong == 0 ? '' : item.age49_maxTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age49_maxDuongTinh == 0 ? (item.age49_maxTong > 0 ? '0' : '') : item.age49_maxDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age_noneTong == 0 ? '' : item.age_noneTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.age_noneDuongtinh == 0 ? (item.age_noneTong > 0 ? '0' : '') : item.age_noneDuongtinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderMaleTong == 0 ? '' : item.genderMaleTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderMaleDuongTinh == 0 ? (item.genderMaleTong > 0 ? '0' : '') : item.genderMaleDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderFemaleTong == 0 ? '' : item.genderFemaleTong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.genderFemaleDuongTinh == 0 ? (item.genderFemaleTong > 0 ? '0' : '') : item.genderFemaleDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.tong == 0 ? '0' : item.tong}" ></td>
+                <td class="text-center" 
+                    th:utext="${item.tongDuongTinh == 0 ? '0' : item.tongDuongTinh}" ></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center"><b>Tổng cộng</b></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age0_15Tong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age0_15DuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age15_25Tong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age15_25DuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age25_49Tong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age25_49DuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age49_maxTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age49_maxDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age_noneTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![age_noneDuongtinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![genderMaleTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![genderMaleDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![genderFemaleTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![genderFemaleDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![tong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table.?[position > -1].?[oParentID == 0].![tongDuongTinh])}"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

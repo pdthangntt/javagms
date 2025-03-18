@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <!--<small><span th:text="${smallTitle}"></span></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).laytest()}">Xét nghiệm tại cộng đồng</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).laytestAgency()}">Khách hàng</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="laytest_index" ng-init="init()" th:with="tab=${#request.getParameter('tab')}">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${T(com.gms.components.UrlUtils).laytestAgency()}" 
+                          method="get" th:object="${dataPage}">
+                        <input type="hidden" name="tab" th:value="${#request.getParameter('tab')}" />
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom margin-bottom-none">
+                                <ul th:replace="backend/htc_laytest/widget :: htc-laytest-header" ></ul>
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <label>Mã khách hàng</label>
+                                                <input type="text" class="form-control" th:text="${code}" name = "code" th:value="${#httpServletRequest.getParameter('code')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Họ và tên</label>
+                                                <input type="text" class="form-control" th:text="${fullname}" name = "fullname" th:value="${#httpServletRequest.getParameter('fullname')}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Trạng thái xét nghiệm bạn tình bạn chích</label>
+                                                <select class="form-control" name="status">
+                                                    <option th:each="instance : ${statusOptions}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('status') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 text-center" >
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <a th:href="${T(com.gms.components.UrlUtils).laytestAgency() + '?tab=agency'}" 
+                                               class="btn btn-default" ng-show="isQueryString" ng-cloak>
+                                                <i class="fa fa-remove"></i> Bỏ lọc
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default" ng-cloak>
+                                <div class="box-header with-border">
+                                    <div class="no-margin pull-left">
+                                        <span th:if="${dataPage.data.size() != 0}"  >Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</span>
+                                    </div>
+                                    <div class="no-margin pull-right" id="tableFunction">
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-eye"></i> Xem
+                                        </a>
+                                        <a class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-edit"></i> Sửa
+                                        </a>
+                                        <a class="btn btn-danger btn-xs disabled" href="javascript:;">
+                                            <i class="fa fa-remove"></i> Xoá
+                                        </a>
+                                        <button type="button" class="btn btn-default btn-xs disabled">
+                                            <i class="fa fa-comment"></i> Ghi chú
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="box-body">
+                                    <table class="table table-bordered table-sm table-full" 
+                                           data-scrollY="auto" data-rowsGroup="1,2">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Mã khách hàng</th>
+                                                <th class="text-center">Họ và tên khách hàng</th>
+                                                <th class="text-center">Họ và tên bạn tình bạn chích</th>
+                                                <th class="text-center">Địa chỉ</th>
+                                                <th class="text-center">Số điện thoại</th>
+                                                <th class="text-center">Hình thức thông báo</th>
+                                                <th class="text-center">Trạng thái xét nghiệm</th>
+                                                <th class="text-center">Chức năng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr  th:each="item : ${dataPage.data}">
+                                                <td class="text-center" >
+                                                    <input type="checkbox" class="checkbox-switch" th:value="${item.ID}" />
+                                                </td>
+                                                <td class="text-center" th:utext="${codes.getOrDefault(item.laytestID + '', '')}"></td>
+                                                <td class="text-left" th:utext="${fullnames.getOrDefault(item.laytestID + '', '')}"></td>
+                                                <td class="text-left" th:utext="${item.fullname}"></td>
+                                                <td class="text-left" th:utext="${item.address}"></td>
+                                                <td class="text-left" th:utext="${item.phone}"></td>
+                                                <td class="text-left" th:utext="${item.alertType == null || item.alertType == '' ? '' : alertTypes.getOrDefault(item.alertType, '')}"></td>
+                                                <td class="text-center" th:utext="${item.isAgreePreTest == '0' ? 'Không' : item.isAgreePreTest == null || item.isAgreePreTest == '' ? '' : 'Có'}"></td>
+                                                <td>
+                                                    <a class="btn btn-default btn-xs table-function" 
+                                                       th:if="${tab != 'delete'}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).laytestView(item.laytestID, tab)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).laytestView(item.laytestID, tab)}">
+                                                        <i class="fa fa-eye"></i> Xem
+                                                    </a>
+                                                    <a class="btn btn-default btn-xs table-function" 
+                                                       th:if="${tab != 'delete'}" 
+                                                       th:href="${T(com.gms.components.UrlUtils).laytestUpdate(item.laytestID, tab)}"
+                                                       th:data-role="${T(com.gms.components.UrlUtils).laytestUpdate(item.laytestID, tab)}">
+                                                        <i class="fa fa-edit"></i> Sửa
+                                                    </a>
+                                                    <button type="button" 
+                                                            th:attr="ng-click='logs('+${item.laytestID}+', \''+${codes.getOrDefault(item.laytestID + '', '')}+'\', \''+${fullnames.getOrDefault(item.laytestID + '', '')}+'\')'"
+                                                            th:data-role="${T(com.gms.components.UrlUtils).laytestLog()}"
+                                                            class="btn btn-default btn-xs table-function" >
+                                                        <i class="fa fa-comment"></i>
+                                                        Ghi chú
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="box-footer clearfix">
+                                    <div th:if="${dataPage.data != null && #lists.size(dataPage.data) > 0}" class="no-margin pull-left">Trình bày <b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + 1}" ></b>-<b th:utext="${((dataPage.currentPage - 1) * dataPage.maxResult) + dataPage.data.size()}" ></b> trong số <b th:utext="${dataPage.totalRecords}" ></b> mục.</div>
+                                    <div class="no-margin pull-right">
+                                        <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <div data-th-include="backend/htc_laytest/widget :: laytest-log()" ></div>
+            <div data-th-include="backend/htc_laytest/widget :: transferred()" ></div>
+        </div>
+    </body>
+</html>

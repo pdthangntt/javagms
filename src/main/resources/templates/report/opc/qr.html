@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>&nbsp;</title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman";' class="page" size="A4" layout="landscape">
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body page-height-a4">
+            <div class="content">
+                <div class="mid" th:each="arv : ${arvs}" style="margin-bottom: 10px;">
+<!--                    <div class="row" th:if="${arv.patient.qrcode == null}">
+                        <div class="col-60" style="border: 1px solid #000; padding: 10px 30px;">
+                            [[${arv.code}]] không có CMND - Không tạo mã QR
+                        </div>
+                    </div>-->
+                    <div class="row qr-code" th:if="${arv.patient.qrcode != null}">
+                        <div class="col-60" style="border: 1px solid #000; padding: 10px 30px; margin-bottom: 8px;">
+                            <div class="row" th:if="${arv.patient.qrcode != null}">
+                                <div class="col-60" style="line-height: 38px; font-size: 25px;">
+                                    <p><b>Mã BA:</b> <span th:utext="${'#'+arv.code}" class="text-uppercase" ></span></p>
+                                    <p><b>Bệnh nhân:</b> <span th:utext="${arv.patient.fullName}"></span></p>
+                                    <p>
+                                        <b>Giới tính</b> 
+                                        <span th:utext="${arv.patient == null || arv.patient.genderID == null || arv.patient.genderID == '' ? '--' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(arv.patient.genderID)}"></span>.
+                                        <b>Ngày sinh</b> 
+                                        <span th:utext="${arv.patient != null && arv.patient.dob != null ? #dates.format(arv.patient.dob, 'dd/MM/yyyy') : '--'}" ></span>
+                                    </p>
+                                    <p><b>Bảo hiểm:</b> <span th:utext="${arv.insuranceNo == null || arv.insuranceNo == '' ? '--' : arv.insuranceNo}"></span></p>
+                                    <p><b>Ngày đăng ký:</b> <span th:utext="${#dates.format(arv.registrationTime, 'dd/MM/yyyy')}"></span></p>
+                                    <p><b th:utext="${siteName}"></b></p>
+                                </div>
+                                <div class="col-40  text-center">
+                                    <p><i>Mã QR bệnh nhân</i></p>
+                                    <p>
+                                        <img th:src="${baseUrl + T(com.gms.components.UrlUtils).qrCode(arv.patient.qrcode) + '?width=200&height=200'}" />
+                                    </p>
+                                </div>
+                                <div class="clear-fix" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/empty}">
+    <head>
+        <title th:text="${title}" >Đăng nhập hệ thống thông tin HIV</title>
+    </head>
+    <body>
+        <div class="login-box"  data-layout-fragment="content"> 
+            <div class="login-logo">
+                <a href="javascript:;"><b th:utext="#{site.code}" ></b></a>
+            </div>
+            <div class="login-box-body">
+                <p class="login-box-msg">Nhập tên đăng nhập và mật khẩu</p>
+                <form action="j_spring_security_check" method="post">
+                    <div class="form-group has-feedback">
+                        <input type="username" name="username" class="form-control" placeholder="Tên đăng nhập">
+                        <span class="fa fa-user form-control-feedback"></span>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <input type="password" name="password" class="form-control" placeholder="Mật khẩu">
+                        <span class="fa fa-lock form-control-feedback"></span>
+                    </div>
+                    
+                    <div th:if="${isError}" 
+                         th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message == 'Bad credentials' ? 'Mật khẩu không chính xác!':session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
+                         class="alert alert-danger" role="alert">
+                        <i class="fa fa-warning" ></i> 
+                        Tên đăng nhập hoặc mật khẩu không chính xác
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-7">
+<!--                            <div class="checkbox">
+                                <label>
+                                    <input name="remember" type="checkbox"> Tự động đăng nhập
+                                </label>
+                            </div>-->
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-5">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Đăng nhập</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

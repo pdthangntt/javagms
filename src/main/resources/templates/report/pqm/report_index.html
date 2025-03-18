@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+        </script>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pqmIndexs()}" th:utext="${title}"></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span th:text="${'1. Theo dõi tình trạng nhập dữ liệu '}"></span><span class="text-danger" th:utext="${'tháng ' + month + ' năm ' + year}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table table-bordered table-hover table-report" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle " >Loại dữ liệu</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%" >Cơ sở đã nhập dữ liệu</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Cơ sở chưa nhập dữ liệu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <th:block th:each="item, iter : ${items}">
+                                            <tr >
+                                                <td class="text-left" rowspan="2"><span th:utext="${item.service}" ></span></td>
+                                                <td class="text-left" ><span class="text-bold">Số lượng: </span><span th:utext="${item.imported}"></span></td>
+                                                <td class="text-left" ><span class="text-bold">Số lượng: </span><span th:utext="${item.notImport}"></span></td>
+                                            </tr>
+                                            <tr >
+                                                <td class="text-left" ><span class="text-bold">Cơ sở: </span><span th:class="${item.siteImported == '' ? 'text-danger' : ''}" th:utext="${item.siteImported == '' ? 'Không có thông tin' : item.siteImported}"></span></td>
+                                                <td class="text-left" ><span class="text-bold">Cơ sở: </span><span th:class="${item.siteNotImported == '' ? 'text-danger' : ''}" th:utext="${item.siteNotImported == '' ? 'Không có thông tin' : item.siteNotImported}"></span></td>
+                                            </tr>
+                                        </th:block>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    <span th:text="${'2. Theo dõi số liệu đối chiếu khách hàng nhiễm mới với xét nghiệm '}"> 
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div  class="table-responsive">
+                                    <table class="table table-bordered table-hover table-report" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle " >Cơ sở</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Số ca tìm thấy trong danh sách xét nghiệm</th>
+                                                <th class="text-center vertical-align-middle " style="width: 35%">Số ca không tìm thấy trong danh sách xét nghiệm</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <th:block th:if="${itemConfirms == null || itemConfirms.isEmpty()}">
+                                            <tr >
+                                                <td class="text-center text-bold text-danger" colspan="3" >Không có thông tin</td>
+                                            </tr>
+                                        </th:block>
+                                        <th:block th:each="item, iter : ${itemConfirms}" th:if="${itemConfirms != null && !itemConfirms.isEmpty()}">
+                                            <tr >
+                                                <td class="text-left" ><span th:utext="${item.service}" ></span></td>
+                                                <td class="text-center" ><span th:utext="${item.imported}"></span></td>
+                                                <td class="text-center" ><a href="/backend/pqm-vct-recency/index.html?tab=notSame"><span th:utext="${item.siteImported}"></span></a></td>
+                                            </tr>
+                                        </th:block>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

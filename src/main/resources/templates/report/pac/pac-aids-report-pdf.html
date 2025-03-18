@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .dear{
+                margin-top: 20px;
+            }
+            .confidential{
+                line-height: 30px;
+            }
+            .top-secret{
+                position: fixed;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 230px;
+                height: 30px;
+                text-align: center;
+                display: inline-block;
+                margin-left: 150px;
+                margin-top: -15px;
+            }
+
+            .table-full {
+                font-size: 12px;            
+            }
+            .fullName {
+                min-width: 90px;
+            }
+            .deathTime {
+                min-width: 60px;
+            }
+            .table-report tr {page-break-inside: avoid;  page-break-after: auto ;}
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so = true, siteline = true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince})"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div th:if="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_KINHGUI.getKey()) == (T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}" class="row text-normal dear">
+                            Kính gửi:
+                            <span class="point" >.................................................................................................</span>
+                        </div>
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <p class="text-size-13" th:if="${!form.titleLocationDisplay.contains(';') && !form.titleLocationDisplay.contains('-') }" ><span th:utext="${form.titleLocationDisplay == null || form.titleLocationDisplay == '' ? form.provinceName : form.titleLocationDisplay}"></span></p>
+                        <p class="text-size-13" th:if="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()) != (T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}">
+                            Tổng số bệnh nhân AIDS 
+                            <span th:utext="${ form.manageStatus == '1' ? ' chưa rà soát' :
+                                  form.manageStatus == '2' ? ' cần rà soát' :
+                                  form.manageStatus == '3' ? ' đã rà soát' :
+                                  (form.manageStatus == '4' && form.isVAAC) ? '' :
+                                  form.manageStatus == '4' ? ' được quản lý' 
+                                  : ''}"></span>: 
+                            <span th:utext="${dataPage.totalRecords == 0 ? 0 : #numbers.formatInteger(dataPage.totalRecords,2,'POINT')}"></span>
+                        </p>
+                        <div class="text-left text-size-13 row" th:if="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()) == (T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}">
+                            <div class="col-30">&nbsp;</div>
+                            <div class="col-70">
+                                Tổng số bệnh nhân AIDS 
+                                <span th:utext="${ form.manageStatus == '1' ? ' chưa rà soát' :
+                                      form.manageStatus == '2' ? ' cần rà soát' :
+                                      form.manageStatus == '3' ? ' đã rà soát' :
+                                      (form.manageStatus == '4' && form.isVAAC) ? '' :
+                                      form.manageStatus == '4' ? ' được quản lý' 
+                                      : ''}"></span>: 
+                                <span th:utext="${dataPage.totalRecords == 0 ? 0 : #numbers.formatInteger(dataPage.totalRecords,2,'POINT')}"></span>
+                            </div>
+                        </div>
+                        <div class="text-left text-size-13 row" th:if="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_SO_NGUOI_NHIEM.getKey()) == (T(com.gms.entity.constant.BooleanEnum).TRUE.getKey()+'')}">
+                            <div class="col-30">&nbsp;</div>
+                            <div class="col-70">
+                                <p class="text-left text-size-13">
+                                    Số bệnh nhân AIDS cộng dồn 
+                                    <span th:utext="${ form.manageStatus == '1' ? ' chưa rà soát' :
+                                          form.manageStatus == '2' ? ' cần rà soát' :
+                                          form.manageStatus == '3' ? ' đã rà soát' :
+                                          (form.manageStatus == '4' && form.isVAAC) ? '' :
+                                          form.manageStatus == '4' ? ' được quản lý' 
+                                          : ''}"></span> tới ngày ...../......./........... :   
+                                    <span th:utext=".................."></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div data-th-replace="report/pac/widget :: table-aids-report(${dataPage})"></div>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <!--<p class="" >&nbsp;</p>-->
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <!--<div class="empty-ky">&nbsp;</div>-->
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <!--<p>&nbsp;</p>-->
+                                <div th:if="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getKey()) != null}">
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" th:utext="${config.get(T(com.gms.entity.constant.SiteConfigEnum).PAC_PDF_CK2.getKey())}" ></span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <!--<div class="empty-ky">&nbsp;</div>-->
+                                </div>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <!--<p>&nbsp;</p>-->
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                    <!--<p class="empty-ky">&nbsp;</p>-->
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

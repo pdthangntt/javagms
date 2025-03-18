@@ -1,0 +1,137 @@
+<div data-th-fragment="pqm-updates()">
+<script type="text/ng-template" id="pqm-update">
+    <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close"> 
+            <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Nhập chỉ số: <span class="text-danger text-italic"> {{name}}</span></h4>
+    </div>
+
+    <div class="modal-body" ng-init="init()">
+        <form >     
+            <div class="col-lg-12 col-md-12">
+                <div class="row">
+                    <table ng-cloak class="table table-bordered table-sm table-scroll table-striped " data-scrollY="auto" data-rightColumns="0" data-leftColumns="0" >
+                        <thead>
+                            <tr class="text-center vertical-align-middle success">
+                                <th class="text-center" style="width: 60%">Danh mục</th>
+                                <th class="text-center">Số báo liệu báo cáo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="instance : ${objectGroups}">
+                            <tr class="vertical-align-top"> 
+                                <td class="text-left text-bold primary" colspan="2" th:utext="${instance.value}" ></td>
+                            </tr>
+                            <th:block th:each="age : ${ageGroups}">
+                                <tr class="vertical-align-top"> 
+                                    <td class="text-left text-bold info" colspan="2" th:utext="${'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Nhóm tuổi: ' + age}" ></td>
+                                </tr>
+                                <tr class="vertical-align-top x"> 
+                                    <td class="text-left" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nam</td>
+                                    <td class="text-center wrap" >
+                                        <input maxlength="8" th:id="${instance.key + (age == '50+' ? 'm50' :  age) + 'nam'}" name="quantity" type="text" pattern="\d*"  class="form-control" />
+                                        <input type="hidden"   name="object" th:value="${instance.key}" />
+                                        <input type="hidden"  name="gender" value="nam" />
+                                        <input type="hidden"  name="age" th:value="${age}" />
+                                        <input type="hidden"  name="year" th:value="${form.year}" />
+                                        <input type="hidden"  name="month" th:value="${form.month}" />
+                                    </td>
+                                </tr>
+                                <tr class="vertical-align-top x" > 
+                                    <td class="text-left" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nữ</td>
+                                    <td class="text-center wrap" >
+                                        <input maxlength="8" th:id="${instance.key + (age == '50+' ? 'm50' :  age)  + 'nu'}" name="quantity" type="text" pattern="\d*" class="form-control" />
+                                        <input type="hidden"  name="object" th:value="${instance.key}" />
+                                        <input type="hidden"  name="gender" value="nu" />
+                                        <input type="hidden"  name="age" th:value="${age}" />
+                                        <input type="hidden"  name="year" th:value="${form.year}" />
+                                        <input type="hidden"  name="month" th:value="${form.month}" />
+                                    </td>
+                                </tr>
+                            
+                        </th:block>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="text-center modal-footer">
+        <button class="btn btn-primary" type="submit" ng-click="ok()"><i class = "fa fa-save"></i> Lưu thông tin</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Hủy</button>
+    </div>
+</script>
+</div>
+
+<div data-th-fragment="pqm-update()">
+<script type="text/ng-template" id="pqm-update">
+    <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Nhập chỉ số: <span class="text-danger text-italic"> {{name}}</span></h4>
+    </div>
+
+    <div class="modal-body" ng-init="init()">
+        <form >     
+            <div class="col-lg-12 col-md-12"> 
+                <div class="row">
+                    <table ng-cloak class="table table-bordered table-sm table-scroll table-striped " data-scrollY="auto" data-rightColumns="0" data-leftColumns="0" >
+                        <thead>
+                            <tr class="text-center vertical-align-middle success">
+                                <th class="text-center" style="width: 30%">Danh mục</th>
+                                <th colspan="9" class="text-center">Nhóm tuổi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="instance : ${objectGroups}">
+                            <tr class="vertical-align-top"> 
+                                <td class="text-left text-bold primary"  th:utext="${instance.value}" ></td>
+                            <th:block th:each="age : ${ageGroups}">
+                                <td class="text-center text-bold info" th:utext="${mapAgeGroups.get(age)}" ></td>
+                            </th:block>
+                            </tr>
+                            <tr class="vertical-align-top"> 
+                                <td class="text-left text-bold ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nam</td>
+                            <th:block  th:each="age : ${ageGroups}">
+                                    <td class="text-center wrap input" >
+                                        <input maxlength="8" th:id="${instance.key + age + 'nam'}" name="quantity" type="text" pattern="\d*"  class="form-control" />
+                                        <input type="hidden"   name="object" th:value="${instance.key}" />
+                                        <input type="hidden"  name="gender" value="nam" />
+                                        <input type="hidden"  name="age" th:value="${age}" />
+                                        <input type="hidden"  name="year" th:value="${form.year}" />
+                                        <input type="hidden"  name="month" th:value="${form.month}" />
+                                    </td>
+                            </th:block>
+
+                            </tr>
+                            <tr class="vertical-align-top"> 
+                                <td class="text-left text-bold ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nữ</td>
+                            <th:block  th:each="age : ${ageGroups}">
+                                    <td class="text-center wrap input" >
+                                        <input maxlength="8" th:id="${instance.key + age  + 'nu'}" name="quantity" type="text" pattern="\d*" class="form-control" />
+                                        <input type="hidden"  name="object" th:value="${instance.key}" />
+                                        <input type="hidden"  name="gender" value="nu" />
+                                        <input type="hidden"  name="age" th:value="${age}" />
+                                        <input type="hidden"  name="year" th:value="${form.year}" />
+                                        <input type="hidden"  name="month" th:value="${form.month}" />
+                                    </td>
+                                </th:block> 
+                            </th:block> 
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="text-center modal-footer">
+        <button class="btn btn-primary" type="submit" ng-click="ok()"><i class = "fa fa-save"></i> Lưu thông tin</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Hủy</button>
+    </div>
+</script>
+</div>

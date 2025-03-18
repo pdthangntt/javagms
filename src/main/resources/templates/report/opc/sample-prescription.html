@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!--<title th:utext="${form.fileName} + '.pdf'"></title>-->
+        <title>Đơn thuốc miễn phí</title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]];
+            .top-secret{
+                line-height: 30px;
+                position: absolute;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 50px;
+                height: 30px;
+                text-align: center;
+                left: 10%;
+                top: 170px;
+            }
+            .page-height-a4 {
+                position: relative;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman";'>
+        <p>&nbsp;</p>
+        <div class="body page-height-a4">
+            <div class="content">
+                <div class="header">
+                    <div class="box_donvi">
+                        <p class="text-uppercase conghoa text-normal " ><span th:utext="${form.siteAgency}" ></span></p>
+                        <p class="site-name"><span th:utext="${form.siteName}" ></span></p>
+                    </div>
+                    <div class="box_id">
+                        <p class="text-normal" >Mã số người bệnh</p>
+                        <p class="text-normal"><span th:utext="${form.arvCode}" ></span></p>
+                    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    
+                    <div class="box_title">
+                        <p class="text-center text-normal">Số phiếu</p>
+                        <p class="text-uppercase text-title">ĐƠN THUỐC MIỄN PHÍ</p>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
+                <!---->
+                <div class="mid" style="padding-left: 1cm; padding-right: 20px;">
+                    <div class="row">
+                        <div class="col-40">Họ và tên: <b><span th:utext="${form.fullName != null ? form.fullName.toUpperCase() : ''}"></span></b></div>
+                        <div class="col-25">Năm sinh: <span th:utext="${form.dob == null || form.dob == '' ? '' : form.dob.substring(6, 10)}" ></span></div>
+                        <div class="col-15 ">&emsp;Nam <span class="border" th:utext="${form.genderID == '1' ? '&ensp;x&ensp;' : '&emsp;&nbsp;'}"></span></div>
+                        <div class="col-15 ">&emsp;Nữ <span class="border" th:utext="${form.genderID == '2' ? '&ensp;x&ensp;' : '&emsp;&nbsp;'}"></span></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-100">Địa chỉ: <span th:utext="${form.currentAddressFull}"></span></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-100">
+                            Thẻ bảo hiểm y tế: <span th:utext="${form.insuranceNo != null ? form.insuranceNo : ''}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-33">Mạch: <span th:utext="${form.circuit == null || form.circuit == '' ? '.....' : form.circuit}"></span> lần/phút</div>
+                        <div class="col-33">Huyết áp: <span th:utext="${form.bloodPressure == null || form.bloodPressure == '' ? '.....' : form.bloodPressure}"></span> mmHg</div>
+                        <div class="col-33">Thân nhiệt: <span th:utext="${form.bodyTemperature == null || form.bodyTemperature == '' ? '.....' : form.bodyTemperature}"></span>°C</div>
+                    </div>
+                    <div class="row">
+                       <div class="col-100">Lâm sàng: <span th:utext="${form.clinical == null || form.clinical == '' ? '........................................' : form.clinical}"></span></div>
+                    </div>
+                    
+                    <div class="row">
+                       <div class="col-100">Chẩn đoán: <span th:utext="${form.diagnostic == null || form.diagnostic == '' ? '..............................................................................................................................' : form.diagnostic}"></span></div>
+                    </div>
+                    
+                     <div class="row">
+                         <div class="col-70"><b><span th:utext="${form.treatmentRegimenID == null || form.treatmentRegimenID == '' ? '&nbsp;' : form.treatmentRegimenID}"></span></b></div>
+                        <div class="col-30"><b>SL: <span th:utext="${form.daysReceived == null || form.daysReceived == '' ? '...........................' : form.daysReceived}"></span></b></div>
+                    </div>
+                    
+                    <div class="row">
+                       <div class="col-100">Ghi chú: <span th:utext="${form.note == null || form.note == '' ? '...................................................................................................................................' : form.note}"></span></div>
+                    </div>
+                    <div class="row">
+                       <div class="col-100">Lời dặn đơn thuốc: <span th:utext="${form.msg == null || form.msg == '' ? '..................................................................................................................' : form.msg}"></span></div>
+                    </div>
+                    <div class="row">
+                       <div class="col-100">Ngày hẹn tái khám: <span th:utext="${form.appointmentTime == null || form.appointmentTime == '' ? '......./......./........' : form.appointmentTime}"></span></div>
+                    </div>
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        Bệnh nhân ký nhận
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="text-normal" >
+                                    <i>
+                                        Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        Y.Bác sĩ điều trị
+                                        <br/>
+                                        <span class="chu-ky" >(Ký, ghi rõ họ tên)</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <div class="row">
+                       <div class="col-100">Tái khám xin mang theo đơn, xét nghiệm, phim (nếu có)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

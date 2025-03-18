@@ -1,0 +1,58 @@
+<div data-th-fragment="table02(form)" class="table-responsive">
+    <!--text-red-->
+    <p class="text-uppercase text-bold">
+        <span>Bảng 02.&nbsp;</span>
+        <span>Tư vấn, xét nghiệm HIV</span> 
+    </p>
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2" >tt</th>
+                <th class="text-center vertical-align-middle success tt03-width-tr" rowspan="2">Danh mục báo cáo</th>
+                <th class="text-center vertical-align-middle success width-80" rowspan="2" style="min-width: 80px;" >Số người được tư vấn trước xét nghiệm</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người được xét nghiệm HIV</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người nhận được kết quả xét nghiệm</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table02}" 
+                th:if="${item.position > -1}" >
+                <td class="text-center" 
+                    th:utext="${item.oParentID == 0 ? item.stt : ''}" ></td>
+                <td th:utext="${item.danhMucBaoCao}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLine({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', serviceID:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupID: \''+${item.oCode}+'\', customerType: \''+${form.customerType}+'\'})'"
+                    th:utext="${item.tuVanTruocXetNghiem == 0 ? '' : item.tuVanTruocXetNghiem}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLine({preTestTimeFrom:\''+${form.startDate}+'\', preTestTimeTo:\''+${form.endDate}+'\', serviceID:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupID: \''+${item.oCode}+'\', customerType: \''+${form.customerType}+'\'}, \'songuoixetnghiemhiv\')'"
+                    th:utext="${item.duocXetNghiemTong == 0 ? '' : item.duocXetNghiemTong}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLine({preTestTimeFrom:\''+${form.startDate}+'\', preTestTimeTo:\''+${form.endDate}+'\', serviceID:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupID: \''+${item.oCode}+'\', customerType: \''+${form.customerType}+'\'}, \'songuoixetnghiemhivduongtinh\')'"
+                    th:utext="${item.duocXetNghiemDuongTinh == 0 ? (item.duocXetNghiemTong > 0 ? '0' : '') : item.duocXetNghiemDuongTinh}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLine({preTestTimeFrom:\''+${form.startDate}+'\', preTestTimeTo:\''+${form.endDate}+'\', serviceID:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupID: \''+${item.oCode}+'\', customerType: \''+${form.customerType}+'\'}, \'nhanketquaxetnghiem\')'"
+                    th:utext="${item.nhanKetQuaTong == 0 ? '' : item.nhanKetQuaTong}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLine({preTestTimeFrom:\''+${form.startDate}+'\', preTestTimeTo:\''+${form.endDate}+'\', serviceID:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupID: \''+${item.oCode}+'\', customerType: \''+${form.customerType}+'\'}, \'nhanketquaxetnghiemduongtinh\')'"
+                    th:utext="${item.nhanKetQuaDuongtinh == 0 ? (item.nhanKetQuaTong > 0 ? '0' : '') : item.nhanKetQuaDuongtinh}" ></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center"><b>Tổng cộng</b></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![tuVanTruocXetNghiem])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaDuongtinh])}"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

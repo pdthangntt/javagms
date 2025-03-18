@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).hisHIVIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).hisHIVIndex()}">Cấu hình VMPT</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).hisHIVNew()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+
+            <section class="content" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+
+                <form th:action="${form.createAt == null ? T(com.gms.components.UrlUtils).hisHIVNew() : T(com.gms.components.UrlUtils).hisHIVUpdate(form.ID)}" 
+                      th:object="${form}" 
+                      method="post"
+                      name="targetnew"
+                      ng-submit="register(targetnew, $event)" 
+                      ng-validate="validationOptions">
+                    <div class="row" ng-controller="vnpt_config" ng-init="init()">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6" th:if="${form.createAt != null}">
+                                            <div class="form-group">
+                                                <label>
+                                                    <span>Cơ sở điều trị:</span> 
+                                                </label>
+                                           <input type="text" class="form-control" disabled th:value="${sites.get(form.ID)}" />
+                                           </div>
+                                        </div>
+                                        <div class="col-md-6" th:if="${form.createAt == null}">
+                                            <div data-th-replace="widget/form :: select('Cơ sở điều trị:', 'ID', true, ${sites}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Mã cơ sở VNPT:', 'vpntSiteID', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Trạng thái hoạt động:', 'active', true, ${status},'')"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="box-footer text-center">
+                                        <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).hisHIVIndex()}" class="btn btn-default" >Huỷ</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!-- /. box -->
+                        </div>
+                    </div>
+                </form>  
+            </section>
+        </div>
+    </body>
+</html>

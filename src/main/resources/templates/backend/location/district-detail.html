@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).districtIndex(provinceID)}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).locationIndex()}"><span th:text="${provinceName}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).districtIndex(provinceID)}">Quản lý quận huyện</a></li>
+                    <li class="active"><span th:text="${title}" ></span></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="district" ng-init="init()" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).districtUpdate(provinceID,districtID)}" 
+                                      th:object="${form}" 
+                                      method="post"
+                                      name="district_form"
+                                      ng-submit="register(district_form, $event)" 
+                                      ng-validate="validationOptions">
+                                    <div data-th-replace="widget/form :: input-hidden('ID')"></div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: form-static('Mã quận huyện', 'ID', ${form.ID},'')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: input-text('Tên quận huyện', 'name', true, 'Nhập tên quận huyện ( Quận, Huyện hoặc Thị xã )','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: select('Cấp', 'type', true, ${types}, '')"></div>
+                                    </div>
+                                    <div data-th-replace="widget/form :: input-hidden('provinceID')"></div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: input-text('Thứ tự', 'position', true, 'Nhập thứ tự','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: input-text('Mã HTC Elog', 'elogCode', false, 'Nhập mã HTC Elog','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: input-text('Mã HIV Info', 'hivInfoCode', false, 'Nhập mã HIV Info','')"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div data-th-replace="widget/form :: input-text('Mã PQM', 'pqmCode', false, '','')"></div>
+                                    </div>
+                                    <div class="pull-right">
+                                        
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-edit"></i> Cập nhật</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).districtDetail(provinceID,districtID)}">
+                                            <button type="button" class="btn btn-default"><i class="fa fa-refresh"> Làm lại</i></button>
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

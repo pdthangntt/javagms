@@ -1,0 +1,1256 @@
+<div data-th-fragment="opc-tab(tab, arvID)">
+    <div class="nav-tabs-custom" style="margin-bottom: 0px;" >
+        <ul class="nav nav-tabs" >
+            <li th:class="${tab == 'patient' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcArvUpdate(arvID)}">Bệnh án</a>
+            </li>   
+            <li th:class="${tab == 'stage' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcStage(arvID)}">Giai đoạn điều trị</a>
+            </li>
+            <li th:class="${tab == 'viral-load' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcViralLoad(arvID)}">Tải lượng virus</a>
+            </li>
+            <li th:class="${tab == 'visit' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcVisit(arvID, 'all')}">Lượt khám</a>
+            </li>
+            <li th:class="${tab == 'other' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcTest(arvID)}">Xét nghiệm & dự phòng</a>
+            </li>
+            <li th:class="${tab == 'treatment' ? 'active' : ''}">
+                <a th:href="${T(com.gms.components.UrlUtils).opcTreatment(arvID)}">Lịch sử biến động</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div data-th-fragment="opc-transfer-arv()">
+    <script type="text/ng-template" id="opcARvTransfer">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Danh sách chuyển gửi GSPH</h4>
+        </div>
+        <div class="modal-body">
+        <table class="table table-striped table-bordered table-sm">
+        <thead>
+        <tr class="text-center vertical-align-middle success">
+        <th class="text-center">&nbsp;</th>
+        <th class="text-center">Mã bệnh án</th>
+        <th class="text-center">Họ và tên</th>
+        <th class="text-center">Ngày sinh</th>
+        <th class="text-center">Số CMND</th>
+        <th class="text-center">Số thẻ BHYT</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in items">
+        <td class="{{(item.transferTimeGSPH == null && item.statusOfTreatmentID != '0') ? 'text-success' : 'text-danger'}}">
+        <i ng:class="(item.transferTimeGSPH == null && item.statusOfTreatmentID != '0') ? 'fa fa-check' : 'fa fa-times'"></i></td>
+        <td class="text-center">{{item.code}}</td>
+        <td class="text-left">{{item.patient != null ? item.patient.fullName : ''}}</td>
+        <td class="text-center" ng-if="item.patient != null && item.patient.dob != null">{{item.patient.dob | date:'dd/MM/yyyy'}}</td>
+        <td class="text-center" ng-if="item.patient == null || item.patient.dob == null"></td>
+        <td class="text-center">{{item.patient != null && item.patient.identityCard != null ? item.patient.identityCard : ''}}</td>
+        <td class="text-center">{{item.insuranceNo != null ? item.insuranceNo : ''}}</td>
+
+
+        </tr>
+        </tbody>
+        </table>
+        <div class="clear-fix" >&nbsp;</div>
+        <div class="text-left">
+        <b>Ghi chú:</b>
+        </div>
+        <div class="text-left">
+        <i class="fa fa-check" style="color: #3c763d;"></i>&nbsp;Khách hàng đủ điều kiện chuyển GSPH
+        </div>
+        <div class="text-left">
+        <i class="fa fa-times" style="color: #a94442;"></i>&nbsp;Khách hàng chưa đủ điều kiện hoặc đã chuyển GSPH
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-if="i > 0" ng-click="ok()">Xác nhận</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Hủy</button>
+        </div>
+    </script>
+    
+</div>
+<div data-th-fragment="opc-stage()">
+    <script type="text/ng-template" id="opcStage">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Cập nhật thông tin kết thúc giai đoạn điều trị</b></h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+        <form >
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Mã bệnh án:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.arvCode}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Trạng thái điều trị:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{options['status-of-treatment'][item.statusOfTreatmentID]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Họ và tên:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.name}}
+                </div>
+                    <div class="col-md-3 text-right">
+                <label><b>Ngày đăng ký:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.registrationTime}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Ngày sinh:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.dob}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Ngày điều trị ARV:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.treatmentTime}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Giới tính:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{options['gender'][item.genderID]}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Bậc phác đồ hiện tại:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.treatmentRegimenStage == '' ? '' : options['treatment-regimen-stage'][item.treatmentRegimenStage]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Số CMND:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.identityCard}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Phác đồ hiện tại:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.treatmentRegimenID == '' ? '' : options['treatment-regimen'][item.treatmentRegimenID]}}
+                </div>
+            </div>
+            <br>
+            <input type="hidden" ng-value="item.registrationTime" id="registrationTime">
+            <input type="hidden" ng-value="item.statusOfTreatmentID" id="statusOfTreatmentID">
+            <div class="row">
+                <div class="col-md-6">
+                    <div ng-class="errors.endTime ? 'has-error form-group' : 'form-group'">
+                        <label>Ngày kết thúc: <span class="text-danger">*</span></label>
+                        <input type="text" ng-model="model.endTime" id="endTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                        <p class="help-block" ng-if="errors.endTime">{{errors.endTime}}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div ng-class="errors.endCase?'has-error form-group':'form-group'">
+                        <label>Lý do kết thúc: <span class="text-danger">*</span></label>
+                        <select ng-model="model.endCase" id="endCase"
+                        ng-options="key as value for (key , value) in options['arv-end-case']"
+                        class="form-control">
+                        </select>
+                        <p class="help-block" ng-if="errors.endCase">{{errors.endCase}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">    
+                    <div ng-class="errors.transferSiteID?'has-error form-group':'form-group'">
+                        <label>Cơ sở chuyển đi: <span class="text-danger">*</span></label>
+                        <select ng-model="model.transferSiteID" id="transferSiteID" ng-change="transferSiteIDChange()" 
+                        ng-disabled = "model.endCase != '3'" 
+                        ng-options="key as value for (key , value) in options['treatment-facility']"
+                        class="form-control">
+                        </select>
+                        <p class="help-block" ng-if="errors.transferSiteID">{{errors.transferSiteID}}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div ng-class="errors.transferSiteName?'has-error form-group':'form-group'">
+                        <label>Khác (Ghi rõ): </label>
+                        <input type="text" id="transferSiteName" ng-model="model.transferSiteName" 
+                        ng-value="item.transferSiteName" ng-disabled = "model.transferSiteID != '-1'" 
+                        class="form-control"/>
+                        <p class="help-block" ng-if="errors.transferSiteName">{{errors.transferSiteName}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div ng-class="errors.transferCase?'has-error form-group':'form-group'">
+                        <label>Lý do chuyển: </label>
+                        <input type="text" ng-model="model.transferCase" id="transferCase" class="form-control" ng-disabled="model.endCase != '3'"/>
+                        <p class="help-block" ng-if="errors.transferCase">{{errors.transferCase}}</p>
+                    </div>
+                </div>
+            </div>   
+            <div class="row">
+                <div class="col-md-6">    
+                    <div ng-class="errors.treatmentStageID?'has-error form-group':'form-group'">
+                        <label>Trạng thái biến động: </label>
+                        <select ng-model="model.treatmentStageID" id="treatmentStageID" ng-change="treatmentStageID()" disabled
+                        ng-options="key as value for (key , value) in options['status-of-change-treatment']"
+                        class="form-control">
+                        </select>
+                        <p class="help-block" ng-if="errors.treatmentStageID">{{errors.treatmentStageID}}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div ng-class="errors.treatmentStageTime ? 'has-error form-group' : 'form-group'">
+                        <label>Ngày biến động:</label>
+                        <input type="text" ng-model="model.treatmentStageTime" id="treatmentStageTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                        <p class="help-block" ng-if="errors.treatmentStageTime">{{errors.treatmentStageTime}}</p>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class = "fa fa-check"></i> Đồng ý</button>
+            <button class="btn btn-default" type="button" ng-click="cancel()"><i class = "fa fa-remove"></i> Hủy</button>
+        </div>  
+    </script>
+    <script type="text/ng-template" id="stageLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử đợt điều trị bệnh án <span class="text-danger">#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.time| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;" ng-bind-html="log.content"></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control" placeholder="Ghi chú thêm" ng-enter="add()"/>
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+
+<div data-th-fragment="opc-arv-transfer()">
+    <script type="text/ng-template" id="opcArvTreatmentTransfer">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><b>Chuyển thông tin bệnh nhân tới cơ sở điều trị khác</b></h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+        <form >
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Mã bệnh án:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.code}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Trạng thái điều trị:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{options['status-of-treatment'][item.statusOfTreatmentID]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Họ và tên:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.patient.fullName}}
+                </div>
+                    <div class="col-md-3 text-right">
+                <label><b>Ngày đăng ký:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{model.registrationTime}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Ngày sinh:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{model.dob}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Ngày điều trị ARV:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{model.treatmentTime}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Giới tính:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{options['gender'][item.patient.genderID]}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Bậc phác đồ hiện tại:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.treatmentRegimenStage == '' ? '' : options['treatment-regimen-stage'][item.treatmentRegimenStage]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Số CMND:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.patient.identityCard}}
+                </div>
+                <div class="col-md-3 text-right">
+                    <label><b>Phác đồ hiện tại:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.treatmentRegimenID == '' ? '' : options['treatment-regimen'][item.treatmentRegimenID]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Mã XN khẳng định:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.patient.confirmCode}}
+                </div>
+                
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Ngày XN khẳng định:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{model.confirmTime}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 text-right">
+                    <label><b>Nơi XN khẳng định:</b></label>
+                </div>
+                <div class="col-md-3">
+                    {{item.patient.confirmSiteID == '-1' ? item.patient.confirmSiteName : options['siteConfirm'][item.patient.confirmSiteID]}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div ng-class="errors.endCase?'has-error form-group':'form-group'">
+                        <label>Lý do kết thúc: </label>
+                        <select ng-model="model.endCase" id="endCase" disabled
+                        ng-options="key as value for (key , value) in options['arv-end-case']"
+                        class="form-control">
+                        </select>
+                        <p class="help-block" ng-if="errors.endCase">{{errors.endCase}}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div ng-class="errors.endTime ? 'has-error form-group' : 'form-group'">
+                        <label>Ngày kết thúc: <span class="text-danger">*</span></label>
+                        <input type="text" ng-model="model.endTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                        <p class="help-block" ng-if="errors.endTime">{{errors.endTime}}</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div ng-class="errors.tranferFromTime ? 'has-error form-group' : 'form-group'">
+                        <label>Ngày chuyển đi: <span class="text-danger">*</span></label>
+                        <input type="text" ng-model="model.tranferFromTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                        <p class="help-block" ng-if="errors.tranferFromTime">{{errors.tranferFromTime}}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div ng-class="errors.tranferBY?'has-error form-group':'form-group'">
+                        <label>Cán bộ chuyển gửi: </label>
+                        <input type="text" id="tranferBY" ng-model="model.tranferBY" disabled class="form-control"/>
+                        <p class="help-block" ng-if="errors.tranferBY">{{errors.tranferBY}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">    
+                    <div ng-class="errors.transferSiteID?'has-error form-group':'form-group'">
+                        <label>Cơ sở chuyển đi: <span class="text-danger">*</span></label>
+                        <select ng-model="model.transferSiteID" id="transferSiteID" ng-change="transferSiteIDChange()" 
+                        ng-options="key as value for (key , value) in options['treatment-facility']"
+                        class="form-control">
+                        </select>
+                        <p class="help-block" ng-if="errors.transferSiteID">{{errors.transferSiteID}}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div ng-class="errors.transferSiteName?'has-error form-group':'form-group'">
+                        <label>Khác (Ghi rõ): </label>
+                        <input type="text" id="transferSiteName" ng-model="model.transferSiteName" 
+                        ng-value="item.transferSiteName" ng-disabled = "model.transferSiteID != '-1'" 
+                        class="form-control"/>
+                        <p class="help-block" ng-if="errors.transferSiteName">{{errors.transferSiteName}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div ng-class="errors.transferCase?'has-error form-group':'form-group'">
+                        <label>Lý do chuyển: </label>
+                        <input type="text" id="transferCase" ng-model="model.transferCase" class="form-control"/>
+                        <p class="help-block" ng-if="errors.transferCase">{{errors.transferCase}}</p>
+                    </div>
+                </div>
+            </div>    
+        </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class = "fa fa-check"></i> Đồng ý</button>
+            <button class="btn btn-danger" type="button" ng-click="cancel()"><i class = "fa fa-remove"></i> Không</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="opc-patient-info(arv)">
+    <div class="box box-solid">
+        <div class="box-body row">
+            <div class="col-md-5">
+                <dl class="dl-opc dl-horizontal">
+                    <dt>Bệnh nhân:</dt>
+                    <dd th:utext="${arv.patient.fullName}"></dd>
+                    <dt>Ngày sinh:</dt>
+                    <dd th:utext="${#dates.format(arv.patient.dob, 'dd/MM/yyyy')}"></dd>
+                    <dt>Giới tính:</dt>
+                    <dd th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(arv.patient.genderID)}"></dd>
+                    <dt>CMND/Thẻ CCCD:</dt>
+                    <dd th:utext="${arv.patient.identityCard}"></dd>
+                </dl>
+            </div>
+            <div class="col-md-7">
+                <dl class="dl-opc dl-horizontal">
+                    <dt>Bệnh án:</dt>
+                    <dd class="text-uppercase" th:utext="${'#' + arv.code}"></dd>
+                    <dt>Mã XN khẳng định:</dt>
+                    <dd th:utext="${arv.patient.confirmCode}"></dd>
+                    <dt>Ngày XN khẳng định:</dt>
+                    <dd th:utext="${#dates.format(arv.patient.confirmTime, 'dd/MM/yyyy')}"></dd>
+                    <dt>Nơi XN khẳng định:</dt>
+                    <dd th:utext="${arv.patient.confirmSiteID == null || arv.patient.confirmSiteID == '' ? '' : arv.patient.confirmSiteID == -1
+                        ? arv.patient.confirmSiteName : options.get('siteConfirm').getOrDefault(arv.patient.confirmSiteID + '', '')}"></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-th-fragment="opc-test()">
+    <script type="text/ng-template" id="opcTest">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">
+        {{item.action == 'new' ? 'Thêm mới thông tin khác' : item.action == 'update' ? 'Cập nhật thông tin khác': 'Xem thông tin khác' }}
+        </h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+        <form>
+        <div class="row">
+        <div class="col-md-3">
+        <span class="text-bold">Họ và tên:</span> 
+        </div>
+        <div class="col-md-3">
+        <span>{{item.patientEntity.fullName}}</span>
+        </div>
+        <div class="col-md-3">
+        <span class="text-bold">Ngày sinh:</span>
+        </div>
+        <div class="col-md-3">
+        <span>{{item.patientEntity.dob| date: 'dd/MM/yyyy'}}</span>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+        <span class="text-bold">Giới tính:</span> 
+        </div>
+        <div class="col-md-3">
+        <span>{{options['gender'][item.patientEntity.genderID]}}</span>
+        </div>
+        <div class="col-md-3">
+        <span class="text-bold">Số CMND:</span>
+        </div>
+        <div class="col-md-3">
+        <span>{{item.patientEntity.identityCard}}</span>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+        <span class="text-bold">Mã XN khẳng định: </span> 
+        </div>
+        <div class="col-md-3">
+        <span>{{item.patientEntity.confirmCode}}</span>
+        </div>
+        <div class="col-md-3">
+        <span class="text-bold">Ngày XN khẳng định:</span>
+        </div>
+        <div class="col-md-3">
+        <span>{{item.patientEntity.confirmTime| date: 'dd/MM/yyyy'}}</span>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+        <span class="text-bold">Nơi XN khẳng định: </span> 
+        </div>
+        <div class="col-md-3">
+        <span>{{options['siteConfirm'][item.patientEntity.confirmSiteID]}}</span>
+        </div>
+        </div>
+        <br>
+        <!--Thông tin đăng ký điều trị-->
+        <label class="text-bold">Thông tin sàng lọc, điều trị dự phòng Lao và nhiễm trùng cơ hội</label>
+        <fieldset class="form-fieldset">
+        <div class="row">
+        <div class="col-md-3">
+        <div ng-class="errors.lao?'has-error form-group':'form-group'">
+        <label>Sàng lọc Lao: <span class="text-danger"></span></label>
+        <select ng-model="item.lao" id="lao" 
+        ng-options="key as value for (key , value) in options['has']"
+        class="form-control">
+        <option value="">Chọn câu trả lời</option>
+        </select>
+        <p class="help-block" ng-if="errors.lao">{{errors.lao}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.laoTestTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày sàng lọc: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.laoTestTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.laoTestTime">{{errors.laoTestTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.laoSymptoms?'has-error form-group':'form-group'">
+        <label>Các biểu hiện nghi Lao:</label>
+        <select ng-model="item.laoSymptoms" id="laoSymptoms" 
+        ng-options="key as value for (key , value) in options['lao-symtom']"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.laoSymptoms">{{errors.laoSymptoms}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.laoOtherSymptom ? 'has-error form-group' : 'form-group'">
+        <label>Triệu chứng khác: </label>
+        <input type="text" ng-model="item.laoOtherSymptom"  class="form-control" />
+        <p class="help-block" ng-if="errors.laoOtherSymptom">{{errors.laoOtherSymptom}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+        <div ng-class="errors.inh?'has-error form-group':'form-group'">
+        <label>Điều trị dự phòng INH: <span class="text-danger"></span></label>
+        <select ng-model="item.inh" id="inh" 
+        ng-options="key as value for (key , value) in options['has']"
+        class="form-control">
+        <option value="">Chọn câu trả lời</option>
+        </select>
+        <p class="help-block" ng-if="errors.inh">{{errors.inh}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.inhFromTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày bắt đầu INH: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.inhFromTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.inhFromTime">{{errors.inhFromTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.inhToTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày kết thúc INH: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.inhToTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.inhToTime">{{errors.inhToTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.inhEndCauses?'has-error form-group':'form-group'">
+        <label>Lý do kết thúc: <span class="text-danger"></span></label>
+        <select ng-model="item.inhEndCauses" id="inhEndCauses" 
+        ng-options="key as value for (key , value) in options['lao-end-case']"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.inhEndCauses">{{errors.inhEndCauses}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+        <div ng-class="errors.ntch?'has-error form-group':'form-group'">
+        <label>Điều trị NTCH: <span class="text-danger"></span></label>
+        <select ng-model="item.ntch" id="ntch" 
+        ng-options="key as value for (key , value) in options['has']"
+        class="form-control">
+        <option value="">Chọn câu trả lời</option>
+        </select>
+        <p class="help-block" ng-if="errors.ntch">{{errors.ntch}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.ntchSymptoms?'has-error form-group':'form-group'">
+        <label>Các biểu hiện nghi NTCH: <span class="text-danger"></span></label>
+        <select ng-model="item.ntchSymptoms" id="ntchSymptoms" 
+        ng-options="key as value for (key , value) in options['ntch-symtom']"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.ntchSymptoms">{{errors.ntchSymptoms}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.ntchOtherSymptom ? 'has-error form-group' : 'form-group'">
+        <label>Triệu chứng khác: </label>
+        <input type="text" ng-model="item.ntchOtherSymptom"  class="form-control" />
+        <p class="help-block" ng-if="errors.ntchOtherSymptom">{{errors.ntchOtherSymptom}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+        <div ng-class="errors.cotrimoxazoleFromTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày bắt đầu cotrimoxazole: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cotrimoxazoleFromTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cotrimoxazoleFromTime">{{errors.cotrimoxazoleFromTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cotrimoxazoleToTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày kết cotrimoxazole: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cotrimoxazoleToTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cotrimoxazoleToTime">{{errors.cotrimoxazoleToTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cotrimoxazoleEndCauses?'has-error form-group':'form-group'">
+        <label>Lý do kết thúc: <span class="text-danger"></span></label>
+        <select ng-model="item.cotrimoxazoleEndCauses" id="cotrimoxazoleEndCauses" 
+        ng-options="key as value for (key , value) in options['ntch-end-case']"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.cotrimoxazoleEndCauses">{{errors.cotrimoxazoleEndCauses}}</p>
+        </div>
+        </div>
+        </div>
+        </fieldset>
+        <label class="text-bold">Thông tin xét nghiệm CD4</label>
+        <fieldset class="form-fieldset">
+        <div class="row">
+        <div class="col-md-4">
+        <div ng-class="errors.cd4SampleTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày lấy mẫu: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cd4SampleTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cd4SampleTime">{{errors.cd4SampleTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cd4TestTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày xét nghiệm: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cd4TestTime" id="cd4TestTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cd4TestTime">{{errors.cd4TestTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cd4Causes?'has-error form-group':'form-group'">
+        <label>Lý do xét nghiệm: <span class="text-danger"></span></label>
+        <select ng-model="item.cd4Causes" id="cd4Causes" 
+        ng-options="key as value for (key , value) in options['ntch-end-case']"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.cd4Causes">{{errors.cd4Causes}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+        <div ng-class="errors.cd4TestSiteID?'has-error form-group':'form-group'">
+        <label>Nơi xét nghiệm: <span class="text-danger"></span></label>
+        <select ng-model="item.cd4TestSiteID" id="cd4TestSiteID" 
+        ng-options="key as value for (key , value) in options['siteCd4']"
+        class="form-control">
+        <option value="">Chọn nơi xét nghiệm</option>
+        </select>
+        <p class="help-block" ng-if="errors.cd4TestSiteID">{{errors.cd4TestSiteID}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cd4TestSiteName ? 'has-error form-group' : 'form-group'">
+        <label>Khác (Ghi rõ): </label>
+        <input type="text" ng-model="item.cd4TestSiteName"  class="form-control" />
+        <p class="help-block" ng-if="errors.cd4TestSiteName">{{errors.cd4TestSiteName}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cd4Result ? 'has-error form-group' : 'form-group'">
+        <label>Kết quả xét nghiệm: </label>
+        <input type="text" ng-model="item.cd4Result"  class="form-control" />
+        <small class="form-text text-muted">Đơn vị đo: Tế bào/mm<sup>3</sup></small>
+        <p class="help-block" ng-if="errors.cd4Result">{{errors.cd4Result}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4">
+        <div ng-class="errors.cd4ResultTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày nhận kết quả: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cd4ResultTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cd4ResultTime">{{errors.cd4ResultTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-4">
+        <div ng-class="errors.cd4RetryTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày hẹn xét nghiệm: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.cd4RetryTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.cd4RetryTime">{{errors.cd4RetryTime}}</p>
+        </div>
+        </div>
+        </div>
+
+        </fieldset>
+        <label class="text-bold">Thông tin xét nghiệm viêm gan</label>
+        <fieldset class="form-fieldset">
+        <div class="row">
+        <div class="col-md-3">
+        <div ng-class="errors.hbv?'has-error form-group':'form-group'">
+        <label>Xét nghiệm HBV: <span class="text-danger"></span></label>
+        <select ng-model="item.hbv" id="hbv" 
+        ng-options="key as value for (key , value) in options['has']"
+        class="form-control">
+        <option value="">Chọn câu trả lời</option>
+        </select>
+        <p class="help-block" ng-if="errors.hbv">{{errors.hbv}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hbvTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày xét nghiệm HBV: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.hbvTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.hbvTime">{{errors.hbvTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hbvResult?'has-error form-group':'form-group'">
+        <label>Kết quả XN HBV: <span class="text-danger"></span></label>
+        <select ng-model="item.hbvResult" id="hbvResult" 
+        ng-options="key as value for (key , value) in options['test-results']"
+        class="form-control">
+        <option value="">Chọn kết quả</option>
+        </select>
+        <p class="help-block" ng-if="errors.hbvResult">{{errors.hbvResult}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hbvCase ? 'has-error form-group' : 'form-group'">
+        <label>Lý do XN HBV: </label>
+        <input type="text" ng-model="item.hbvCase"  class="form-control" />
+        <p class="help-block" ng-if="errors.hbvCase">{{errors.hbvCase}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-3">
+        <div ng-class="errors.hcv?'has-error form-group':'form-group'">
+        <label>Xét nghiệm HCV: <span class="text-danger"></span></label>
+        <select ng-model="item.hcv" id="hcv" 
+        ng-options="key as value for (key , value) in options['has']"
+        class="form-control">
+        <option value="">Chọn câu trả lời</option>
+        </select>
+        <p class="help-block" ng-if="errors.hcv">{{errors.hcv}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hcvTime ? 'has-error form-group' : 'form-group'">
+        <label>Ngày xét nghiệm HCV: <span class="text-danger"></span></label>
+        <input type="text" ng-model="item.hcvTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+        <p class="help-block" ng-if="errors.hcvTime">{{errors.hcvTime}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hcvResult?'has-error form-group':'form-group'">
+        <label>Kết quả XN HCV: <span class="text-danger"></span></label>
+        <select ng-model="item.hcvResult" id="hcvResult" 
+        ng-options="key as value for (key , value) in options['test-results']"
+        class="form-control">
+        <option value="">Chọn kết quả</option>
+        </select>
+        <p class="help-block" ng-if="errors.hcvResult">{{errors.hcvResult}}</p>
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div ng-class="errors.hcvCase ? 'has-error form-group' : 'form-group'">
+        <label>Lý do XN HCV: </label>
+        <input type="text" ng-model="item.hcvCase"  class="form-control" />
+        <p class="help-block" ng-if="errors.hcvCase">{{errors.hcvCase}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-12">
+        <div ng-class="errors.note?'has-error form-group':'form-group'">
+        <label>Ghi chú: </label>
+        <textarea  type="text" ng-model="item.note" class="form-control" />
+        <p class="help-block" ng-if="errors.note">{{errors.note}}</p>
+        </div>
+        </div>
+        </div>
+
+
+        </fieldset>
+
+
+
+        </form>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()" ng-show="item.action != 'view'" ><i class="fa  fa-floppy-o"></i> &nbsp;Lưu thông tin</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()"><span >{{item.action != 'view' ? 'Hủy' : 'Đóng'}}</span></button>
+        </div>
+    </script>
+    <!--    <script type="text/ng-template" id="stageLogs">
+            <div class="modal-header">
+                <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Lịch sử đợt điều trị: #{{model.stageid}}.</h4>
+            </div>
+            <div class="modal-body popup-note">
+                <table class="table table-hover table-sm table-striped table-bordered">
+                    <tbody>
+                        <tr>
+                            <th class="text-center">Thời gian</th>
+                            <th class="text-center">Nhân viên</th>
+                            <th class="text-center">Nội dung</th>
+                        </tr>
+                        <tr ng-if="!logs.length">
+                            <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+                        </tr>
+                        <tr ng-repeat="log in logs">
+                            <td class="text-center">{{log.time| date:'h:mma dd/MM/yyyy'}}</td>
+                            <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+                            <td style="word-break: break-all;">{{log.content}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+             /.box-body 
+            <div class="box-footer clearfix">
+                <div class="pull-right">
+                    <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+                        <div class="input-group input-group-sm">
+                            <input ng-model="model.content" type="text" class="form-control" placeholder="Ghi chú thêm" />
+                            <span class="input-group-btn">
+                    <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+                    <i class="fa fa-plus"></i> Thêm ghi chú
+                    </button>
+                    </span>
+                        </div>
+                        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+            </div>
+        </script>-->
+</div>
+
+<div data-th-fragment="arv-log()">
+    <script type="text/ng-template" id="arvLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử bệnh nhân {{model.name}}. Mã: <span class="text-danger" >#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th  class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.time| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;" ng-bind-html="log.content"></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control"
+        placeholder="Ghi chú thêm" ng-enter="add()"/>
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="arv-log-virals()">
+    <script type="text/ng-template" id="arvLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử tải lượng virus bệnh án: <span class="text-danger" >#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th  class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.time| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;" ng-bind-html="log.content"></td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control"
+        placeholder="Ghi chú thêm" ng-enter="add()"/>
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="opc-viral()">
+    <script type="text/ng-template" id="opcViral">
+    <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close" >
+            <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">
+            <span>{{action == 'view' ? 'Xem lượt xét nghiệm tải lượng virus bệnh án' : action == 'update' ? 'Cập nhật lượt xét nghiệm tải lượng virus bệnh án': 'Thêm mới lượt xét nghiệm tải lượng virus bệnh án' }}<sơan>
+                    <b class="text-danger" > #{{arv.code}}</b>
+                    </h4>
+                    </div>
+                    <div class="modal-body" ng-init="init()">
+                        <form id = "opcViralForm">
+                            <fieldset class="form-fieldset">
+                            <div class="row">
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.stageID?'has-error form-group':'form-group'">
+                                            <label>Giai đoạn điều trị: <span class="text-danger">*</span></label>
+                                            <select name="stageID" ng-model="item.stageID" id="stageID" ng-options="key as value for (key , value) in stage" class="form-control">
+                                            </select>
+                                            <p class="help-block" ng-if="errors.stageID">{{errors.stageID}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.testSiteID?'has-error form-group':'form-group'">
+                                            <label>Nơi xét nghiệm: <span class="text-danger">*</span></label>
+                                            <select name="testSiteID" ng-model="item.testSiteID" id="testSiteID" ng-options="key as value for (key , value) in siteConfirm" class="form-control">
+                                            </select>
+                                            <p class="help-block" ng-if="errors.testSiteID">{{errors.testSiteID}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.testSiteName?'has-error form-group':'form-group'">
+                                            <label>Khác (Ghi rõ): </label>
+                                            <input type="text" ng-model="item.testSiteName" id="testSiteName" class="form-control" disabled/>
+                                            <p class="help-block" ng-if="errors.testSiteName">{{errors.testSiteName}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.sampleTime?'has-error form-group':'form-group'">
+                                            <label>Ngày lấy mẫu:</label>
+                                            <input type="text" ng-model="item.sampleTime" id="sampleTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                                            <p class="help-block" ng-if="errors.sampleTime">{{errors.sampleTime}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.testTime?'has-error form-group':'form-group'">
+                                            <label>Ngày xét nghiệm: <span class="text-danger">*</span></label>
+                                            <input type="text" ng-model="item.testTime" id="testTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                                            <p class="help-block" ng-if="errors.testTime">{{errors.testTime}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.causes?'has-error form-group':'form-group'">
+                                            <label>Lý do xét nghiệm: <span class="text-danger">*</span></label>
+                                            <select id="causes" class="form-control">
+                                                <option ng-repeat="(key, val) in viralloadSymtom" value="{{key}}">{{val}}</option>
+                                            </select>
+                                            <p class="help-block" ng-if="errors.causes">{{errors.causes}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.resultNumber?'has-error form-group':'form-group'">
+                                            <label>Nồng độ virus:</label>
+                                            <input type="text" ng-model="item.resultNumber" id="resultNumber" class="form-control"/>
+                                            <small class="form-text text-muted">Đơn vị đo: Bản sao/ml</small>
+                                            <p class="help-block" ng-if="errors.resultNumber">{{errors.resultNumber}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.result?'has-error form-group':'form-group'">
+                                            <label>Kết quả xét nghiệm:</label>
+                                            <select name="result" ng-model="item.result" id="result" ng-options="key as value for (key , value) in results" class="form-control">
+                                            </select>
+                                            <p class="help-block" ng-if="errors.result">{{errors.result}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.resultTime?'has-error form-group':'form-group'">
+                                            <label>Ngày nhận kết quả:</label>
+                                            <input type="text" ng-model="item.resultTime" id="resultTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                                            <p class="help-block" ng-if="errors.resultTime">{{errors.resultTime}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div ng-class="errors.retryTime?'has-error form-group':'form-group'">
+                                            <label>Ngày hẹn xét nghiệm:</label>
+                                            <input type="text" ng-model="item.retryTime" id="retryTime" ui-mask="99/99/9999" placeholder="dd/mm/yyyy" class="form-control" />
+                                            <p class="help-block" ng-if="errors.retryTime">{{errors.retryTime}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div ng-class="errors.note?'has-error form-group':'form-group'">
+                                            <label>Ghi chú:</label>
+                                            <input type="text" ng-model="item.note" id="note" class="form-control"/>
+                                            <p class="help-block" ng-if="errors.note">{{errors.note}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" ng-click="ok()" ng-show="action != 'view'"><i class="fa  fa-floppy-o"></i> &nbsp;Lưu thông tin</button>
+                        <button class="btn btn-default" type="button" ng-click="cancel('cancel')" confirm("Bạn chắc chắn muốn hủy không?") ng-if="action != 'view'">Hủy</button>
+                        <button class="btn btn-default" type="button" ng-click="cancel('close')" ng-if="action == 'view'">Đóng</button>
+                    </div>
+    </script>
+    <script type="text/ng-template" id="opcViralLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử tải lượng virus bệnh án <span class="text-danger">#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.time| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;">{{log.content}}</td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control" placeholder="Ghi chú thêm" ng-enter="add()"/>
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="opc-arv-feedback_receive()">
+    <script type="text/ng-template" id="opcArvFeedbackReceive">
+        <div class="modal-header">
+            <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Xác nhận gửi phản hồi tiếp nhận tới cơ sở chuyển gửi</b></h4>
+        </div>
+        <div class="modal-body" ng-init="init()">
+            <form >
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Mã bệnh án:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.code}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Ngày tiếp nhận:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.arrivalTime}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Mã XN khẳng định:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.confirmCode}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Cơ sở chuyển gửi:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.siteID == -1 ? itemNew.sourceArvSiteName : options['siteOpcTo'][model.siteID]}}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Họ và tên:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.patientName}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Ngày chuyển gửi:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.exchangeTime}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 text-right">
+                        <label><b>Ngày sinh:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.yearOfBirth}}
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <label><b>Ngày phản hồi:</b></label>
+                    </div>
+                    <div class="col-md-3">
+                        {{model.feedbackReceiveTime}}
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()"><i class = "fa fa-check"></i> Đồng ý</button>
+            <button class="btn btn-danger" type="button" ng-click="cancel()"><i class = "fa fa-remove"></i> Không</button>
+        </div>
+    </script>
+</div>

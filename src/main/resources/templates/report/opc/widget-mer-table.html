@@ -1,0 +1,1031 @@
+<div data-th-fragment="table-mer-one()" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success">TT</th>
+                <th class="text-center vertical-align-middle success" style="width: 55%">CHỈ SỐ BÁO CÁO</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NAM</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NỮ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">I</th>
+                <th>DỊCH VỤ TRƯỚC ĐIỀU TRỊ ARV</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Số bệnh nhân chưa ARV đang quản lý tính đến cuối kỳ báo cáo</td>
+                <td th:text="${form.displayNumber(form.table01.get('1').get('under-one-age'))}"></td>
+                <td th:text="${form.displayNumber(form.table01.get('1').get('one-fourteen'))}"></td>
+                <td th:text="${form.displayNumber(form.table01.get('1').get('over-fifteen'))}"></td>
+                <td th:text="${form.displayNumber(form.table01.get('2').get('under-one-age'))}"></td>
+                <td th:text="${form.displayNumber(form.table01.get('2').get('one-fourteen'))}"></td>
+                <td th:text="${form.displayNumber(form.table01.get('2').get('over-fifteen'))}"></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!--Dịch vụ điều trị ARV-->
+<div data-th-fragment="table-mer-one-arv()" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center">A</th>
+                <th colspan="8">CHỈ SỐ BÁO CÁO TRONG THÁNG</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">I</th>
+                <th class="text-left vertical-align-middle success" style="width: 55%" rowspan="2">DỊCH VỤ ĐIỀU TRỊ ARV</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NAM</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NỮ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Hiện đang được điều trị ARV tính đến cuối kỳ báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'onArv'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">2</td>
+            <td>Bắt đầu được điều tri ARV tại cơ sở trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'startArv'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">3</td>
+            <td>Điều trị lại trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'reTreatment'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">4</td>
+            <td>Chuyển tới trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'arrival'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">5</td>
+            <td>Chuyển đi trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'moveAway'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">6</td>
+            <td>Tử vong trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'dead'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">7</td>
+            <td>Bỏ đi trong kì báo cáo</td>
+        <th:block th:each="instance : ${form.table01Arv}">
+            <span th:if="${instance.key == 'quitArv'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        </tbody>
+
+        <!--TỶ LỆ SỐNG SÓT VÀ DUY TRÌ ĐIỀU TRỊ SAU 12 THÁNG BẮT ĐẦU ĐIỀU TRỊ ARV-->
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">II</th>
+                <th class="text-left vertical-align-middle success" style="width: 55%" rowspan="2">TỈ LỆ SỐNG SÓT VÀ DUY TRI ĐIỀU TRỊ SAU 12 THÁNG BẮT ĐẦU ĐIỀU TRỊ ARV</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NAM</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NỮ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Tỉ lệ người bệnh còn sống và đang tiếp tục điều trị sau 12 tháng bắt đầu điều trị ARV</td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('1').underOneAge, form.table02Arv.get('denominator').get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('1').oneToFourteen, form.table02Arv.get('denominator').get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('1').overFifteen, form.table02Arv.get('denominator').get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('2').underOneAge, form.table02Arv.get('denominator').get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('2').oneToFourteen, form.table02Arv.get('denominator').get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('2').overFifteen, form.table02Arv.get('denominator').get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.getPercentValue(form.table02Arv.get('numerator').get('total').total, form.table02Arv.get('denominator').get('total').total)}"></td>
+            </tr>
+            <tr>
+                <td class="text-center text-italic">1.1</td>
+                <td class="text-italic text-right">Mẫu số: số người bệnh có ngày <span class="text-bold" th:text ="${'bắt đầu điều trị ARV trong tháng ' + lastYear}"></span></td>
+        <th:block th:each="instance : ${form.table02Arv}">
+            <span th:if="${instance.key == 'denominator'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" >1.2</td>
+            <td class="text-italic text-right">Tử số: Trong nhóm người bệnh trên (chỉ số 9.1), số người bệnh còn sống và đang tiếp tục điều trị sau 12 tháng bắt đầu điều trị ARV <span class="text-bold" th:text = "${'(thời điểm cuối tháng ' + now + ')'}"></span></td>
+        <th:block th:each="instance : ${form.table02Arv}">
+            <span th:if="${instance.key == 'numerator'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        </tbody>
+        <!--CẤP THUỐC ARV TỐI ĐA 90 NGÀY (TỪ 84-90 NGÀY)-->
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">III</th>
+                <th class="text-left vertical-align-middle success" style="width: 55%" rowspan="2">CẤP THUỐC ARV NHIỀU THÁNG TỐI ĐA 90 NGÀY (TỪ 84-90 NGÀY)</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NAM</th>
+                <th class="text-center vertical-align-middle success" colspan="3">NỮ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Số người bệnh ổn định đủ điều kiện cấp thuốc ARV tối đa 90 ngày</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="text-center">2</td>
+                <td>Số người bệnh mới được cấp thuốc ARV tối đa 90 ngày</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="text-center">3</td>
+                <td>Số người bệnh đang được cấp thuốc tối đa 90 ngày</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-th-fragment="table-mer-quaterly()" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center">B</th>
+                <th colspan="8">CHỈ SỐ BÁO CÁO HÀNG QUÝ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2"></th>
+                <th class="text-left vertical-align-middle success" style="width: 55%" rowspan="2"></th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nam</th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nữ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--Phần 1 TrangBN-->
+            <tr>
+                <td class="text-center">1</td>
+                <td>Số người bệnh đang được điều trị ARV tính đến cuối kỳ báo cáo, <span class="text-bold text-italic">không tính số người bệnh không khám trên 28 ngày</span> trong đó:</td>
+        <th:block th:each="instance : ${form.table01Quarterly}">
+            <th:block th:if="${instance.key == '28days'}">
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').underOneAge   == 0 ? 0 : form.displayNumber( instance.value.get('1').underOneAge   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').oneToFourteen == 0 ? 0 : form.displayNumber( instance.value.get('1').oneToFourteen ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').overFifteen   == 0 ? 0 : form.displayNumber( instance.value.get('1').overFifteen   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').underOneAge   == 0 ? 0 : form.displayNumber( instance.value.get('2').underOneAge   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').oneToFourteen == 0 ? 0 : form.displayNumber( instance.value.get('2').oneToFourteen ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').overFifteen   == 0 ? 0 : form.displayNumber( instance.value.get('2').overFifteen   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('total').total     == 0 ? 0 : form.displayNumber( instance.value.get('total').total     ) }"></td>
+            </th:block>
+        </th:block>
+
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic">1.1. Phân nhóm theo số tháng thuốc ARV phát cho người bệnh</td>
+        <th:block th:each="instance : ${form.table01Quarterly}">
+            <th:block th:if="${instance.key == 'monthArv'}">
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').underOneAge   == 0 ? 0 : form.displayNumber( instance.value.get('1').underOneAge   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').oneToFourteen == 0 ? 0 : form.displayNumber( instance.value.get('1').oneToFourteen ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('1').overFifteen   == 0 ? 0 : form.displayNumber( instance.value.get('1').overFifteen   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').underOneAge   == 0 ? 0 : form.displayNumber( instance.value.get('2').underOneAge   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').oneToFourteen == 0 ? 0 : form.displayNumber( instance.value.get('2').oneToFourteen ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('2').overFifteen   == 0 ? 0 : form.displayNumber( instance.value.get('2').overFifteen   ) }" ></td>
+                <td class="text-center bg-gray-active text-bold color-palette" th:text="${instance.value.get('total').total     == 0 ? 0 : form.displayNumber( instance.value.get('total').total     ) }"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>    
+            <td></td>
+            <td class="text-italic text-right">1.1.1. Số NB được cấp thuốc &lt;3 tháng</td>
+        <th:block th:each="instance : ${form.table01Quarterly}">
+            <th:block th:if="${instance.key == 'underThreeMonth'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber( instance.value.get('total').total)  }"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.1.2. Số NB được cấp thuốc từ 3 đến &lt;6 tháng</td>
+        <th:block th:each="instance : ${form.table01Quarterly}">
+            <th:block th:if="${instance.key == 'threeToSixMonth'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber( instance.value.get('total').total)  }"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.1.3. Số NB được cấp thuốc từ 6 tháng trở lên</td>
+        <th:block th:each="instance : ${form.table01Quarterly}">
+            <th:block th:if="${instance.key == 'fromSixMonth'}">
+
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber( instance.value.get('total').total)  }"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic">1.2. Phân nhóm theo đối tượng nguy cơ cao</td>
+            <td colspan="6" class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.tong == 0 ? 0 : form.displayNumber(form.table0102Quarterly.tong)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.tong  == 0 ? 0 : form.displayNumber(form.table0102Quarterly.tong)}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.2.1. NCMT</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table0102Quarterly.ncmt)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.ncmt   == 0 ? 0 : form.displayNumber(form.table0102Quarterly.ncmt)}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.2.2. MSM</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table0102Quarterly.msm)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.msm    == 0 ? 0 : form.displayNumber(form.table0102Quarterly.msm)}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.2.3. Chuyển giới</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table0102Quarterly.chuyengioi)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.chuyengioi   == 0 ? 0 : form.displayNumber(form.table0102Quarterly.chuyengioi)}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.2.4. PNMD</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table0102Quarterly.pnmd)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.pnmd  == 0 ? 0 : form.displayNumber(form.table0102Quarterly.pnmd)}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">1.2.5. Học viên cai nghiện</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table0102Quarterly.phamnhan)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette" th:text="${form.table0102Quarterly.phamnhan   == 0 ? 0 : form.displayNumber(form.table0102Quarterly.phamnhan)}"></td>
+        </tr>
+
+        <tr>
+            <td class="text-center">2</td>
+            <td >Số người bệnh bắt đầu được điều trị ARV tại cơ sở trong quý báo cáo</td>
+            <td colspan="6" class="text-bold text-center bg-gray-active color-palette" th:text="${form.table02Quarterly.tong    == 0 ? 0 : form.displayNumber(form.table02Quarterly.tong   )}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.tong    == 0 ? 0 : form.displayNumber(form.table02Quarterly.tong   )}" ></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic">2.1. Phân nhóm theo đối tượng nguy cơ cao</td>
+            <td colspan="6" class="text-bold text-center bg-gray-active color-palette" th:text="${form.table02Quarterly.tong    == 0 ? 0 : form.displayNumber(form.table02Quarterly.tong   )}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.tong    == 0 ? 0 : form.displayNumber(form.table02Quarterly.tong   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">2.1.1. NCMT</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.ncmt)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.ncmt   == 0 ? 0 : form.displayNumber(form.table02Quarterly.ncmt   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">2.1.2. MSM</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.msm)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.msm   == 0 ? 0 : form.displayNumber(form.table02Quarterly.msm   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">2.1.3. Chuyển giới</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.chuyengioi)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.chuyengioi   == 0 ? 0 : form.displayNumber(form.table02Quarterly.chuyengioi   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">2.1.4. PNMD</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.pnmd)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.pnmd   == 0 ? 0 : form.displayNumber(form.table02Quarterly.pnmd   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic text-right">2.1.5. Học viên cai nghiện</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.phamnhan)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.phamnhan  == 0 ? 0 : form.displayNumber(form.table02Quarterly.phamnhan   )}"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-italic ">2.2. Đang nuôi con bằng sữa mẹ tại thời điểm bắt đầu điều trị ARV</td>
+            <td colspan="6" class="text-center" th:text="${form.displayNumber(form.table02Quarterly.hasChild)}"></td>
+            <td class="text-bold text-center bg-gray-active color-palette"  th:text="${form.table02Quarterly.hasChild  == 0 ? 0 : form.displayNumber(form.table02Quarterly.hasChild   ) }"></td>
+        </tr>
+        </tbody>
+
+        <!--Phần 2 DSNA-->
+        <!--TỶ LỆ SỐNG SÓT VÀ DUY TRÌ ĐIỀU TRỊ SAU 12 THÁNG BẮT ĐẦU ĐIỀU TRỊ ARV-->
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2"></th>
+                <th class="text-left vertical-align-middle success" style="width: 55%" rowspan="2"></th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nam</th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nữ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+                <th class="text-center">&lt;1</th>
+                <th class="text-center">1-14</th>
+                <th class="text-center">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">3</td>
+                <td>Số người bệnh không khám trên 28 ngày trong kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'tong'}">
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('1').underOneAge == 0 ? 0 : form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('1').oneToFourteen == 0 ? 0 : form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('1').overFifteen == 0 ? 0 : form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('2').underOneAge == 0 ? 0 : form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('2').oneToFourteen == 0 ? 0 : form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('2').overFifteen == 0 ? 0 : form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" 
+                    th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic"></td>
+            <td class="text-italic">3.1. Số người bệnh tử vong</td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'tuvong'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic">3.2. Số người bệnh mất dấu (cơ sở không theo dấu được), trong đó: </td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'matdau'}">
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('1').underOneAge == 0 ? 0 : form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('1').oneToFourteen == 0 ? 0 : form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('1').overFifteen == 0 ? 0 : form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('2').underOneAge == 0 ? 0 : form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('2').oneToFourteen == 0 ? 0 : form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('2').overFifteen == 0 ? 0 : form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">3.2.1. Số NB điều trị < 3 tháng </td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'duoi3thang'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">3.2.2. Số NB điều trị từ 3 tháng trở lên </td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'tren3thang'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic">3.3. Số người bệnh chuyển đi cơ sở khác </td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'chuyendi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic">3.4. Số người bệnh dừng điều trị </td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'botri'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr><!--
+        -->            <tr>
+            <td class="text-center" >4</td>
+            <td>Số người bệnh không khám trên 28 ngày, quay lại điều trị trong quý báo cáo</td>
+        <th:block th:each="instance : ${form.table03Quarterly}">
+            <span th:if="${instance.key == 'quaylai'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold bg-gray-active color-palette" th:text="${instance.value.get('total').total == 0 ? 0 : form.displayNumber(instance.value.get('total').total)}"></td>
+            </span>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td >4.1. Phân tích theo nhóm đối tượng nguy cơ cao</td>
+            <td class="text-center text-bold bg-gray-active color-palette" colspan="6" th:text="${form.table04Quarterly.tong == 0 ? 0 : form.displayNumber(form.table04Quarterly.tong)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.tong == 0 ? 0 : form.displayNumber(form.table04Quarterly.tong)}"></td>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">4.1.1. NCMT</td>
+            <td class="text-center " colspan="6" th:text="${form.displayNumber(form.table04Quarterly.ncmt)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.ncmt == 0 ? 0 : form.displayNumber(form.table04Quarterly.ncmt)}"></td>
+            </th:block>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">4.1.2. MSM</td>
+            <td class="text-center " colspan="6" th:text="${form.displayNumber(form.table04Quarterly.msm)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.msm == 0 ? 0 : form.displayNumber(form.table04Quarterly.msm)}"></td>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">4.1.3. Chuyển giới</td>
+            <td class="text-center " colspan="6" th:text="${form.displayNumber(form.table04Quarterly.chuyengioi)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.chuyengioi == 0 ? 0 : form.displayNumber(form.table04Quarterly.chuyengioi)}"></td>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">4.1.4. PNMD</td>
+            <td class="text-center " colspan="6" th:text="${form.displayNumber(form.table04Quarterly.pnmd)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.pnmd == 0 ? 0 : form.displayNumber(form.table04Quarterly.pnmd)}"></td>
+        </tr>
+        <tr>
+            <td class="text-center text-italic" ></td>
+            <td class="text-italic text-right">4.1.5. Học viên cai nghiện</td>
+            <td class="text-center " colspan="6" th:text="${form.displayNumber(form.table04Quarterly.phamnhan)}" ></td>
+            <td class="text-center text-bold bg-gray-active color-palette" th:text="${form.table04Quarterly.phamnhan == 0 ? 0 : form.displayNumber(form.table04Quarterly.phamnhan)}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--Dịch vụ điều trị ARV-->
+<div data-th-fragment="table-mer-six-month()" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center">C</th>
+                <th colspan="8">CHỈ SỐ BÁO CÁO 6 THÁNG</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">I</th>
+                <th class="text-left vertical-align-middle success" style="width: 50%" rowspan="2">CHỈ SỐ LAO-HIV</th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nam</th>
+                <th class="text-center vertical-align-middle success" colspan="3">Nữ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Tổng</th>
+            </tr>
+            <tr>
+                <th class="text-center" style="width: 6%">&lt;1</th>
+                <th class="text-center" style="width: 6%">1-14</th>
+                <th class="text-center" style="width: 6%">&#8805;15</th>
+                <th class="text-center" style="width: 6%">&lt;1</th>
+                <th class="text-center" style="width: 6%">1-14</th>
+                <th class="text-center" style="width: 6%">&#8805;15</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center  text-bold">1</td>
+                <td>Tỷ lệ NB ARV hoàn thành điều trị dự phòng Lao (INH hoặc phác đồ 3 tháng) trong 6 tháng</td>
+        <th:block th:each="instance : ${form.table03}">
+            <th:block th:if="${instance.key == 'tyLeHoanThanh'}">
+                <td class="text-center text-bold" th:text="${instance.value.underOneAgeNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.oneToFourteenNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.overFifteenNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.underOneAgeNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.oneToFourteenNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.overFifteenNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.sum}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">1.1</td>
+            <td>Mẫu số: Số NB ARV bắt đầu điều trị dự phòng Lao 6 tháng trước kỳ báo cáo <b>(từ [[${form.startDateSixMonthBefore}]] đến [[${form.endDateSixMonthBefore}]])</b></td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'mauSo'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td class="text-right text-italic">1.1.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'mauSoMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center  text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">1.1.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'mauSoCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center  text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">1.2</td>
+            <td>Tử số: Trong nhóm NB trong mẫu số, số NB hoàn thành điều trị dự phòng Lao tính đến cuối kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'tuSo'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td>Phân nhóm theo nhóm bệnh nhân ARV</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'tuSo'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">1.2.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'tuSoMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">1.2.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'tuSoCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td>Phân nhóm theo phác đồ điều trị dự phòng Lao</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'tuSo'}">
+                <td class="text-center text-bold" colspan="6" th:text="${form.numberFormat(instance.value.sum)}"></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">INH</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'tuSo'}">
+                <td class="text-center text-bold" colspan="6" th:text="${form.numberFormat(instance.value.sum)}"></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">Phác đồ 3 tháng</td>
+            <td class="text-center" colspan="6" ></td>
+            <td class="text-center" ></td>
+        </tr>
+        <tr>
+            <td class="text-center text-bold">2</td>
+            <td>Tỷ lệ NB ARV được sàng lọc lao và được bắt đầu điều trị lao trong kỳ báo cáo</td>
+        <th:block th:each="instance : ${form.table03}">
+            <th:block th:if="${instance.key == 'tyLeBatDau'}">
+                <td class="text-center text-bold" th:text="${instance.value.underOneAgeNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.oneToFourteenNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.overFifteenNam}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.underOneAgeNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.oneToFourteenNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.overFifteenNu}" ></td>
+                <td class="text-center text-bold" th:text="${instance.value.sum}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">2.1</td>
+            <td>Số NB ARV được sàng lọc lao ít nhất 1 lần trong kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'itNhat1Lan'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.1.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'itNhat1LanMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.1.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'itNhat1LanCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">2.2</td>
+            <td>Số NB ARV được sàng lọc và nghi lao trong kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'sangLocNghiLao'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.2.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'sangLocNghiLaoMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.2.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'sangLocNghiLaoCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">2.3</td>
+            <td>Số NB ARV được chẩn đoán lao trong kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'chuanDoanLao'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.3.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'chuanDoanLaoMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.3.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'chuanDoanLaoCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center">2.4</td>
+            <td>Số NB ARV được bắt đầu điều trị lao trong kỳ báo cáo, trong đó</td>
+        <th:block th:each="instance : ${form.table02}">
+            <th:block th:if="${instance.key == 'dieuTriLao'}">
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNam)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.underOneAgeNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.oneToFourteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.overFifteenNu)}" ></td>
+                <td class="text-center text-bold" th:text="${form.numberFormat(instance.value.sum)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.4.1. Số NB mới điều trị ARV</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'dieuTriLaoMoi'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+        <tr>
+            <td class="text-center"></td>
+            <td  class="text-right text-italic">2.4.2. Số NB ARV cũ</td>
+        <th:block th:each="instance : ${form.table}">
+            <th:block th:if="${instance.key == 'dieuTriLaoCu'}">
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('1').overFifteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').underOneAge)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').oneToFourteen)}" ></td>
+                <td class="text-center" th:text="${form.displayNumber(instance.value.get('2').overFifteen)}" ></td>
+                <td class="text-center text-bold" th:text="${form.displayNumber(instance.value.get('total').total)}"></td>
+            </th:block>
+        </th:block>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

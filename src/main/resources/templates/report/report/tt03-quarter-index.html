@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).tt03Quarter('pdf')}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).tt03Quarter('excel')}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).tt03Quarter('email')}]];
+            var form = {
+            district : [[${form.district}]]
+            };
+        </script>
+        <style type="text/css">
+            .width-60 {
+                width: 100px;
+            }
+            .width-80 {
+                width: 120px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}"></span>
+                    <small th:if="${form.TTYT}">Tuyến huyện</small>
+                    <small th:if="${form.PAC}">Tuyến tỉnh</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).tt03Quarter('index')}">Báo cáo quốc gia</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).tt03Quarter('index')}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="report_tt03_quarter" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom margin-bottom-none">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a th:href="${T(com.gms.components.UrlUtils).tt03Quarter('index')}">Báo cáo quý</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).tt03Quarter('index')}" method="GET" name="report_tt03_form">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Quý</label>
+                                                <select name="quarter" id="quarter" class="form-control">
+                                                    <option th:each="n : ${options.get('quarters')}" 
+                                                            th:selected="${form.quarter == n.key}"
+                                                            th:value="${n.key}" th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${form.year == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Dịch vụ</label>
+                                                <select name="services" id="service" class="form-control">
+                                                    <option th:each="n : ${options.get(T(com.gms.entity.db.ParameterEntity).SERVICE_TEST)}" 
+                                                            th:selected="${form.services != null ? #arrays.contains(form.services, n.key) : false}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" th:if="${form.PAC}">
+                                            <div class="form-group">
+                                                <label>Quận/Huyện</label>
+                                                <select class="form-control" 
+                                                        data-title ="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="district" id="district"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Cơ sở</label>
+                                                <select name="sites" id="sites" class="form-control">
+                                                    <option th:each="n : ${sites}" 
+                                                            th:selected="${form.sites != null ? #arrays.contains(form.sites, n.key) : false}"
+                                                            th:district-id="${n.value.districtID}"
+                                                            th:value="${n.key}" th:text="${n.value.shortName}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center" style="padding-top: 6px;">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).tt03Quarter('pdf')}">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).tt03Quarter('excel')}">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5"
+                                                    th:data-role="${T(com.gms.components.UrlUtils).tt03Quarter('email')}">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-title">
+                                    Báo cáo <span class="text-danger" th:utext="${'quý 0' + (T(Integer).parseInt(form.quarter)+1) + '/' + form.year}" ></span>
+                                    từ <span th:utext="${form.startDate}" ></span> 
+                                    đến
+                                    <span th:utext="${form.endDate}" ></span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div data-th-replace="report/report/widget-table :: tt03-table02(${form})"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

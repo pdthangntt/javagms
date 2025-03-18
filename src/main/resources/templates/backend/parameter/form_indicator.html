@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span class="loading_config" ></span>
+                    <a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}" class="btn btn-default" >
+                        <i class="fa fa-backward"></i> Quay lại
+                    </a>
+                    <span th:text="${title}" ></span>
+                    <small th:text="${parent_title}"></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}"><span th:text="${parent_title}" ></span></a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).parameterNew(type)}">
+                            <span th:text="${title}" ></span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" id="config-form" ng-controller="parameter_new" ng-init="init()" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3">
+                        <div data-th-include="backend/parameter/widget :: parameter-left(${dataModels})"></div>
+                    </div>
+                    <div class="col-lg-9 col-md-9">
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-edit" ></i> Nhập thông tin thêm mới</h3>
+                            </div>
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).parameterNew(type)}" th:object="${form}" method="post">
+                                    <div data-th-replace="widget/form :: input-hidden('type')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Giá trị', 'code', true, '', '')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Nhãn hiển thị', 'value', true, '', '')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Thứ tự', 'position', true, '', '')"></div>
+                                    <div data-th-replace="widget/form :: select('Trạng thái', 'status', true, ${activeLabel}, 'Trạng thái hoạt động: cho phép sử dụng trên hệ thống')"></div>
+
+
+                                    <div data-th-replace="widget/form :: textarea('Ghi chú', 'note', false, '', '')"></div>
+
+                                    <div th:if="${dataModels['__${type}__']['useparent'] == '1'}" >
+                                        <div data-th-replace="widget/form :: select('Cấp cha', 'parentID', true, ${parents}, '')"></div>
+                                    </div>
+
+                                    <div th:if="${dataModels['__${type}__']['elog'] == '1'}"  >
+                                        <div data-th-replace="widget/form :: input-text('ID HTC Elog', 'elogCode', true, '', '')"></div>
+                                    </div>
+                                    <div th:if="${dataModels['__${type}__']['hivinfo'] == '1'}"  >
+                                        <div data-th-replace="widget/form :: input-text('ID HIV Info', 'hivInfoCode', true, '', '')"></div>
+                                    </div>
+
+                                    <div class="form-group text-center" >
+                                        <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}" 
+                                           data-confirm="Bạn chắc chắn muốn quay lại ?"
+                                           data-confirm-browsers
+                                           class="btn btn-default" type="reset" >Huỷ</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

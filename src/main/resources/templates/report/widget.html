@@ -1,0 +1,24 @@
+<div data-th-fragment="donvi(form)" th:with="so=${so}?${so}: '', siteline=${siteline}?${siteline}: ''">
+    <div class="box_donvi">
+        <p class="text-uppercase conghoa text-normal " ><span th:utext="${form.siteAgency}" ></span></p>
+        <p class="site-name" th:if="${siteline == ''}"><span th:utext="${form.siteName}" ></span></p>
+        <p class="site-name-line" th:if="${siteline != ''}"><span th:utext="${form.siteName}" ></span></p>
+        <!--<hr class="line" align="center" />-->
+        <p class="text-center text-normal so" th:if="${so != ''}">Số: ........./........</p>
+    </div>
+</div>
+<div data-th-fragment="quochieu()" th:with="province=${province}?${province}: '', dd=${dd}?${dd}: '', mm=${mm}?${mm}: '', yyyy=${yyyy}?${yyyy}: ''">
+    <div class="box_id" >
+        <p class="text-uppercase conghoa">Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</p>
+        <p class="text-capitalize doclap"><span>Độc lập - Tự do - Hạnh phúc</span></p>
+        <!--<hr class="line" />-->
+        <p class="text-normal ngaythang" th:if="${province != '' || dd != '' || mm != '' || yyyy != ''}" >
+            <i>
+                <span class="point" th:text="${province}"></span><span class="point" th:text="${province != '' ? ', ngày ' : 'Ngày '}"></span> 
+                <span class="point" th:utext="${dd == '' ? '.......':dd}"></span>
+                tháng <span class="point" th:utext="${mm== '' ? '.......':mm}"></span> 
+                năm <span class="point" th:utext="${yyyy== '' ? '..............':yyyy}"></span>
+            </i>
+        </p>
+    </div>
+</div>

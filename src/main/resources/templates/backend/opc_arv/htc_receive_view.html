@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var urlTransferOPC = [[${
+                            T(com.gms.components.UrlUtils).htcTransferOPC()
+                        }
+                        ]];
+                        var form = [[${form}
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}" 
+                       th:data-role="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}"
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <!--<small th:text="${parent_title}"></small>-->
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}">Tiếp nhận từ TVXN</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).viewReceiveHTC(form.ID)}"><i class="fa"></i>Xem thông tin khách hàng</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="htc_view" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:object="${form}">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        A. Thông tin khách hàng
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A1. Ngày tư vấn trước XN:', 'advisoryeTime', ${form.advisoryeTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select-static('A2. Loại dịch vụ:', 'serviceID', ${options.get(T(com.gms.entity.db.ParameterEntity).SERVICE_TEST)}, ${form.serviceID}, '')" ></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <div data-th-replace="widget/form :: select-static('A2.1. Khách hàng nhận dịch vụ:', 'cdService', ${options.get(T(com.gms.entity.db.ParameterEntity).CD_SERVICE)}, ${form.cdService}, '')" ></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" ng-show="serviceID == 'KC'">
+                                            <div data-th-replace="widget/form :: form-static('A2.2. Mã NV không chuyên:', 'staffKC', ${form.staffKC}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A3. Mã khách hàng:', 'code', ${form.code}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A4. Họ tên khách hàng:', 'patientName', ${form.patientName}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A5. Năm sinh:', 'yearOfBirth', ${form.yearOfBirth}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('A6. Giới tính:', 'genderID', ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}, ${form.genderID}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('A7. Dân tộc:', 'raceID', ${options.get(T(com.gms.entity.db.ParameterEntity).RACE)}, ${form.raceID}, '')" ></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A8 Số CMND/Giấy tờ khác:', 'patientID', ${form.patientID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('A8.1 Đối chiếu CMND/Giấy tờ khác:', 'patientIDAuthen', ${options.get(T(com.gms.entity.db.ParameterEntity).INFO_COMPARE)}, ${form.patientIDAuthen}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('A9 Loại bệnh nhân:', 'customerType', ${options.get(T(com.gms.entity.db.ParameterEntity).CUSTOMER_TYPE)}, ${form.customerType}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('A10. Thẻ BHYT:', 'hasHealthInsurance', ${options.get(T(com.gms.entity.db.ParameterEntity).HAS_HEALTH_INSURANCE)}, ${form.hasHealthInsurance}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" th:if="${form.hasHealthInsurance == '1'}">
+                                            <div data-th-replace="widget/form :: form-static('A10.1 Mã số thẻ bảo hiểm y tế: ', 'healthInsuranceNo', ${form.healthInsuranceNo}, '')"></div>
+                                        </div> 
+                                    </div>
+                                    <label>A11. Nơi đăng ký hộ khẩu thường trú:</label>
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Số nhà:', 'permanentAddress', ${form.permanentAddress}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Đường phố (nếu có):', 'permanentAddressStreet', ${form.permanentAddressStreet}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Tổ/ấp/Khu phố:', 'permanentAddressGroup', ${form.permanentAddressGroup}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'permanentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'permanentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div th:if="${form.permanentWardID != ''}" >
+                                                    <div data-th-replace="widget/form :: select('Phường xã:', 'permanentWardID', false, null, '')"></div>
+                                                </div>
+                                                <div th:if="${form.permanentWardID == '' || form.permanentWardID == null}" >
+                                                    <div class="form-group" >
+                                                        <label >
+                                                            <span>Phường xã:</span> 
+                                                        </label>
+                                                        <input type="text" class="form-control" disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <label>A12. Nơi cư trú hiện tại (nếu khác đăng ký hộ khẩu thường trú):</label>
+                                    <fieldset class="form-fieldset" >
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Số nhà:', 'currentAddress', ${form.currentAddress}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Đường phố (nếu có):', 'currentAddressStreet', ${form.currentAddressStreet}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: form-static('Tổ/ấp/Khu phố:', 'currentAddressGroup', ${form.currentAddressGroup}, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'currentProvinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'currentDistrictID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div th:if="${form.currentWardID != ''}" >
+                                                    <div data-th-replace="widget/form :: select('Phường xã:', 'currentWardID', false, null, '')"></div>
+                                                </div>
+                                                <div th:if="${form.currentWardID == '' || form.currentWardID == null}" >
+                                                    <div class="form-group" >
+                                                        <label >
+                                                            <span>Phường xã:</span> 
+                                                        </label>
+                                                        <input type="text" class="form-control" disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('A13. Số điện thoại (nếu có):', 'patientPhone', ${form.patientPhone}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div th:if="${form.jobID != ''}" data-th-replace="widget/form :: select-static('A14. Nghề nghiệp:', 'jobID', ${options.get(T(com.gms.entity.db.ParameterEntity).JOB)}, ${form.jobID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select-static('A15. Nhóm đối tượng:', 'objectGroupID', ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}, ${form.objectGroupID}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="lao_block">
+                                            <div class="col-md-3">
+                                                <div data-th-replace="widget/form :: select-static('A15.1. Thể lao:', 'laoVariable', ${options.get(T(com.gms.entity.db.ParameterEntity).LAO_VARIABLE)}, ${form.laoVariable}, '')"></div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div data-th-replace="widget/form :: form-static('A15.2. Thể lao khác:', 'laoVariableName', ${form.laoVariableName}, '')"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select-multiple-static('A16. Hành vi nguy cơ:', 'riskBehaviorID', ${options.get(T(com.gms.entity.db.ParameterEntity).RISK_BEHAVIOR)}, ${form.riskBehaviorID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select-static('A17. Đường lây truyền', 'modeOfTransmission', ${options.get(T(com.gms.entity.db.ParameterEntity).MODE_OF_TRANSMISSION)}, ${form.modeOfTransmission}, '')"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!--Phần sửa trường mới-->
+                                    <div class="row">    
+                                        <div class="col-md-3" th:if="${form.laytestID == null || form.laytestID == ''}">
+                                            <div data-th-replace="widget/form :: select-multiple-static('A18. Nguồn giới thiệu:', 'referralSource', ${options.get(T(com.gms.entity.db.ParameterEntity).REFERENT_SOURCE)}, ${form.referralSource}, 'Nguồn giới thiệu sử dụng dịch vụ TVXN')"></div>
+                                        </div>
+                                        <div class="col-md-3" ng-cloak>
+                                            <div data-th-replace="widget/form :: form-static('A18.1. MS tiếp cận cộng đồng:', 'approacherNo', ${form.approacherNo}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" ng-cloak>
+                                            <div data-th-replace="widget/form :: form-static('A18.2. MS bạn tình/bạn chích:', 'youInjectCode', ${form.youInjectCode}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" ng-cloak>
+                                            <div data-th-replace="widget/form :: select-static('A18.3. Dự án tài trợ:', 'pepfarProjectID', ${options.get(T(com.gms.entity.db.ParameterEntity).SITE_PROJECT)}, ${form.pepfarProjectID}, '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        B. Xét nghiệm sàng lọc
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                    </div>
+                                    <div class="row" >
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('B1. Đồng ý XN sàng lọc', 'isAgreePreTest', ${options.get('agreePreTest')}, ${form.isAgreePreTest}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: form-static('B2. Ngày XN sàng lọc:', 'preTestTime', ${form.preTestTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select-static('B3. Phương pháp XN sàng lọc:', 'testMethod', ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_METHOD)}, ${form.testMethod}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div th:if="${form.bioName != '' && form.bioName != null}" >
+                                                <div data-th-replace="widget/form :: select-static('B3. Tên SP sàng lọc:', 'bioName',  ${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST)}, ${form.bioName}, '')"></div>
+                                            </div>
+                                            <div th:if="${form.bioName == '' || form.bioName == null}" >
+                                                <div class="form-group" >
+                                                    <label >
+                                                        <span>B3. Tên SP sàng lọc:</span> 
+                                                    </label>
+                                                    <input type="text" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('B4. Kết quả xét nghiệm sàng lọc:', 'testResultsID', ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS)}, ${form.testResultsID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3"  >
+                                            <div data-th-replace="widget/form :: select-static('B4.1. KQXN Kháng nguyên/Kháng thể:', 'resultAnti', ${options.get(T(com.gms.entity.db.ParameterEntity).RESULT_ANTI)}, ${form.resultAnti}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('B5. Khách hàng đồng ý XN KĐ:', 'isAgreeTest', ${options.get('isAgreeTest')}, ${form.isAgreeTest}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" ng-show="serviceID != 'CD' && testResultsID == 2 && isAgreeTest == 'true' && isAgreePreTest == '1'">
+                                            <div data-th-replace="widget/form :: form-static('B5.1 Mã do CS XN sàng lọc cấp:', 'testNoFixSite', ${form.testNoFixSite}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div th:if="${form.siteConfirmTest != '' && form.siteConfirmTest != null}"  id="siteConfirmTestTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                <div data-th-replace="widget/form :: select('B6. Nơi chuyển máu đến:', 'siteConfirmTest', false, null, 'Nơi chuyển máu đến để XN khẳng định')"></div>
+                                            </div>
+                                            <div th:if="${form.siteConfirmTest == '' || form.siteConfirmTest == null}" >
+                                                <div class="form-group" >
+                                                    <label >
+                                                        <span>B6. Nơi chuyển máu đến:</span> 
+                                                    </label>
+                                                    <input type="text" class="form-control" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('B7. Ngày nhận kết quả:', 'resultsTime', ${form.resultsTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select-static('B8. Dịch vụ tư vấn chuyển gửi:', 'exchangeService', ${options.get(T(com.gms.entity.db.ParameterEntity).EXCHANGE_SERVICE)}, ${form.exchangeService}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('B9. Dịch vụ tư vấn chuyển gửi khác:', 'exchangeServiceName', ${form.exchangeServiceName}, '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-success box-solid" th:if="${form.isAgreeTest == 'true' && (form.testResultsID == '2' || form.testResultsID == '3' || form.testResultsID == '4')  && form.isAgreePreTest == '1'}">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        C. Xét nghiệm khẳng định
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>
+                                                    <span >C1. Tên cơ sở XN khẳng định:</span> 
+                                                </label>
+                                                <input data-toggle="tooltip" data-placement="bottom" title="" type="text" class="form-control" id="siteConfirmTestDsp" disabled="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div data-th-replace="widget/form :: form-static('C2. Mã XN khẳng định:', 'confirmTestNo', ${form.confirmTestNo}, '')"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('C3. Ngày xét nghiệm khẳng định', 'confirmTime', ${form.confirmTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('C4. Loại hình XN khẳng định:', 'confirmType', ${options.get(T(com.gms.entity.db.ParameterEntity).CONFIRM_TYPE)}, ${form.confirmType}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select-static('C4a. Kết quả xét nghiệm khẳng định:', 'confirmResultsID', ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS_CONFIRM)}, ${form.confirmResultsID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <fieldset >
+                                                <div class="form-group" >
+                                                <label >C4b. Xét nghiệm PCR bổ sung:</label>
+                                                
+                                                <div class="input-group combo-pcr">
+                                                        <span class="input-group-addon combo-pcr">
+                                                            <input type="checkbox" class="checkbox-switch" id="pcrHivCheck" value="1">&nbsp;&nbsp;<label for="pcrHivCheck">PCR HIV</label>
+                                                            <input type="hidden" id ="pcrHiv" th:field="${form.pcrHiv}">
+                                                        </span>
+                                                    <div data-th-replace="widget/form :: select-static('', 'resultPcrHiv', ${options.get(T(com.gms.entity.db.ParameterEntity).RESULT_PCR_HIV)}, ${form.resultPcrHiv}, '')"></div>
+                                                </div>
+                                                </div>
+                                             </fieldset>
+                                        </div>
+                                    </div>
+                                    <label>Thông tin xét nghiệm nhiễm mới</label>
+                                    <!-- Sửa thông tin nhiễm mới HTC-->
+                                    <fieldset class="form-group" style="border: 1px solid #D2D6DE; background-color: #F8F9FA">
+                                        <div style="padding: 10px 10px 10px 10px;"> 
+                                            <div class="row">
+                                                <div class="col-md-6" >
+                                                    <div data-th-replace="widget/form :: select-static('C4.1. Tên sinh phẩm XN nhiễm mới:', 'earlyBioName', ${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST)},${form.earlyBioName}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: form-static('C4.2 Ngày XN nhiễm mới HIV:', 'earlyHivDate', ${form.earlyHivDate}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div data-th-replace="widget/form :: select-static('C4.3. KQXN nhiễm mới ban đầu:', 'earlyHiv', ${options.get(T(com.gms.entity.db.ParameterEntity).EARLY_HIV)}, ${form.earlyHiv}, '')"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: form-static('C4.4. Ngày XN tải lượng virus:', 'virusLoadDate', ${form.virusLoadDate}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div data-th-replace="widget/form :: form-static('C4.5. Nồng độ virus:', 'virusLoadNumber', ${form.virusLoadNumber},  '')"></div>
+                                                </div>
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: select-static('C4.6. KQXN tải lượng virus:', 'virusLoad', ${options.get(T(com.gms.entity.db.ParameterEntity).VIRUS_LOAD)}, ${form.virusLoad}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: select-static('C4.7. Kết luận chẩn đoán nhiễm mới:', 'earlyDiagnose', ${options.get(T(com.gms.entity.db.ParameterEntity).EARLY_DIAGNOSE)}, ${form.earlyDiagnose}, '')"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="row">
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('C5. Ngày cơ sở nhận kết quả KĐ:', 'resultsSiteTime', ${form.resultsSiteTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('C6. Ngày khách hàng nhận kết quả KĐ:', 'resultsPatienTime', ${form.resultsPatienTime}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select-static('C7. Dịch vụ tư vấn chuyển gửi:', 'exchangeServiceConfirm',${options.get(T(com.gms.entity.db.ParameterEntity).EXCHANGE_SERVICE)}, ${form.exchangeServiceConfirm}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: form-static('C8. Dịch vụ tư vấn chuyển gửi khác:', 'exchangeServiceNameConfirm', ${form.exchangeServiceNameConfirm}, '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="box box-success box-solid" ng-show="exchangeServiceConfirm == '1'">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        D. Chuyển gửi điều trị ARV
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div data-th-replace="widget/form :: form-static('D1.Ngày tư vấn chuyển gửi điều trị ARV:', 'exchangeConsultTime', ${form.exchangeConsultTime}, '')"></div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div id ="partnerProvideResultTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                    <div data-th-replace="widget/form :: select-static('D1.1 Kết quả tv thông tin XN theo dấu:', 'partnerProvideResult', ${options.get(T(com.gms.entity.db.ParameterEntity).PARTNER_INFO_PROVIDE_RESULT)}, ${form.partnerProvideResult}, '')"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3" >
+                                                <div id ="arvExchangeResultTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                    <div data-th-replace="widget/form :: select-static('D1.2. Kết quả TV CGĐT ARV:', 'arvExchangeResult', ${options.get(T(com.gms.entity.db.ParameterEntity).ARV_CONSULTANT_EXCHANGE_RESULT)}, ${form.arvExchangeResult}, '')"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <fieldset class="form-fieldset">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div data-th-replace="widget/form :: form-static('D2. Ngày chuyển gửi:', 'exchangeTime', ${form.exchangeTime}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div th:if="${form.exchangeProvinceID != ''}" >
+                                                        <div id ="exchangeProvinceTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                            <div data-th-replace="widget/form :: select('D3.1. Tỉnh/thành phố:', 'exchangeProvinceID', false, null, '')"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${form.exchangeProvinceID == '' || form.exchangeProvinceID == null}" >
+                                                        <div class="form-group" >
+                                                            <label >
+                                                                <span>D3.1. Tỉnh/thành phố:</span> 
+                                                            </label>
+                                                            <input type="text" class="form-control" disabled />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div th:if="${form.exchangeDistrictID != ''}" >
+                                                        <div id ="exchangeDistrictTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                            <div data-th-replace="widget/form :: select('D3.2. Quận/huyện:', 'exchangeDistrictID', false, null, '')"></div>
+                                                        </div> 
+                                                    </div>
+                                                    <div th:if="${form.exchangeProvinceID == '' || form.exchangeProvinceID == null}" >
+                                                        <div class="form-group" >
+                                                            <label >
+                                                                <span>D3.2. Quận/huyện:</span> 
+                                                            </label>
+                                                            <input type="text" class="form-control" disabled />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: form-static('D3.3. Cơ sở điều trị chuyển gửi tới:', 'arrivalSite', ${form.arrivalSite}, '')"></div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </fieldset>
+                                    <fieldset class="form-fieldset">
+                                        <fieldset class="form-fieldset">
+                                            <div class="row">
+                                                <div class="col-md-3" >
+                                                    <div data-th-replace="widget/form :: form-static('D4. Ngày đăng ký điều trị:', 'registerTherapyTime', ${form.registerTherapyTime}, '')"></div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div th:if="${form.therapyRegistProvinceID != ''}" >
+                                                        <div id ="therapyRegistProvinceTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                            <div data-th-replace="widget/form :: select('D5.1. Tỉnh/thành phố:', 'therapyRegistProvinceID', true, null, '')"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${form.therapyRegistProvinceID == '' || form.therapyRegistProvinceID == null}" >
+                                                        <div class="form-group" >
+                                                            <label >
+                                                                <span>D5.1. Tỉnh/thành phố:</span> 
+                                                            </label>
+                                                            <input type="text" class="form-control" disabled />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div th:if="${form.therapyRegistDistrictID != ''}" >
+                                                        <div id ="therapyRegistDistrictTooltip" data-toggle="tooltip" data-placement="bottom" title="">
+                                                            <div data-th-replace="widget/form :: select('D5.2. Quận/huyện:', 'therapyRegistDistrictID', true, null, '')"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div th:if="${form.therapyRegistDistrictID == '' || form.therapyRegistDistrictID == null}" >
+                                                        <div class="form-group" >
+                                                            <label >
+                                                                <span>D5.2. Quận/huyện:</span> 
+                                                            </label>
+                                                            <input type="text" class="form-control" disabled />
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div data-th-replace="widget/form :: form-static('D5.3. Cơ sở KH đăng ký điều trị:', 'registeredTherapySite', ${form.registeredTherapySite}, '')"></div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div data-th-replace="widget/form :: form-static('D6. Mã số điều trị:', 'therapyNo', ${form.therapyNo}, '')"></div>
+                                            </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        E. Tư vấn viên
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: form-static('E1. Tư vấn viên trước xét nghiệm:', 'staffBeforeTestID', ${form.staffBeforeTestID}, '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: form-static('E2. Tư vấn viên sau xét nghiệm:', 'staffAfterID', ${form.staffAfterID}, '')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" th:field="${form.pageRedirect}" >
+                                <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                    <a th:href="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}" 
+                                       th:data-role="${T(com.gms.components.UrlUtils).opcArvReceiveHTC()}"
+                                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

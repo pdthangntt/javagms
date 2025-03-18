@@ -1,0 +1,229 @@
+<div data-th-fragment="table-book(form)">
+    <table class="table-report table table-striped table-bordered table-hover table-full " data-scrollY="auto" ng-cloak>
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2">TT</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Tên khách hàng</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Mã xét nghiệm tại cộng đồng</th>
+                <th class="text-center vertical-align-middle success parent-namsinh" colspan="2" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Điện thoại</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Địa chỉ</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Đối tượng</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Ngày xét nghiệm HIV</th>
+                <th class="text-center vertical-align-middle success " colspan="4"> Xét nghiệm tại cộng đồng</th>
+                <th class="text-center vertical-align-middle success " colspan="3"> Xét nghiệm khẳng định</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" >Ghi chú</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success small-text " >Nam</th>
+                <th class="text-center vertical-align-middle success small-text " >Nữ</th>
+                <th class="text-center vertical-align-middle success small-text " >Sinh phẩm</th>
+                <th class="text-center vertical-align-middle success small-text " >Vạch chứng(có/không)</th>
+                <th class="text-center vertical-align-middle success small-text " >Vạch kết quả</th>
+                <th class="text-center vertical-align-middle success small-text " >Kết luận</th>
+                <th class="text-center vertical-align-middle success small-text " >Kết quả XNKĐ</th>
+                <th class="text-center vertical-align-middle success small-text " >Ngày XNKĐ</th>
+                <th class="text-center vertical-align-middle success small-text " >Nơi chuyển gửi</th>
+            </tr>
+            <tr>
+                <td class="text-center vertical-align-middle success small-text ">(1)</td>
+                <td class="text-center vertical-align-middle success small-text ">(2)</td>
+                <td class="text-center vertical-align-middle success small-text ">(3)</td>
+                <td class="text-center vertical-align-middle success small-text ">(4)</td>
+                <td class="text-center vertical-align-middle success small-text ">(5)</td>
+                <td class="text-center vertical-align-middle success small-text ">(6)</td>
+                <td class="text-center vertical-align-middle success small-text ">(7)</td>
+                <td class="text-center vertical-align-middle success small-text ">(8)</td>
+                <td class="text-center vertical-align-middle success small-text ">(10)</td>
+                <td class="text-center vertical-align-middle success small-text ">(11)</td>
+                <td class="text-center vertical-align-middle success small-text ">(12)</td>
+                <td class="text-center vertical-align-middle success small-text ">(13)</td>
+                <td class="text-center vertical-align-middle success small-text ">(14)</td>
+                <td class="text-center vertical-align-middle success small-text ">(15)</td>
+                <td class="text-center vertical-align-middle success small-text ">(16)</td>
+                <td class="text-center vertical-align-middle success small-text ">(17)</td>
+                <td class="text-center vertical-align-middle success small-text ">(18)</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iter : ${form.table}" th:if="${form.table!= null}" >
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-left" th:utext="${item.patientName == ''? '  ' : item.patientName}" ></td>
+                <td class="text-center" th:utext="${item.code == '' ? '  ' : item.code}" ></td>
+                <td class="text-center" th:utext="${(item.genderID!= '' && item.genderID!= null && item.genderID == '1')? item.yearOfBirth : ''}" ></td>
+                <td class="text-center" th:utext="${(item.genderID!= '' && item.genderID!= null &&  item.genderID == '2')? item.yearOfBirth : ''}" ></td>
+                <td class="text-left" th:utext="${item.patientPhone == ''? '  ' : item.patientPhone}" ></td>
+                <td class="text-left" th:utext="${item.permanentAddressFull == ''? '  ' : item.permanentAddressFull}" ></td>
+                <td class="text-left" th:utext="${item.objectGroupID == ''? '  ' : options.get('test-object-group').get(item.objectGroupID)}" ></td>
+
+                <td class="text-center" th:utext="${item.advisoryeTime == ''? '  ' : #dates.format(item.advisoryeTime, 'dd/MM/yyyy')}" ></td>
+                <td class="text-left" th:utext="${item.bioName == ''? '  ' : options.get('biology-product-test').get(item.bioName)}" ></td>
+                <td class="text-left" th:utext="${item.controlLine == '' || item.controlLine == null ? '  ' : item.controlLine == '0' ? 'Không' : 'Có'}" ></td>
+                <td class="text-left" th:utext="${item.testLine == '' || item.testLine == null ? '  ' : item.testLine == '0' ? 'Không' : 'Có'}" ></td>
+                <td class="text-left" th:utext="${item.testResultsID == ''? '  ' : options.get('test-results').get(item.testResultsID)}" ></td>
+                <td class="text-left" th:utext="${item.confirmResultsID == ''? '  ' : options.get('test-result-confirm').get(item.confirmResultsID)}" ></td>
+                <td class="text-center" th:utext="${item.confirmTime == ''? '  ' : #dates.format(item.confirmTime, 'dd/MM/yyyy')}" ></td>
+                <td class="text-left" th:utext="${item.arrivalSite == ''? '  ' : item.arrivalSite}" ></td>
+                <td class="text-left" th:utext="${item.note == ''? '  ' : item.note}" ></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row margin-left-5" th:if="${form.table != null}">
+        Tổng số <span th:utext="${form.table.size()}"></span> khách hàng tư vấn xét nghiệm.
+    </div>
+</div>
+<div data-th-fragment="table02-laytest(form)" class="table-responsive">
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2" >tt</th>
+                <th class="text-center vertical-align-middle success tt03-width-tr" rowspan="2">Danh mục báo cáo</th>
+                <th class="text-center vertical-align-middle success width-80" rowspan="2" style="min-width: 80px;" >Số người được tư vấn trước xét nghiệm</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người được xét nghiệm HIV</th>
+                <th class="text-center vertical-align-middle success" colspan="2" >Số người nhận được kết quả xét nghiệm</th>
+                <th class="text-center vertical-align-middle success width-80" rowspan="2" style="min-width: 80px;" >Số người xét nghiệm giới thiệu bởi bạn tình, bạn chích</th>
+                <th class="text-center vertical-align-middle success width-80" rowspan="2" style="min-width: 80px;" >Số người được chuyển gửi điều trị thành công</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+                <th class="text-center vertical-align-middle success width-60">Tổng</th>
+                <th class="text-center vertical-align-middle success width-60">HIV (+)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table02}" 
+                th:if="${item.position > -1}" >
+                <td class="text-center" th:utext="${item.oParentID == 0 ? item.stt : ''}" ></td>
+                <td th:utext="${item.danhMucBaoCao}" ></td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'tuvantruocxetnghiem\')'"
+                    th:utext="${item.tuVanTruocXetNghiem == 0 ? '' : item.tuVanTruocXetNghiem}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'duocxetnghiemtong\')'"
+                    th:utext="${item.duocXetNghiemTong == 0 ? '' : item.duocXetNghiemTong}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({confirmTimeFrom:\''+${form.startDate}+'\', confirmTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'duocxetnghiemduongtinh\')'"
+                    th:utext="${item.duocXetNghiemDuongTinh > 0 ? item.duocXetNghiemDuongTinh : item.duocXetNghiemTong > 0 && item.duocXetNghiemDuongTinh == 0 ? '0' : ''}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'nhanketquatong\')'"
+                    th:utext="${item.nhanKetQuaTong == 0 ? '' : item.nhanKetQuaTong}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({confirmTimeFrom:\''+${form.startDate}+'\', confirmTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'nhanketquaduongtinh\')'"
+                    th:utext="${item.nhanKetQuaDuongtinh > 0 ? item.nhanKetQuaDuongtinh : item.nhanKetQuaDuongtinh == 0 && item.nhanKetQuaTong > 0 ? '0' : ''}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'gioithieubanchich\')'"
+                    th:utext="${item.gioiThieuBanChich == 0 ? '' : item.gioiThieuBanChich}" >
+                </td>
+                <td class="text-center" 
+                    th:attr="ng-click='detailReportLineLaytest({exchangeTimeFrom:\''+${form.startDate}+'\', exchangeTimeTo:\''+${form.endDate}+'\', objectGroupID: \''+${item.oCode}+'\'}, \'chuyenguidieutri\')'"
+                    th:utext="${item.chuyenGuiDieuTri == 0 ? '' : item.chuyenGuiDieuTri }" >
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-center"><b>Tổng cộng</b></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![tuVanTruocXetNghiem])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![duocXetNghiemDuongTinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaTong])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![nhanKetQuaDuongtinh])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![gioiThieuBanChich])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table02.?[position > -1].?[oParentID == 0].![chuyenGuiDieuTri])}"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div data-th-fragment="mer-table(form)" class="table-responsive">
+    <p class="text-uppercase text-red">Bảng 01: Số khách hàng nhận dịch vụ xét nghiệm tại cộng đồng và nhận kết quả theo giới tính và nhóm tuổi</p>
+    <table class="table-report table table-bordered table-hover" >
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2" >Nhóm tuổi</th>
+                <th class="text-center vertical-align-middle success duongtinh duongtinh-title" colspan="3" >Dương tính</th>
+                <th class="text-center vertical-align-middle success amtinh amtinh-title" colspan="3" >Âm tính</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh" >Nam</th>
+                <th class="text-center vertical-align-middle success duongtinh" >Nữ</th>
+                <th class="text-center vertical-align-middle success duongtinh" >Tổng</th>
+                <th class="text-center vertical-align-middle success amtinh" >Nam</th>
+                <th class="text-center vertical-align-middle success amtinh" >Nữ</th>
+                <th class="text-center vertical-align-middle success amtinh" >Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table01Forms}">
+                <td class="" th:utext="${item.age == ' tuổi' ? 'Không rõ' : item.age}" ></td>
+                <td class="text-center" th:utext="${item.positiveMale == 0 ? '' : item.positiveMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'2\', age: \''+${item.age}+'\'}, \'age\')'"></td>
+                <td class="text-center" th:utext="${item.positiveFemale == 0 ? '' : item.positiveFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'2\', age: \''+${item.age}+'\'}, \'age\')'"></td>
+                <td class="text-center" th:utext="${item.positive == 0 ? '' : item.positive}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'2\', age: \''+${item.age}+'\'}, \'ageSum\')'"></td>
+                <td class="text-center" th:utext="${item.negativeMale == 0 ? '' : item.negativeMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'1\', age: \''+${item.age}+'\'}, \'age\')'"></td>
+                <td class="text-center" th:utext="${item.negativeFemale == 0 ? '' : item.negativeFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'1\', age: \''+${item.age}+'\'}, \'age\')'"></td>
+                <td class="text-center" th:utext="${item.negative == 0 ? '' : item.negative}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'1\', age: \''+${item.age}+'\'}, \'ageSum\')'"></td>
+            </tr>
+        </tbody>  
+        <tfoot>
+            <tr>
+                <td class=""><b>Tổng</b></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![positiveMale])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![positiveFemale])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![positive])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![negativeMale])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![negativeFemale])}"></td>
+                <td class="text-center" th:text="${#aggregates.sum(form.table01Forms.![negative])}"></td>
+            </tr>
+        </tfoot>
+    </table>
+    <p>&nbsp;</p>
+    <p class="text-uppercase text-red">Bảng 02: Số khách hàng nhận dịch vụ xét nghiệm tại cộng đồng và nhận kết quả theo nhóm đối tượng</p>
+    <table class="table-report table table-bordered table-hover" 
+           data-scrollY="auto" data-rowsGroup="0">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2" >Nhóm đối tượng</th>
+                <th class="text-center vertical-align-middle success duongtinh duongtinh-title" colspan="3" >Dương tính</th>
+                <th class="text-center vertical-align-middle success amtinh amtinh-title" colspan="3" >Âm tính</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh" >Nam</th>
+                <th class="text-center vertical-align-middle success duongtinh" >Nữ</th>
+                <th class="text-center vertical-align-middle success duongtinh" >Tổng</th>
+                <th class="text-center vertical-align-middle success amtinh" >Nam</th>
+                <th class="text-center vertical-align-middle success amtinh" >Nữ</th>
+                <th class="text-center vertical-align-middle success amtinh" >Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${form.table02Forms}" th:if="${item.position > -1}">
+                <td class="" th:utext="${item.oValue == '' ? '' : item.oValue}" ></td>
+                <td class="text-center" th:utext="${item.positiveMale == 0 ? '' : item.positiveMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.positiveFemale == 0 ? '' : item.positiveFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.positive == 0 ? '' : item.positive}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroupSum\')'"></td>
+                <td class="text-center" th:utext="${item.negativeMale == 0 ? '' : item.negativeMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.negativeFemale == 0 ? '' : item.negativeFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.negative == 0 ? '' : item.negative}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroupSum\')'"></td>
+            </tr>
+            <tr th:each="item : ${form.table02Forms}" 
+                th:if="${item.position == -1 && item.oParentID == 0 && item.tong > 0}" >
+                <td th:utext="${'&nbsp;&nbsp;' + item.oValue}" ></td>
+                <td class="text-center" th:utext="${item.positiveMale == 0 ? '' : item.positiveMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.positiveFemale == 0 ? '' : item.positiveFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.positive == 0 ? '' : item.positive}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'2\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroupSum\')'"></td>
+                <td class="text-center" th:utext="${item.negativeMale == 0 ? '' : item.negativeMale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'1\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.negativeFemale == 0 ? '' : item.negativeFemale}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', genderID: \'2\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroup\')'"></td>
+                <td class="text-center" th:utext="${item.negative == 0 ? '' : item.negative}" th:attr="ng-click='detailReportLineLaytest({advisoryeTimeFrom:\''+${form.startDate}+'\', advisoryeTimeTo:\''+${form.endDate}+'\', confirmResultsID: \'1\', objectGroupID: \''+${item.oGroupID}+'\'}, \'objectGroupSum\')'"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+            </tr>
+        </tfoot>
+    </table>
+</div>

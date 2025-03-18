@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${form.title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript">
+                var cols = [[${form.cols}]];
+                var data = [[${form.data}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${form.title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${form.uploadUrl}"><span th:text="${form.smallTitle}" ></span></a></li>
+                    <li><a th:href="${form.readUrl}"><span th:text="${form.title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="import_read" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="nav-tabs-custom">
+                            <ul th:replace="importation/widget :: tab" ></ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active form" >
+                                    <table class="table table-striped table-bordered table-sm" >
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle">
+                                                <th class="text-center success">Thuộc tính hệ thống</th>
+                                                <th class="text-center success">Tiêu đề Excel</th>
+                                                <th class="text-center">Dòng 1</th>
+                                                <th class="text-center">Dòng 2</th>
+                                                <th class="text-center">Dòng 3</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item,iter: ${form.data[0]}"
+                                                th:data-col-index="${iter.index}">
+                                                <td>
+                                                    <select class="form-control" th:name="${iter.index}">
+                                                        <option value="">Chọn thuộc tính</option>
+                                                        <option th:each="option: ${form.cols}" 
+                                                                th:value="${option.key}" 
+                                                                th:utext="${option.value}"></option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="form-control-static" 
+                                                         th:utext="${item}" 
+                                                         th:data-col="${item}" ></div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-control-static" 
+                                                         th:if="${form.data.size() > 1 && form.data.get(1) != null}" 
+                                                         th:utext="${form.data.get(1).size() <= iter.index ? '' :  form.data.get(1).get(iter.index)}" ></div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-control-static" 
+                                                         th:if="${form.data.size() > 2 && form.data.get(2) != null}" 
+                                                         th:utext="${form.data.get(2).size() <= iter.index ? '' :  form.data.get(2).get(iter.index)}" ></div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-control-static" 
+                                                         th:if="${form.data.size() > 3 && form.data.get(3) != null}" 
+                                                         th:utext="${form.data.get(3).size() <= iter.index ? '' :  form.data.get(3).get(iter.index)}" ></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                        <form th:action="${form.validateUrl}" 
+                                              th:object="${form}"
+                                              method="post">
+                                            <input type="hidden" th:field="${form.filePath}" />
+                                            <input type="hidden" th:field="${form.mapCols}" />
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fa fa-edit" ></i> Tiếp tục
+                                            </button>
+                                            <a th:href="${form.uploadUrl}"
+                                               class="btn btn-default" 
+                                               data-confirm="Bạn chắc chắn muốn tải lại tập tin excel khác ?">Làm lại</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

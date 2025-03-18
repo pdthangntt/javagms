@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .dear{
+                margin-top: 20px;
+            }
+            .confidential{
+                line-height: 30px;
+            }
+            .top-secret{
+                position: fixed;
+                font-weight: bold;
+                border: 1px solid black;
+                width: 230px;
+                height: 30px;
+                text-align: center;
+                display: inline-block;
+                margin-left: 150px;
+                margin-top: -15px;
+            }
+
+            .table-full {
+                font-size: 12px;            
+            }
+            .row-min-height {
+                min-height: 25px;
+            }
+            .table-report tr {page-break-inside: avoid;  page-break-after: auto ;}
+        </style>
+        <style type="text/css">
+            @page { size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu()"></div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <p class="text-size-13">
+                            <i><span th:if="${form.dataPage.totalRecords == 0 && (form.registrationTimeFrom != null && form.registrationTimeFrom != '')}">Ngày đăng ký từ <span class="text-danger" th:utext="${form.registrationTimeFrom}"></span> đến 
+                                <span class="text-danger" th:utext="${form.registrationTimeTo == null || form.registrationTimeTo == '' ? #dates.format(#dates.createNow(),'dd/MM/yyyy') : form.registrationTimeTo}"></span></span></i>
+                            <i><span th:if="${form.items != null && form.items.size() > 0}">Ngày đăng ký từ <span class="text-danger"  th:utext="${form.registrationTimeFrom == null || form.registrationTimeFrom == '' ? form.startDate : form.registrationTimeFrom}"></span> đến 
+                                    <span class="text-danger" th:utext="${form.registrationTimeTo == null || form.registrationTimeTo == '' ? #dates.format(#dates.createNow(),'dd/MM/yyyy') : form.registrationTimeTo}"></span></span></i>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                            <div data-th-replace="report/pac/widget :: table-opc-patient(${form.dataPage})"></div>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        NGƯỜI TỔNG HỢP
+                                        <br/>
+                                        <span class="chu-ky"><i>(Ký, ghi rõ họ tên)</i></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <p class="text-normal" >
+                                    <i>
+                                        <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        THỦ TRƯỞNG ĐƠN VỊ
+                                        <br/>
+                                        <span class="chu-ky"><i>(Ký, ghi rõ họ tên)</i></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

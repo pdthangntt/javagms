@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+        <style type="text/css">
+            @page {size: A4 landscape;}
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"' th:with="show=${form.config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_PRINT_ANSWER_RESULT.getKey(), '0')},isQr=${form.config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).CONFIRM_QR.getKey(), '')}">
+        <div class="body">
+            <div class="content">  
+                <div class="header">
+                    <p class="text-normal sample_no">Mẫu số 5B</p><br/><br/>
+                    <div data-th-replace="report/widget :: donvi(form=${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu(dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+                    
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="form-group">
+                            <p class="text-normal">
+                                Kính gửi:
+                                <span class="point text-normal" th:text="${form.sourceSiteID == null ? '....................................................................' : form.sourceSiteID}" ></span>
+                            </p>
+                        </div>
+                        <hr class="line" />
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                        <hr class="line" />
+                        
+                        <div class="row text-normal">
+                            <p>
+                                Ngày nhận mẫu:
+                                <span class="point" th:text="${form.acceptTime == null ? '............................................' : form.acceptTime}" ></span>
+                            </p>
+                        </div>
+                        <div class="row text-normal">
+                            <p>
+                                Ngày xét nghiệm:
+                                <span class="point" th:text="${form.testTime == null ? '............................................' : form.testTime}" ></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <table class="table-report table table-striped table-bordered table-hover table-full" data-scrollY="auto">
+                            <thead>
+                                <tr>
+                                    <th class="text-center vertical-align-middle success" rowspan="2">TT</th>
+                                    <th class="text-center vertical-align-middle success" style="min-width: 130px;" rowspan="2">Họ tên</th>
+                                    <th class="text-center vertical-align-middle success"  style="min-width: 80px;"  rowspan="2">Mã số</th>
+                                    <th class="text-center vertical-align-middle success " colspan="2" >Năm sinh</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Địa chỉ</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Đối tượng</th>
+                                    <th class="text-center vertical-align-middle success " colspan="4">Kết quả xét nghiệm</th>
+                                    <th class="text-center vertical-align-middle success " style="width: 80px;" rowspan="2">Kết luận</th>
+                                    <th class="text-center vertical-align-middle success " rowspan="2">Ghi chú</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center vertical-align-middle success " style="width: 30px;" >Nam</th>
+                                    <th class="text-center vertical-align-middle success " style="width: 30px;">Nữ</th>
+                                    <th class="text-center vertical-align-middle success " style="width: 80px;" ><b>SP1</b></th>
+                                    <th class="text-center vertical-align-middle success " style="width: 80px;" ><b>SP2</b></th>
+                                    <th class="text-center vertical-align-middle success " style="width: 80px;"><b>SP3</b></th>
+                                    <th class="text-center vertical-align-middle success " style="width: 50px;" >KT khác</th>
+                                </tr>
+                                <tr>
+                                    <th class="text-center vertical-align-middle text-normal">(1)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(2)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(3)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(4)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(5)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(6)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(7)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(8)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(9)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(10)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(11)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(12)</th>
+                                    <th class="text-center vertical-align-middle text-normal">(13)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item, iter : ${form.listAnswer}" th:if="${form.listAnswer!= null}" >
+                                    <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                                    <td class="text-left"  >
+                                        <span th:utext="${item.fullname == ''? '-' : item.fullname}"></span><br/>
+                                        <span th:if="${item.patientID != ''}" th:utext="${item.patientID == ''? '' : 'CMND: ' + item.patientID}"></span>
+                                    </td>
+                                    <td class="text-center" th:utext="${item.code == ''? '-' : item.code}" ></td>
+                                    <td class="text-center" th:utext="${item.genderID == 'Nam' ? item.year : ''}" ></td>
+                                    <td class="text-center" th:utext="${item.genderID == 'Nữ' ? item.year : ''}" ></td>
+                                    <td class="text-left" th:utext="${item.address != '' ? item.address : ''}" ></td>
+                                    <td class="text-left" th:utext="${item.objectGroupID =='' ? '' : item.objectGroupID}" ></td>
+                                    <td class="vertical-align-top">
+                                        <p class="text-center"><b th:utext="${item.bioName1} == null ? '' : ${item.bioNameResult1}" ></b></p>
+                                        <p class="text-left" ><span th:utext="${item.bioName1}" ></span></p>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p class="text-center"><b th:utext="${item.bioName2} == null ? '' : ${item.bioNameResult2}" ></b></p>
+                                        <p class="text-left" ><span th:utext="${item.bioName2}" ></span></p>
+                                    </td>
+                                    <td class="vertical-align-top">
+                                        <p class="text-center"><b th:utext="${item.bioName3} == null ? '' : ${item.bioNameResult3}" ></b></p>
+                                        <p class="text-left" ><span th:utext="${item.bioName3}" ></span></p>
+                                    </td>
+                                    <td class="text-left" th:utext="${item.otherTechnical} == null ? '' : ${item.otherTechnical}" ></td>
+                                    <td class="text-center">
+                                        <b th:utext="${item.resultsID} == null ? '' : ${item.resultsID}" ></b>
+                                    </td>
+                                    <td class="text-left" th:utext="${item.note} == null ? '' : ${item.note}" ></td>
+                                </tr>
+                            </tbody>
+                        </table><br/>
+                        <p class="text-normal" ><b><i>(*) Chú ý:</i></b></p>
+                        <p class="text-normal" ><i>- Đi kèm phiếu này là trích lục từng kết quả xét nghiệm cho bệnh nhân theo mẫu số 6, phụ lục này</i></p>
+                        <p class="text-normal" ><i>- Kết quả chỉ có giá trị trên mẫu thử</i></p>
+                    </div>
+                    <div class="info-time">
+                        <div class="row" >
+                            <div class="col-50 text-center footer" th:if="${show == null || show == '' || show == '0'}">
+                                <p class="text-normal" >&nbsp;</p>
+                            </div>
+                            <div class="col-50 text-center footer" th:if="${show == '2'}">
+                                <p class="text-normal" >&nbsp;</p>
+                                <p class="box-ky-title">
+                                    LÃNH ĐẠO KHOA
+                                </p>
+                                <div class="box-ky-title">
+                                    <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                </div>
+                                <!--<p class="empty-ky">&nbsp;</p>-->
+                            </div>
+                            <div class="col-50 text-center footer" th:if="${show == '1'}">
+                                <p class="text-normal" >&nbsp;</p>
+                                <p class="box-ky-title">
+                                    <b class="" >XÁC NHẬN CỦA THỦ TRƯỞNG ĐƠN VỊ</b>
+                                </p>
+                                <div class="box-ky-title">
+                                    <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                </div>
+                                <!--<p class="empty-ky">&nbsp;</p>-->
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            Ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Phụ trách xét nghiệm hiv</span>
+                                    </p>
+                                    <div class="box-ky-title">
+                                        <span class="text-normal">(Ký, ghi rõ họ tên)</span>
+                                    </div>
+                                    <!--<p class="empty-ky">&nbsp;</p>-->
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

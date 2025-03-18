@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"' 
+          th:with="isQr=${config.getOrDefault(T(com.gms.entity.constant.SiteConfigEnum).VISIT_QR.getKey(), '')}">
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=true)"></div>
+                    <div data-th-replace="report/widget :: quochieu(province=${form.siteProvince}, dd=${#dates.format(#dates.createNow(),'dd')}, mm=${#dates.format(#dates.createNow(),'MM')}, yyyy=${#dates.format(#dates.createNow(),'yyyy')})"></div>
+
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <p class="text-uppercase text-title" th:utext="${form.title}"></p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <p>
+                                <b>* Cơ sở giới thiệu: </b> 
+                            </p>
+                        </div>
+                        <div class="row">
+                            <div class="">
+                                <label>Tên cơ sở giới thiệu BN:</label> 
+                                <span class="point" th:utext="${form.introduceSite}"></span>
+                                <span class="point" th:if="${form.introduceSite == '' || form.introduceSite == null}">.........................................................................................................................................</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-80">
+                                <div class="form-group">
+                                    <label>Họ tên bệnh nhân:</label> 
+                                    <b class="point text-uppercase" th:utext="${form.patientName}"></b>
+                                    <span class="point" th:if="${form.patientName == '' || form.patientName == null}">..........................................................................................................................</span>
+                                </div>
+                            </div>
+                            <div class="col-20">
+                                <div class="form-group">
+                                    <label>Năm sinh:</label> 
+                                    <span class="point" th:utext="${form.yearOfBirth}"></span>
+                                    <span class="point" th:if="${form.yearOfBirth == '' || form.yearOfBirth == null}">............</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-80">
+                                <label>Mã số bệnh nhân:</label> 
+                                <span class="point" th:utext="${form.patientID}"> </span>
+                                <span class="point" th:if="${form.patientID == '' || form.patientID == null}">...........................................................................................................................</span>
+                            </div>
+                            <div class="col-20">
+                                <label>Nam/nữ:</label> 
+                                <span class="point" th:utext="${form.genderID}"></span>
+                                <span class="point" th:if="${form.genderID == '' || form.genderID == null}">.............</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label>Địa chỉ hiện tại:</label> 
+                            <span class="point" th:if="${form.address == '' || form.address == null}">..........................................................................................................................................................</span>
+                            <span class="point" th:utext="${form.address}"></span>
+                        </div>
+                        <div class="row">
+                            <label>Lý do giới thiệu:</label> 
+                            <span class="point" th:utext="${form.introductionReason}"></span>
+                            <span class="point" th:if="${form.introductionReason == '' || form.introductionReason == null}">.........................................................................................................................................................</span>
+                        </div>
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <b>* Cơ sở tiếp nhận: </b> 
+                        </div>
+                        <div class="row">
+                            <label>Tên cơ sở tiếp nhận:</label> 
+                            <span class="point" th:utext="${form.arrivalSite}"></span>
+                            <span class="point" th:if="${form.arrivalSite == '' || form.arrivalSite == null}">.................................................................................................................................</span>
+                        </div>
+                        <div class="row">
+                            <label>Địa chỉ:</label> 
+                            <span class="point" th:if="${form.receptionAddress != ''}">.........................................,</span>
+                            <span class="point" th:utext="${form.receptionAddress}"></span>
+                            <span th:if="${form.receptionAddress == '' || form.receptionAddress == null}">
+                                <span class="point" >.....................................................................................................................................................</span>
+                            </span>
+                        </div>
+                        <div class="row">
+                            <div class="col-60">
+                                <label>Người liên hệ: </label> 
+                                <span class="point" th:utext="${form.contactName}"> </span>
+                                <span class="point" th:if="${form.contactName == '' || form.contactName == null}">..............................................................</span>
+                            </div>
+                            <div class="col-40">
+                                <label>ĐT: </label> 
+                                <span class="point" th:utext="${form.phone}"></span>
+                                <span class="point" th:if="${form.phone == '' || form.phone == null}">....................................................</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="" >&nbsp;</p>
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <!--<p class="" >&nbsp;</p>-->
+                                <div class="row" th:if="${visit.qrcode != null && isQr=='1'}">
+                                    Mã QR khách hàng<br/>
+                                    <img th:src="${baseUrl + T(com.gms.components.UrlUtils).qrCode(visit.qrcode) + '?width=150&height=150'}" />
+                                </div>
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                            ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                            tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                            năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Cán bộ giới thiệu</span>
+                                    </p>
+                                    <div class="box-ky-title">
+                                        <span class="chu-ky">(Ký, ghi rõ họ tên)</span>
+                                    </div>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

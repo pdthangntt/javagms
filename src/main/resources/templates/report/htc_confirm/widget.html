@@ -1,0 +1,253 @@
+<ul class="nav nav-tabs header-tabs" data-th-fragment="positive-header()">
+    <li>
+        <a th:href="${T(com.gms.components.UrlUtils).htcConfirmPositiveView()}">Số lượt xét nghiệm dương tính</a>
+    </li>
+    <li>
+        <a th:href="${T(com.gms.components.UrlUtils).htcConfirmPositiveDistinct()}">Số người xét nghiệm dương tính</a>
+    </li>
+</ul>
+<div data-th-fragment="table-htc-confirm-positive(form)">
+    <table class="table-report table table-striped table-bordered table-hover table-full" data-scrollY="auto">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success " rowspan="2">Mã XN khẳng định</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Họ và tên</th>
+                <th class="text-center vertical-align-middle success year" colspan="2" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">CMND</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Địa chỉ</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày lấy mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Cơ sở gửi mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày nhận mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày XN khẳng định</th>
+
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success gender" >Nam</th>
+                <th class="text-center vertical-align-middle success gender">Nữ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iter : ${form.table}" th:if="${form.table!= null}" >
+                <td class="text-center" th:utext="${item.code == ''?'':item.code}" ></td>
+                <td class="" th:utext="${item.fullName == ''? '' : item.fullName}" ></td>
+                <td class="text-center" ><span th:if="${item.genderID == '1'}" th:utext="${item.year == ''? '' : item.year}"></span></td>
+                <td class="text-center" ><span th:if="${item.genderID == '2'}" th:utext="${item.year == ''? '' : item.year}"></span></td>
+                <td class="" th:utext="${item.identityCard == ''? '' : item.identityCard}" ></td>
+                <td class="" th:utext="${item.address == ''?'':item.address}" ></td>
+                <td class="text-center" th:utext="${item.sourceReceiveSampleTime == ''?'':item.sourceReceiveSampleTime}" ></td>
+                <td class="" th:utext="${item.sourceSiteID == ''?'':item.sourceSiteID}" ></td>
+                <td class="text-center" th:utext="${item.sampleReceiveTime == ''?'':item.sampleReceiveTime}" ></td>
+                <td class="text-center" th:utext="${item.confirmTime == ''?'':item.confirmTime}" ></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div data-th-fragment="htc-confirm-positive-distinct(form)">
+    <table class="table-report table table-striped table-bordered table-hover table-full" data-scrollY="auto">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success " rowspan="2">Mã XN khẳng định</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Họ và tên</th>
+                <th class="text-center vertical-align-middle success year" colspan="2" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">CMND</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Địa chỉ</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày lấy mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Cơ sở gửi mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày nhận mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày XN khẳng định</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ghi chú</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success gender" >Nam</th>
+                <th class="text-center vertical-align-middle success gender">Nữ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iter : ${form.table}" th:if="${form.table!= null}" >
+                <td class="text-center" th:utext="${item.code == ''?'':item.code}" ></td>
+                <td class="" th:utext="${item.fullName == ''? '' : item.fullName}" ></td>
+                <td class="text-center" ><span th:if="${item.genderID == '1'}" th:utext="${item.year == ''? '' : item.year}"></span></td>
+                <td class="text-center" ><span th:if="${item.genderID == '2'}" th:utext="${item.year == ''? '' : item.year}"></span></td>
+                <td class="" th:utext="${item.identityCard == ''? '' : item.identityCard}" ></td>
+                <td class="" th:utext="${item.address == ''?'':item.address}" ></td>
+                <td class="text-center" th:utext="${item.sourceReceiveSampleTime == ''?'':item.sourceReceiveSampleTime}" ></td>
+                <td class="" th:utext="${item.sourceSiteID == ''?'':item.sourceSiteID}" ></td>
+                <td class="text-center" th:utext="${item.sampleReceiveTime == ''?'':item.sampleReceiveTime}" ></td>
+                <td class="text-center" th:utext="${item.confirmTime == ''?'':item.confirmTime}" ></td>
+                <td class="" th:utext="${item.note == ''?'':item.note}" ></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div data-th-fragment="table-book(form)">
+    <table class="table table-striped table-bordered table-full table-report" data-scrollY="auto" ng-cloak>
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="3">TT</th>
+                <th class="text-center vertical-align-middle success" colspan="6">THÔNG TIN KHÁCH HÀNG<br />
+                    (từ cơ sở gửi mẫu)</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">ĐƠN VỊ GỬI MẪU</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">NGÀY XN KHẲNG ĐỊNH</th>
+                <th class="text-center vertical-align-middle success" colspan="6">KẾT QUẢ XÉT NGHIỆM</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">KẾT LUẬN</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">MÃ SỐ LƯU MẪU XN</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">MÃ SỐ BN của PXN</th>
+                <th class="text-center vertical-align-middle success" rowspan="2" colspan="2">XN NHANH</th>
+                <th class="text-center vertical-align-middle success" rowspan="2" colspan="2">XN TẢI LƯỢNG VIRUS</th>
+                <th class="text-center vertical-align-middle success" rowspan="3">GHI CHÚ</th>
+
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">HỌ TÊN</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">MÃ SỐ</th>
+                <th class="text-center vertical-align-middle success" colspan="2">NĂM SINH</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">ĐỊA CHỈ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">ĐỐI TƯỢNG</th>
+                <th class="text-center vertical-align-middle success" colspan="2">SP1<br />(ghi rõ tên sinh phẩm)</th>
+                <th class="text-center vertical-align-middle success" colspan="2">SP2<br />(ghi rõ tên sinh phẩm)</th>
+                <th class="text-center vertical-align-middle success" colspan="2">SP3<br />(ghi rõ tên sinh phẩm)</th>
+
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" >Nam</th>
+                <th class="text-center vertical-align-middle success" >Nữ</th>
+                <th class="text-center vertical-align-middle success" >Ngày XN</th>
+                <th class="text-center vertical-align-middle success" >Kết quả XN</th>
+                <th class="text-center vertical-align-middle success" >Ngày XN</th>
+                <th class="text-center vertical-align-middle success" >Kết quả XN</th>
+                <th class="text-center vertical-align-middle success" >Ngày XN</th>
+                <th class="text-center vertical-align-middle success" >Kết quả XN</th>
+                <th class="text-center vertical-align-middle success" >Ngày XN</th>
+                <th class="text-center vertical-align-middle success" >Kết quả XN</th>
+                <th class="text-center vertical-align-middle success" >Ngày XN</th>
+                <th class="text-center vertical-align-middle success" >Kết quả XN</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" >(1)</th>
+                <th class="text-center vertical-align-middle success" >(2)</th>
+                <th class="text-center vertical-align-middle success" >(3)</th>
+                <th class="text-center vertical-align-middle success" >(4)</th>
+                <th class="text-center vertical-align-middle success" >(5)</th>
+                <th class="text-center vertical-align-middle success" >(6)</th>
+                <th class="text-center vertical-align-middle success" >(7)</th>
+                <th class="text-center vertical-align-middle success" >(8)</th>
+                <th class="text-center vertical-align-middle success" >(9)</th>
+                <th class="text-center vertical-align-middle success" >(10)</th>
+                <th class="text-center vertical-align-middle success" >(11)</th>
+                <th class="text-center vertical-align-middle success" >(12)</th>
+                <th class="text-center vertical-align-middle success" >(13)</th>
+                <th class="text-center vertical-align-middle success" >(14)</th>
+                <th class="text-center vertical-align-middle success" >(15)</th>
+                <th class="text-center vertical-align-middle success" >(16)</th>
+                <th class="text-center vertical-align-middle success" >(17)</th>
+                <th class="text-center vertical-align-middle success" >(18)</th>
+                <th class="text-center vertical-align-middle success" >(19)</th>
+                <th class="text-center vertical-align-middle success" >(20)</th>
+                <th class="text-center vertical-align-middle success" >(21)</th>
+                <th class="text-center vertical-align-middle success" >(22)</th>
+                <th class="text-center vertical-align-middle success" >(23)</th>
+            </tr>
+        </thead>
+        <tbody th:if="${form.table!= null}">
+            <tr th:each="item, iter : ${form.table}">
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-left" th:utext="${item.fullname == ''? '' : item.fullname}" ></td>
+                <td class="text-center" th:utext="${item.sourceID == ''? '' : item.sourceID}" ></td>
+                <td class="text-center"><span th:if="${item.gender == '1'}" th:utext="${item.yearOfBirth}"></span></td>
+                <td class="text-center"><span th:if="${item.gender == '2'}" th:utext="${item.yearOfBirth}"></span></td>
+                <td class="text-left" th:utext="${item.addressFull == '' ?'':item.addressFull}" ></td>
+                <td class="text-left" th:utext="${item.objectGroupID == '' ? '':item.objectGroupID}" ></td>
+                <td class="text-left" th:utext="${item.sourceSiteID == '' ? '':item.sourceSiteID}" ></td>
+                <td class="text-center" th:utext="${item.confirmTime == '' ? '':item.confirmTime}" ></td>
+                <td class="text-center" th:utext="${item.firstBioDate == '' ? '' :  item.firstBioDate}" ></td>
+                <td class="text-center" th:utext="${item.bioName1 == '' && item.bioNameResult1 == ''  ? '' :  '<b>' + item.bioNameResult1 + '</b>' +'<br/>'+ item.bioName1 }" ></td>
+                <td class="text-center" th:utext="${item.secondBioDate == '' ? '' :  item.secondBioDate}" ></td>
+                <td class="text-center" th:utext="${item.bioName2 == '' && item.bioNameResult2 == ''  ? '' :  '<b>' + item.bioNameResult2 + '</b>' +'<br/>'+ item.bioName2}" ></td>
+                <td class="text-center" th:utext="${item.thirdBioDate == '' ? '' :  item.thirdBioDate}" ></td>
+                <td class="text-center" th:utext="${item.bioName3 == '' && item.bioNameResult3 == '' ? '' : '<b>' + item.bioNameResult3 + '</b>' +'<br/>'+ item.bioName3}" ></td>
+                <td class="text-center" th:utext="${item.resultID == '' ? '' : item.resultID}" ></td>
+                <td class="text-center" th:utext="${item.sampleSaveCode == '' ? '' : item.sampleSaveCode}" ></td>
+                <td class="text-center" th:utext="${item.code == '' ? '' : item.code}" ></td>
+                <td class="text-center" th:utext="${item.earlyHivDate == '' ? '' :  item.earlyHivDate}" ></td>
+                <td class="text-center" th:utext="${item.earlyHiv == '' ? '':item.earlyHiv}" ></td>
+                <td class="text-center" th:utext="${item.virusLoadDate == '' ? '' :  item.virusLoadDate}" ></td>
+                <td class="text-center" th:utext="${item.virusLoad == '' ? '':item.virusLoad}" ></td>
+                <td class="text-center" th:utext="${item.note == '' ? '' :item.note}" ></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div data-th-fragment="early_hiv_table()" class="table-responsive">
+    <table class="table-report table table-striped table-bordered table-hover table-full" data-scrollY="auto">
+        <!--<thead>-->
+            <tr>
+                <th class="text-center vertical-align-middle success"></th>
+                <th class="text-center vertical-align-middle success " colspan="10">THÔNG TIN KHÁCH HÀNG</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">ĐƠN VỊ GỬI MẪU</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">NGÀY LẤY MẪU</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">Ngày XN</th>
+                <th class="text-center vertical-align-middle success " colspan="4">Kết quả XN</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">KẾT LUẬN</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">MÃ SỐ BN của PXN</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">KẾT QUẢ NHIỄM MỚI</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">TLVR</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">GHI CHÚ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">STT</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">HỌ TÊN</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">MÃ SỐ NƠI GỬI</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Giới</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Năm sinh</th>
+                <th class="text-center vertical-align-middle success" ></th>
+                <th class="text-center vertical-align-middle success" colspan="3">Địa chỉ</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">Số CMT/CCCD</th>
+                <th class="text-center vertical-align-middle success" rowspan="2">ĐỐI TƯỢNG</th>
+                <th class="text-center vertical-align-middle success">SP1</th>
+                <th class="text-center vertical-align-middle success">SP2</th>
+                <th class="text-center vertical-align-middle success">SP3</th>
+                <th class="text-center vertical-align-middle success">SP4</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success">Địa chỉ</th>
+                <th class="text-center vertical-align-middle success">Tỉnh/TP</th>
+                <th class="text-center vertical-align-middle success">Quận/Huyện</th>
+                <th class="text-center vertical-align-middle success">Xã/Phường</th>
+                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+                <th class="text-center vertical-align-middle success">Kết quả XN</th>
+            </tr>
+        <!--</thead>-->
+        <tbody>
+            <tr th:each="item, iter : ${form.items}">
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-left" th:utext="${item.fullname}" ></td>
+                <td class="text-left" th:utext="${item.sourceID}" ></td>
+                <td class="text-center"><span th:text="${item.genderID == null || item.genderID == '' ? '' : options.get('gender').get(item.genderID)}"></span></td>
+                <td class="text-center" th:utext="${item.year}" ></td>
+                <td class="text-left" th:utext="${item.address}" ></td>
+                <td class="text-left" th:utext="${options.get('province').get(item.provinceID)}" ></td>
+                <td class="text-left" th:utext="${options.get('district').get(item.districtID)}" ></td>
+                <td class="text-left" th:utext="${options.get('ward').get(item.wardID)}" ></td>
+                <td class="text-left" th:utext="${item.patientID}" ></td>
+                <td class="text-left" th:utext="${item.objectGroupID == null || item.objectGroupID == '' ? '' : form.getObjectGroups().getOrDefault(item.objectGroupID,'Khác')}" ></td>
+                <td class="text-left"><span th:text="${form.getSiteOptions().get(item.sourceSiteID + '')}"></span></td>
+                <td class="text-center"><span th:text="${#dates.format(item.sourceReceiveSampleTime, 'dd/MM/yyyy')}"></span></td>
+                <td class="text-center"><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                <td class="text-left" th:utext="${item.bioNameResult1 == null || item.bioNameResult1 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult1)}" ></td>
+                <td class="text-left" th:utext="${item.bioNameResult2 == null || item.bioNameResult2 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult2)}" ></td>
+                <td class="text-left" th:utext="${item.bioNameResult3 == null || item.bioNameResult3 == '' ? '' : options.get('bio-name-result').get(item.bioNameResult3)}" ></td>
+                <td class="text-center" ></td>
+                <td class="text-left" th:utext="${item.resultsID == null || item.resultsID == '' ? '' : options.get('test-result-confirm').get(item.resultsID)}" ></td>
+                <td class="text-left" th:utext="${item.code}" ></td>
+                <td class="text-left" th:utext="${item.earlyDiagnose == null || item.earlyDiagnose == '' ? '' : options.get('early-diagnose').get(item.earlyDiagnose)}" ></td>
+                <td class="text-left" th:utext="${item.virusLoadNumber}" ></td>
+                <td class="text-left" ></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>

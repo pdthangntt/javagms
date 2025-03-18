@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).profile()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="profile">
+                <form 
+                    th:action="${T(com.gms.components.UrlUtils).profile()}" 
+                    th:object="${form}" 
+                    method="post"
+                    name="profile_form"
+                    ng-submit="register(profile_form, $event)" 
+                    ng-validate="validationOptions">
+                    <div class="row">
+                        
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Nhập thông tin cá nhân cần chỉnh sửa</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div th:if="${success != null || error != null}" th:class="${success_id != null ? 'alert alert-success alert-dismissible' : 'alert alert-danger alert-dismissible'}"  >
+                                        <p th:text="${success != null ? success : error }"></p>
+                                    </div>
+                                    <div data-th-replace="widget/form :: form-static('Tên đăng nhập', 'username', ${staff.username}, '')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Họ tên', 'name', true, 'ví dụ: Nguyễn Văn A', '')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Điện thoại', 'phone', true, 'ví dụ: 0123456789', '')"></div>
+                                    <div data-th-replace="widget/form :: input-text('Email', 'email', false, 'ví dụ: nguyenvana@gmail.com', '')"></div>
+                                </div>
+                                <div class="box-footer text-center">
+                                    <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                    <a th:href="${T(com.gms.components.UrlUtils).profile()}" data-confirm="Bạn chắc chắn muốn hủy?" class="btn btn-default">Hủy</a>
+                                </div>
+                            </div>
+                            <!-- /. box -->
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </body>
+</html>

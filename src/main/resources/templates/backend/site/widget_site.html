@@ -1,0 +1,22 @@
+<div data-th-fragment="staff-left(site)">
+    <div class="box box-primary">
+        <div class="box-body box-profile">
+            <h3 class="profile-username text-center" th:utext="${site.shortName}" ></h3>
+            <p class="text-muted text-center" th:utext="${#strings.toUpperCase(site.code)}" ></p>
+
+            <ul class="list-group list-group-unbordered">
+                <li class="list-group-item">
+                    <b>Cấp</b> <a class="pull-right" th:utext="${T(com.gms.entity.db.SiteEntity).typeLabel[site.type]}"></a>
+                </li>
+                <li class="list-group-item">
+                    <b>Email</b> <a class="pull-right" th:utext="${site.email}" ></a>
+                </li>
+                <li class="list-group-item">
+                    <b>Phone</b> <a class="pull-right" th:utext="${site.phone}"></a>
+                </li>
+            </ul>
+            <a th:if="${#request.userPrincipal.principal.site.ID != site.ID}" th:href="${T(com.gms.components.UrlUtils).siteStaff(site.ID)}" class="btn btn-primary btn-block"><b>Danh sách quản trị viên</b></a>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>

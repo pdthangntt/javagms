@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = {};
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span class="loading_config" ></span>
+                    <a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}" class="btn btn-default" >
+                        <i class="fa fa-backward"></i> Quay lại
+                    </a>
+                    <span th:text="${title}" ></span>
+                    <small th:text="${parent_title}"></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}"><span th:text="${parent_title}" ></span></a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).parameterNew(type)}">
+                            <span th:text="${title}" ></span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" id="config-form" ng-controller="parameter_new" ng-init="init()" >
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3">
+                        <div data-th-include="backend/parameter/widget :: parameter-left(${dataModels})"></div>
+                    </div>
+                    <div class="col-lg-9 col-md-9">
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-edit" ></i> Nhập thông tin thêm mới</h3>
+                            </div>
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).parameterNew(type)}" th:object="${form}" method="post">
+                                    <div data-th-replace="widget/form :: input-hidden('type')"></div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: input-text('Giá trị', 'code', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: input-text('Nhãn hiển thị', 'value', true, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: input-text('Thứ tự', 'position', true, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select('Trạng thái', 'status', true, ${activeLabel}, 'Trạng thái hoạt động: cho phép sử dụng trên hệ thống')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${dataModels['__${type}__']['sitemap'] == '1'}">
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select('Cơ sở:', 'siteID', true, ${siteOptions}, '')"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'provinceID', true, null, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row" th:if="${T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN == form.type}">
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>Bệnh nhân trẻ em</label>
+                                                <select class="form-control" 
+                                                        th:id="${fieldName}" 
+                                                        th:field="*{attribute01}" >
+                                                    <option value="" th:selected="${form.attribute01 != 1}" >Tạm ẩn</option>
+                                                    <option value="1" th:selected="${form.attribute01 == 1}" >Sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>Bệnh nhân người lớn</label>
+                                                <select class="form-control" 
+                                                        th:id="${fieldName}" 
+                                                        th:field="*{attribute02}" >
+                                                    <option value="" th:selected="${form.attribute02 != 1}" >Tạm ẩn</option>
+                                                    <option value="1" th:selected="${form.attribute02 == 1}" >Sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>Phác đồ bậc 1</label>
+                                                <select class="form-control" 
+                                                        th:id="${fieldName}" 
+                                                        th:field="*{attribute03}" >
+                                                    <option value="" th:selected="${form.attribute03 != 1}" >Tạm ẩn</option>
+                                                    <option value="1" th:selected="${form.attribute03 == 1}" >Sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>Phác đồ bậc 2</label>
+                                                <select class="form-control" 
+                                                        th:id="${fieldName}" 
+                                                        th:field="*{attribute04}" >
+                                                    <option value="" th:selected="${form.attribute04 != 1}" >Tạm ẩn</option>
+                                                    <option value="1" th:selected="${form.attribute04 == 1}" >Sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group" >
+                                                <label>Phác đồ phơi nhiễm</label>
+                                                <select class="form-control" 
+                                                        th:id="${fieldName}" 
+                                                        th:field="*{attribute05}" >
+                                                    <option value="" th:selected="${form.attribute05 != 1}" >Tạm ẩn</option>
+                                                    <option value="1" th:selected="${form.attribute05 == 1}" >Sử dụng</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div data-th-replace="widget/form :: textarea('Ghi chú', 'note', false, '', '')"></div>
+
+                                    <div th:if="${dataModels['__${type}__']['useparent'] == '1'}" >
+                                        <div data-th-replace="widget/form :: select('Cấp cha', 'parentID', true, ${parents}, '')"></div>
+                                    </div>
+
+                                    <div th:if="${dataModels['__${type}__']['elog'] == '1'}"  >
+                                        <div data-th-replace="widget/form :: input-text('ID HTC Elog', 'elogCode', true, '', '')"></div>
+                                    </div>
+                                    <div th:if="${dataModels['__${type}__']['hivinfo'] == '1'}"  >
+                                        <div data-th-replace="widget/form :: input-text('ID HIV Info', 'hivInfoCode', true, '', '')"></div>
+                                    </div>
+                                    <div th:if="${dataModels['__${type}__']['pqm'] == '1'}"  >
+                                        <div data-th-replace="widget/form :: input-text('ID PQM', 'pqmCode', true, '', '')"></div>
+                                    </div>
+
+                                    <div class="form-group text-center" >
+                                        <button class="btn btn-primary" type="submit" ><i class="fa fa-edit" ></i> Lưu thông tin</button>
+                                        <a th:href="${T(com.gms.components.UrlUtils).parameterIndex(type)}" 
+                                           data-confirm="Bạn chắc chắn muốn quay lại ?"
+                                           data-confirm-browsers
+                                           class="btn btn-default" type="reset" >Huỷ</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </body>
+</html>

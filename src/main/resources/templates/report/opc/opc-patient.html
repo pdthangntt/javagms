@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).inOpcPatient()}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).excelOpcPatient()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).emailOpcPatient()}]];
+            var form = {
+            permanent_district_id: [[${#httpServletRequest.getParameter('permanent_district_id')}]],
+                    permanent_ward_id: [[${#httpServletRequest.getParameter('permanent_ward_id')}]],
+                    permanent_province_id: [[${#httpServletRequest.getParameter('permanent_province_id')}]]
+            };
+            var f = [[${form}]];
+        </script>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcPatient()}"><span th:text="${small_title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="opc_patient" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).opcPatient()}" method="get" id="search">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label id = "keywords">Từ khóa</label>
+                                                <input type="text" class="form-control" name="keywords" 
+                                                       placeholder="Nhập từ khóa cần tìm"
+                                                       th:value="${#httpServletRequest.getParameter('keywords')}" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label id = "fromTime">Ngày đăng ký từ</label>
+                                                <input type="text" class="form-control" name="registration_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="registrationTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label id="toTime">Ngày đăng ký đến</label>
+                                                <input type="text" class="form-control" name="registration_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="registrationTimeTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label id = "fromTime">Ngày điều trị ARV từ</label>
+                                                <input type="text" class="form-control" name="treatment_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatmentTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label id="toTime">Ngày điều trị ARV đến</label>
+                                                <input type="text" class="form-control" name="treatment_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="treatmentTimeTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label>Loại đăng ký</label>
+                                                <select class="form-control" name="registration_type" id="registration_type">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).REGISTRATION_TYPE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('registration_type') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div><br>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày bắt đầu INH từ</label>
+                                                <input type="text" class="form-control" name="inhFrom" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="inhFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày bắt đầu INH đến</label>
+                                                <input type="text" class="form-control" name="inhTo" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="inhTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày bắt đầu CTX từ</label>
+                                                <input type="text" class="form-control" name="cotriFrom" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="cotriFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày bắt đầu CTX đến</label>
+                                                <input type="text" class="form-control" name="cotriTo" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="cotriTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày điều trị Lao từ</label>
+                                                <input type="text" class="form-control" name="laoFrom" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="laoFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div>
+                                                <label >Ngày điều trị Lao đến</label>
+                                                <input type="text" class="form-control" name="laoTo" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="laoTo" />
+                                            </div>
+                                        </div>
+
+                                    </div><br>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Trạng thái điều trị</label>
+                                                <select class="form-control" name="status_of_treatment_id" id="status_of_treatment_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('status_of_treatment_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <label>Phác đồ hiện tại</label>
+                                                <select class="form-control" name="treatment_regimen_id" id="treatment_regimen_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('treatment_regimen_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label>Trạng thái chuyển GSPH</label>
+                                                    <select class="form-control" name="gsph" id="gsph">
+                                                        <option th:each="instance : ${options.get('transferGSPH')}" 
+                                                                th:value="${instance.key}" 
+                                                                th:selected="${#httpServletRequest.getParameter('gsph') == instance.key}"
+                                                                th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Tỉnh/TP thường trú</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        name="permanent_province_id" id="permanent_province_id">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <label>Quận/Huyện thường trú</label>
+                                                <select class="form-control" 
+                                                        data-title ="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="permanent_district_id" id="permanent_district_id"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" hidden="true">
+                                            <div class="form-group">
+                                                <label>Xã/Phường thường trú</label>
+                                                <select class="form-control" name="permanent_ward_id" 
+                                                        data-title ="Tất cả" 
+                                                        id="permanent_ward_id">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" th:if="${isOpcManager}">
+                                            <div class="form-group">
+                                                <label>Cơ sở điều trị</label>
+                                                <select class="form-control" name="site_id" id="site_id">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('site_id') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                Danh sách bệnh nhân đăng ký tại cơ sở 
+                                <span th:if="${form.dataPage.totalRecords == 0 && (form.registrationTimeFrom != null && form.registrationTimeFrom != '')}">từ <span class="text-danger" th:utext="${form.registrationTimeFrom}"></span> đến 
+                                    <span class="text-danger" th:utext="${form.registrationTimeTo == null || form.registrationTimeTo == '' ? #dates.format(#dates.createNow(),'dd/MM/yyyy') : form.registrationTimeTo}"></span></span>
+                                <span th:if="${form.items != null && form.items.size() > 0}">từ <span class="text-danger"  th:utext="${form.registrationTimeFrom == null || form.registrationTimeFrom == '' ? form.startDate : form.registrationTimeFrom}"></span> đến 
+                                    <span class="text-danger" th:utext="${form.registrationTimeTo == null || form.registrationTimeTo == '' ? #dates.format(#dates.createNow(),'dd/MM/yyyy') : form.registrationTimeTo}"></span></span> - 
+                                <span th:utext="${!isOpcManager ? form.siteName : (siteID == null || siteID == '') ? form.siteName : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(siteID)}"></span><br>
+                                Tổng số bệnh nhân được quản lý: <span class="text-danger" th:utext="${form.dataPage.totalRecords == 0 ? 0 : #numbers.formatInteger(form.dataPage.totalRecords,2,'POINT')}"></span><br><br>
+                                <div >
+                                    <table class="table-report table table-striped table-bordered table-hover table-full"
+                                           data-scrollY="auto" ng-cloak>
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center vertical-align-middle success ">STT</th>
+                                                <th class="text-center vertical-align-middle success">Mã bệnh án</th>
+                                                <th class="text-center vertical-align-middle success">Họ và tên</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày sinh</th>
+                                                <th class="text-center vertical-align-middle success ">Giới tính</th>
+                                                <th class="text-center vertical-align-middle success ">Trạng thái điều trị</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày điều trị ARV đầu tiên</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày điều trị ARV</th>
+                                                <th class="text-center vertical-align-middle success ">Phác đồ hiện tại</th>
+                                                <th class="text-center vertical-align-middle success ">Bậc phác đồ hiện tại</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày đăng ký</th>
+                                                <th class="text-center vertical-align-middle success ">Loại đăng ký</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày XN TLVR gần nhất</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày khám gần nhất</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày bắt đầu INH</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày BĐ Cotrimoxazole</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày BĐ điều trị Lao</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày kết thúc</th>
+                                                <th class="text-center vertical-align-middle success ">Lý do kết thúc</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày chuyển đi</th>
+                                                <th class="text-center vertical-align-middle success ">Ngày XN khẳng định</th>
+                                                <th class="text-center vertical-align-middle success ">Nơi XN khẳng định</th>
+                                                <th class="text-center vertical-align-middle success ">Nhóm đối tượng</th>
+                                                <th class="text-center vertical-align-middle success ">Số CMND</th>
+                                                <th class="text-center vertical-align-middle success ">Số thẻ BHYT</th>
+                                                <th class="text-center vertical-align-middle success ">Địa chỉ thường trú</th>
+                                                <th class="text-center vertical-align-middle success ">Địa chỉ hiện tại</th>
+
+                                                <th class="text-center vertical-align-middle success " th:if="${isOpcManager}">Cơ sở điều trị</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item, iter : ${form.dataPage.data}" th:with="first=${((form.dataPage.currentPage - 1) * form.dataPage.maxResult) + 1}">
+                                                <td class="text-center" th:utext="${first + iter.index}" ></td>
+                                                <td class="text-center" ><span th:text="${item.code}"></span></td>
+                                                <td class=""><span th:text="${item.patient.fullName}"></span></td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.patient.dob, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${item.patient.genderID == null || item.patient.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.patient.genderID)}"></span></td>
+                                                <td class=""><span th:text="${item.statusOfTreatmentID == null || item.statusOfTreatmentID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT).get(item.statusOfTreatmentID)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.firstTreatmentTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.treatmentTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.treatmentRegimenID == null || item.treatmentRegimenID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN).get(item.treatmentRegimenID)}"></span></td>
+                                                <td class="text-center"><span th:text="${item.treatmentRegimenStage == null || item.treatmentRegimenStage == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE).get(item.treatmentRegimenStage)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.registrationTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.registrationType == null || item.registrationType == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).REGISTRATION_TYPE).get(item.registrationType)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.viralLoadTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.lastExaminationTime, 'dd/MM/yyyy')}"></span></td>
+                                                
+                                                <td class="text-center"><span th:text="${#dates.format(item.inhFromTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.cotrimoxazoleFromTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.laoStartTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.endTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.endCase == null || item.endCase == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).ARV_END_CASE).get(item.endCase)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.tranferFromTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.patient.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class=""><span th:text="${item.patient.confirmSiteID == null ? '' : item.patient.confirmSiteID == 0 ? '' : item.patient.confirmSiteID == -1 ? item.patient.confirmSiteName : options.get('siteConfirm').get(item.patient.confirmSiteID + '')}"></span></td>
+                                                <td class=""><span th:text="${item.objectGroupID == null || item.objectGroupID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP).get(item.objectGroupID)}"></span></td>
+                                                
+                                                <td class="text-center"><span th:text="${item.patient != null && item.patient.identityCard != null ? item.patient.identityCard : ''}"></span></td>
+                                                <td class="text-center"><span th:text="${item.insuranceNo}"></span></td>
+                                                <td class=""><span th:text="${item.permanentAddressFull}"></span></td>
+                                                <td class=""><span th:text="${item.currentAddressFull}"></span></td>
+                                                <td th:if="${isOpcManager}" class=""><span th:text="${item.siteID == null || item.siteID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(item.siteID.toString())}"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div data-th-include="widget/gridview :: pagination-title(dataPage=${form.dataPage})" ></div>
+                                <div class="no-margin pull-right">
+                                    <div class="text-center" data-th-include="widget/gridview :: pagination(${form.dataPage.totalPages}, ${form.dataPage.navigationPages}, ${form.dataPage.currentPage})"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

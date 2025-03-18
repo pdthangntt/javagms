@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            .width-60 {
+                width: 60px;
+            }
+            .width-80 {
+                width: 80px;
+            }
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"'>
+        <div class="body xacnhan" id="xacnhan">
+            <div class="content">  
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(${form})"></div>
+                    <div data-th-replace="report/widget :: quochieu()"></div>
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="clear-fix">&nbsp;</div>
+                    <div class="box_title">
+                        <p class="text-uppercase text-title">BÁO CÁO CÔNG tác phòng, Chống HIV/AIDS – TUYẾN HUYỆN</p>
+                        <p class="text-normal text-center" >
+                            <i>(Ban hành kèm theo Thông tư số: 03/2015/TT-BYT  ngày 16 tháng 3 năm 2015)</i>
+                        </p>
+                        <p class="text-size-14 text-normal text-italic">
+                            <span th:utext="${form.title}" ></span>
+                            từ <span th:utext="${form.startDate}" ></span> 
+                            đến <span th:utext="${form.endDate}" ></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <p>
+                                Đơn vị nhận báo cáo:
+                                <span class="point" >.........................................................................................................</span>
+                            </p>
+                        </div>
+
+                        <div th:if="${form.table02 != null}" class="row">
+                            <p>&nbsp;</p>
+                            <div data-th-replace="report/tt03/widget-table :: table02(${form})"></div>
+                        </div>
+
+                        <p>&nbsp;</p>
+                        <div class="row">
+                            <p>
+                                <b>Khó khăn và tồn tại:</b> 
+                                <span class="point" >.....................................................................................................................</span>
+                            </p>
+                            <p><span class="point" >..........................................................................................................................................................</span></p>
+                        </div>
+
+                        <div class="row">
+                            <p><b>Nhận xét và đề xuất:</b>
+                                <span class="point" >.....................................................................................................................</span>
+                            </p>
+                            <p><span class="point" >..........................................................................................................................................................</span></p>
+                        </div>
+                    </div>
+
+                    <div class="info-time">
+                        <div class="row">
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        Người lập biểu
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-30 text-center footer">
+                                <p class="" >&nbsp;</p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        Người kiểm tra biểu
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <div class="empty-ky">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col-40 text-center footer">
+                                <p class="text-normal text-size-14" >
+                                    <i>
+                                        <span class="point" th:text="${form.siteProvince}">.............</span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}">.......</span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}">.......</span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}">..............</span>
+                                    </i>
+                                </p>
+                                <div>
+                                    <p class="box-ky-title">
+                                        Thủ trưởng đơn vị
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <p class="empty-ky">&nbsp;</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div class="clear-fix" >&nbsp;</div>
+            </div>
+        </div>
+    </body>
+</html>

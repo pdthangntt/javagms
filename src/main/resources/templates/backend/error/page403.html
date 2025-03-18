@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title>403 - Không có quyền truy cập</title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1 th:text="${title}" ></h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).error403()}"><span>Không có quyền truy cập</span></a></li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="error-page">
+                    <h2 class="headline text-yellow"> 403</h2>
+
+                    <div class="error-content" style="padding-top: 27px;">
+                        <h3><i class="fa fa-warning text-yellow"></i> Không có quyền truy cập hệ thống</h3>
+
+                        <p>
+                            Bạn click <a th:href="${T(com.gms.components.UrlUtils).home()}">vào đây</a> để quay về trang chủ.
+                        </p>
+                    </div>
+                    <!-- /.error-content -->
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

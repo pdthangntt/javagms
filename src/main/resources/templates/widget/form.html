@@ -1,0 +1,226 @@
+<div data-th-fragment="form-static(label, fieldName, value, note)" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="form-group">
+        <label>
+            <span th:utext="${label}" ></span> 
+        </label>
+        <input type="text" class="form-control" th:id="${fieldName == '' ? '' : fieldName}" th:placeholder="${placeholder}" disabled th:value="${value}" />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+    </div>
+</div>
+
+<div data-th-fragment="input-date(label, fieldName, required, placeholder ,note, model, eventClick, isOpen)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <div class="input-group date">
+            <input type="text" class="form-control" 
+                   th:placeholder="${placeholder}" 
+                   th:id="${fieldName}" th:field="*{__${fieldName}__}"
+                   uib-datepicker-popup="dd/MM/yyyy" th:ng-model="${model}" th:is-open="${isOpen}" datepicker-options="dateOptions" close-text="Close"
+                   >
+            <div style="cursor: pointer" class="input-group-addon" th:ng-click="${eventClick}">
+                <i class="fa fa-calendar"></i> Chọn ngày
+            </div>
+        </div>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="input-text(label, fieldName, required, placeholder, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="text" autocomplete="new-password" class="form-control" th:placeholder="${placeholder}" th:id="${fieldName}" th:field="*{__${fieldName}__}"/>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="input-pwd(label, fieldName, required, placeholder ,note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="password" class="form-control" th:placeholder="${placeholder}" th:id="${fieldName}" th:field="*{__${fieldName}__}" />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="input-hidden(fieldName)">
+    <input type="hidden" th:id="${fieldName}" th:field="*{__${fieldName}__}" />
+</div>
+
+<div data-th-fragment="select(label, fieldName, required, options, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label th:if="${label != ''}">
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <select class="form-control" 
+                th:id="${fieldName}" 
+                th:field="*{__${fieldName}__}" >
+            <option th:each="instance : ${options}" th:value="${instance.key}" th:utext="${instance.value}" ></option>
+        </select>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="textarea(label, fieldName, required, placeholder, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <textarea class="form-control" th:placeholder="${placeholder}" th:id="${fieldName}" th:field="*{__${fieldName}__}"></textarea>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+
+<div data-th-fragment="province(label, fieldName, required)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+
+        <input type="hidden" th:id="provinceID" th:field="*{__${fieldName}__}" th:ng-model="${fieldName}"/>
+        <ui-select ng-model="selected.province" title="Chọn tỉnh thành" on-select="changeProvince($item)">
+            <ui-select-match placeholder="Chọn tỉnh thành">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="item in locations.provinces | filter:item.hidden = '!true' | propsFilter: {name: $select.search}">
+                <div ng-bind="item.name"></div>
+            </ui-select-choices>
+        </ui-select>
+
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="district(label, fieldName, required)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="hidden" th:id="districtID" th:field="*{__${fieldName}__}" />
+        <ui-select ng-model="selected.district" title="Chọn quận huyện" on-select="changeDistrict($item)">
+            <ui-select-match placeholder="Chọn quận huyện">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="item in locations.districts | filter:item.hidden = '!true' | propsFilter: {name: $select.search}">
+                <div ng-bind="item.name"></div>
+            </ui-select-choices>
+        </ui-select>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="ward(label, fieldName, required)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="hidden" th:id="wardID" th:field="*{__${fieldName}__}"/>
+        <ui-select ng-model="selected.ward" title="Chọn phường xã" on-select="changeWard($item)">
+            <ui-select-match placeholder="Chọn phường xã">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="item in locations.wards | filter:item.hidden = '!true' | propsFilter: {name: $select.search}">
+                <div ng-bind="item.name"></div>
+            </ui-select-choices>
+        </ui-select>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+
+<div data-th-fragment="input-text-model(label, fieldName, required, placeholder, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="text" class="form-control" th:placeholder="${placeholder}" th:id="${fieldName}" th:field="*{__${fieldName}__}" th:ng-model="${fieldName}" />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="input-date-model(label, fieldName, required, placeholder, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="text" class="form-control"
+               th:placeholder="${placeholder}" 
+               th:id="${fieldName}" 
+               th:field="*{__${fieldName}__}" 
+               ui-mask="99/99/9999" 
+               th:attr="ng-model='__${fieldName}__'"  />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="input-health-insurance-model(label, fieldName, required, placeholder, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="text" class="form-control"
+               th:placeholder="${placeholder}" 
+               th:id="${fieldName}" 
+               th:field="*{__${fieldName}__}" 
+               ui-mask="AA-9-99-9999999999" 
+               th:attr="ng-model='__${fieldName}__'"  />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>
+
+<div data-th-fragment="select-static(label, fieldName, options, value, note)">
+    <div class="form-group">
+        <label>
+            <span th:utext="${label}" ></span> 
+        </label>
+        <input type="text" class="form-control" th:id="${fieldName == '' ? '' : fieldName}" disabled th:value="${value == '' ? '': options.get(value)}" />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+    </div>
+</div>
+
+<div data-th-fragment="select-multiple-static(label, fieldName, options, value, note)">
+    <div class="form-group">
+        <label>
+            <span th:utext="${label}" ></span> 
+        </label>
+        <input type="text" class="form-control" th:id="${fieldName == '' ? '' : fieldName}" disabled th:value="${T(com.gms.components.TextUtils).convertOptionToString(options, value, ';')}" />
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+    </div>
+</div>
+
+<div data-th-fragment="input-code-model(label, fieldName, required, placeholder,uimasks, note)">
+    <div class="form-group" th:class="${#fields.hasErrors(fieldName)} ? 'form-group has-error' : 'form-group'" >
+        <label>
+            <span th:utext="${label}" ></span> 
+            <span th:if="${required == true}" class="text-danger" >*</span>
+        </label>
+        <input type="text" class="form-control"
+               th:placeholder="${placeholder}" 
+               th:id="${fieldName}" 
+               th:field="*{__${fieldName}__}" 
+               th:ui-mask="${uimasks}" 
+               mask-restrict= 'accept'
+               clean = "false"
+               th:ng-model="${fieldName}"/>
+        <small th:if="${note != null && note != ''}" th:utext="${note}" class="form-text text-muted"></small>
+        <p class="help-block help-block-error" th:if="${#fields.hasErrors(fieldName)}" th:errors="*{__${fieldName}__}" ></p>
+    </div>
+</div>

@@ -1,0 +1,1052 @@
+<div data-th-fragment="table-book(form)">
+    <table class="table table-striped table-bordered table-full table-report" data-scrollY="auto" ng-cloak>
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success" rowspan="2">TT</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" style="min-width: 60px;">Ngày lấy máu xét nghiệm sàng lọc</th>
+                <th class="text-center vertical-align-middle success parent-custom" colspan="2" >Khách hàng</th>
+                <th class="text-center vertical-align-middle success parent-namsinh" colspan="2" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" style="width: 200px;" >Địa chỉ</th>
+                <th class="text-center vertical-align-middle success " colspan="7"> Nhóm nguy cơ</th>
+                <th class="text-center vertical-align-middle success parent-test" colspan="2">Xét nghiệm</th>
+                <th class="text-center vertical-align-middle success parent-kq-xnsl" colspan="3" >Kết quả XN sàng lọc</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Kết quả xét nghiệm khẳng định</th>
+                <th class="text-center vertical-align-middle success parent-result-nhan-kq" colspan="3" >Nhận kết quả và tư vấn sau XN</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Dịch vụ giới thiệu tiếp sau tư vấn</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Tên tư vấn viên trước XN</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Tên tư vấn viên sau XN</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success " >Mã số</th>
+                <th class="text-center vertical-align-middle success " style="width: 90px;">Họ và tên</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 33px;">Nam</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 33px;">Nữ</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Nghiện chích<br> ma túy (NCMT)</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Phụ nữ <br>bán dâm (PNBD)</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Nam quan hệ tình dục<br> với nam (MSM)</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Vợ/chồng/bạn tình <br> của người<br> nhiễm HIV</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Phụ nữ <br>mang thai</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">BN Lao</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Các đối tượng<br> khác</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Có</th>
+                <th class="text-center vertical-align-middle success small-text " style="width: 50px;">Không</th>
+                <th class="text-center vertical-align-middle success small-text " >Âm tính</th>
+                <th class="text-center vertical-align-middle success " style="width: 53px;" >Dương tính <br>(có phản ứng)</th>
+                <th class="text-center vertical-align-middle success " >Không rõ</th>
+                <th class="text-center vertical-align-middle success wrap" style="width: 55px;" >Có (ghi ngày tháng)</th>
+                <th class="text-center vertical-align-middle success " style="width: 55px;" >Không</th>
+                <th class="text-center vertical-align-middle success wrap" style="width: 55px;" >CMND (Đối với các KH Dương tính)</th>
+            </tr>
+        </thead>
+        <tbody th:if="${form.table!= null}">
+            <tr th:each="item, iter : ${form.table}">
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-center" th:utext="${item.advisoryeTime == ''? '  ' : item.advisoryeTime}" ></td>
+                <td class="text-center" th:utext="${item.code == '' ? '  ' : item.code}" ></td>
+                <td class="text-left" th:utext="${item.patientName == ''? '  ' : item.patientName}" ></td>
+                <td class="text-center" th:utext="${(item.gender!= '' && item.gender!= null && item.gender == '1')? item.yearOfBirth : ''}" ></td>
+                <td class="text-center" th:utext="${(item.gender!= '' && item.gender!= null &&  item.gender == '2')? item.yearOfBirth : ''}" ></td>
+                <td class="text-left" th:utext="${item.permanentAddress == ''?'  ':item.permanentAddress}" ></td>
+                <td class="text-center" th:utext="${item.objectGroupID == '1'? 'x' : ''}"></td><!-- Nghiện chích ma túy (NCMT)-->
+                <td class="text-center" th:utext="${item.objectGroupID == '2'? 'x': ''}"></td><!-- Phụ nữ bán dâm (PNBD)-->
+                <td class="text-center" th:utext="${item.objectGroupID == '3'? 'x': ''}"></td><!-- Nam quan hệ tình dục với nam (MSM)-->
+                <td class="text-center" th:utext="${item.objectGroupID == '4'? 'x': ''}"></td><!-- Vợ/chồng/bạn tình của người nhiễm HIV-->
+                <td class="text-center" th:utext="${item.objectGroupID == '5' || item.objectGroupID == '5.1' || item.objectGroupID == '5.2'? 'x': ''}"></td><!-- Phụ nữ mang thai-->
+                <td class="text-center" th:utext="${item.objectGroupID == '6'? 'x': ''}"></td><!-- BN Lao-->
+                <td class="text-center" th:utext="${item.objectGroupID == '7'? 'x': ''}"></td><!-- Các đối tượng khác-->
+                <td class="text-center" th:utext="${item.isAgreePreTest != null && item.isAgreePreTest ? 'x': ''}"></td><!-- Đồng ý xét nghiệm-->
+                <td class="text-center" th:utext="${item.isAgreePreTest != null && !item.isAgreePreTest? 'x': ''}"></td><!-- Không đồng ý xét nghiệm-->
+                <td class="text-center" th:utext="${item.testResultsID == '1'? 'x' : ''}"></td><!-- Âm tính-->
+                <td class="text-center text-danger" th:utext="${item.testResultsID == '2'? 'x' : ''}"></td><!-- Dương tính (có phản ứng-->
+                <td class="text-center" th:utext="${item.testResultsID == '3'? 'x' : ''}"></td><!-- Không rõ-->
+                <td class="text-center" th:classappend="${item.confirmResult == 'Dương tính'} ? text-danger : ''" th:utext="${(item.isAgreeTest == true) &&(item.confirmResultID != '' && item.confirmResultID != null) ?item.confirmResult: (item.isAgreeTest == true?'Chờ kết quả':'')  }" ></td><!-- Kết quả xét nghiệm khẳng định-->
+                <td class="text-center" th:utext="${(item.resultsPatienTime == '' || item.resultsPatienTime == null)?'  ':item.resultsPatienTime}" ></td><!-- Có (ghi ngày tháng) -- Nhận kết quả và tư vấn sau XN -->
+                <td class="text-center" th:utext="${(item.resultsPatienTime == '' || item.resultsPatienTime == null) && item.confirmResultID != null && item.confirmResultID != '' ? 'x' : ''}"></td><!-- Không -- Nhận kết quả và tư vấn sau XN -->
+                <td class="text-center" th:utext="${item.confirmResultID == '2'?item.patientID:''}" ></td><!-- CMTND với các ca dương tính -->
+                <td class="text-left" th:utext="${item.exchangeService == null || item.exchangeService == ''?'  ' : item.exchangeService}"></td><!-- Dịch vụ giới thiệu tiếp sau tư vấn -->
+                <td class="text-left" th:utext="${item.staffBeforeTest == ''?'  ':item.staffBeforeTest}" ></td><!-- Tư vấn viên trước xét nghiệm -->
+                <td class="text-left" th:utext="${item.staffAfter == ''?'  ':item.staffAfter}" ></td><!-- Tư vấn viên sau xét nghiệm -->
+            </tr>
+        </tbody>
+    </table>
+    <div class="row margin-left-5" th:if="${form.table != null}">
+        Tổng số <span th:utext="${form.table.size()}"></span> khách hàng tư vấn xét nghiệm.
+    </div>
+</div>
+
+<div data-th-fragment="table-positive(form)">
+    <table class="table table-striped table-bordered table-sm table-full table-report text-size-12" data-scrollY="auto">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase tt" >tt</th>
+                <th class="text-center vertical-align-middle success fullname" >Họ tên</th>
+                <th class="text-center vertical-align-middle success gender" >Dân tộc</th>
+                <th class="text-center vertical-align-middle success gender" >Giới tính</th>
+                <th class="text-center vertical-align-middle success gender" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success gender" >CMTND</th>
+                <th class="text-center vertical-align-middle success " >Nơi cư trú hiện tại</th>
+                <th class="text-center vertical-align-middle success " >Nơi đăng ký hộ khẩu thường trú</th>
+                <th class="text-center vertical-align-middle success " >Nghề nghiệp</th>
+                <th class="text-center vertical-align-middle success " >Đối tượng</th>
+                <th class="text-center vertical-align-middle success " >Nguy cơ</th>
+                <th class="text-center vertical-align-middle success " >Đường lây</th>
+                <th class="text-center vertical-align-middle success date" >Ngày XN khẳng định</th>
+                <th class="text-center vertical-align-middle success " >Phòng XN khẳng định</th>
+                <th class="text-center vertical-align-middle success " >Nơi lấy mẫu máu XN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iter : ${form.table}" th:if="${form.table!= null}" >
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-left" th:utext="${item.patientName == ''? '' : item.patientName}" ></td>
+                <td class="text-center" th:utext="${item.race == '' || item.race == null ? '' : item.race}" ></td>
+                <td class="text-center" th:utext="${item.gender == '' || item.gender == null ? '' : item.gender}" ></td>
+                <td class="text-center" th:utext="${item.yearOfBirth == '' || item.yearOfBirth == null ?'':item.yearOfBirth}" ></td>
+                <td class="text-center" th:utext="${item.patientID == '' ? '' : item.patientID}" ></td>
+                <td class="text-left" th:utext="${item.currentAddress==''?'':item.currentAddress}" ></td>
+                <td class="text-left" th:utext="${item.permanentAddress==''?'':item.permanentAddress}" ></td>
+                <td class="text-left" th:utext="${item.job==''?'':item.job}" ></td>
+                <td class="text-left" th:utext="${item.objectGroupID==''?'':item.objectGroupID}" ></td>
+                <td class="text-left" th:utext="${item.riskBehaviorID==''?'':item.riskBehaviorID}" ></td>
+                <td class="text-left" th:utext="${item.modeOfTransmission==''?'':item.modeOfTransmission}" ></td>
+                <td class="text-center" th:utext="${item.confirmTime==''?'':item.confirmTime}" ></td>
+                <td class="text-left" th:utext="${item.siteConfirmTest==null?'':item.siteConfirmTest}" ></td>
+                <td class="text-left" th:utext="${item.bloodPlace==null?'':item.bloodPlace}" ></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row margin-left-5" th:if="${form.table != null}">
+        Tổng số <span th:utext="${form.table.size()}"></span> khách hàng dương tính mới phát hiện.
+    </div>
+</div>
+
+<div data-th-fragment="table-transfer-success(form)">
+
+    <table class="table-report table table-striped table-bordered table-hover table-full"
+           data-scrollY="auto">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2">STT</th>
+                <th class="text-center vertical-align-middle success customer" colspan="2">Khách hàng</th>
+                <th class="text-center vertical-align-middle success yearOfBirth" colspan="2">Năm sinh</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Địa chỉ cư trú</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Địa chỉ thường trú</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Số điện thoại liên hệ</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày chuyển gửi</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Tên cơ sở chuyển đến</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Ngày đăng ký điều trị</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Tên cơ sở điều trị</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Mã số điều trị</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success th-width2">Mã số</th>
+                <th class="text-center vertical-align-middle success th-width2">Họ tên</th>
+                <th class="text-center vertical-align-middle success th-width2">Nam</th>
+                <th class="text-center vertical-align-middle success th-width2">Nữ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--            <tr th:if="${form.table == null || form.table.size() ==0 }">
+                            <th colspan="15" class="text-red text-center" >Không tìm thấy dữ liệu</th>
+                        </tr>-->
+            <tr th:each="item, iter : ${form.table}" th:if="${form.table!= null}" >
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-center" th:utext="${item.patientID == ''? '' : item.patientID}" ></td>
+                <td class="" th:utext="${item.patientName == '' ? '' : item.patientName}" ></td>
+                <td class="text-center" ><span th:if="${item.genderID == 'Nam'}" th:utext="${item.yearOfBirth == ''? '' : item.yearOfBirth}"></span></td>
+                <td class="text-center" ><span th:if="${item.genderID == 'Nữ'}" th:utext="${item.yearOfBirth == ''? '' : item.yearOfBirth}"></span></td>
+                <td class="" th:utext="${item.currentAddress == ''?'':item.currentAddress}" ></td>
+                <td class="" th:utext="${item.permanentAddress == '' ? '' : item.permanentAddress}" ></td>
+                <td class="text-center" th:utext="${item.phone==''?'':item.phone}" ></td>
+                <td class="text-center" th:utext="${item.exchangeTime==''?'':item.exchangeTime}" ></td>
+                <td class="" th:utext="${item.arrivalSite==''?'':item.arrivalSite}" ></td>
+                <td class="text-center" th:utext="${item.registerTherapyTime==''?'':item.registerTherapyTime}" ></td>
+                <td class="" th:utext="${item.registeredTherapySite==''?'':item.registeredTherapySite}" ></td>
+                <td class="text-center" th:utext="${item.therapyNo==''?'':item.therapyNo}" ></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row margin-left-5" th:if="${form.table != null}">
+        Tổng số <span th:utext="${form.table.size()}"></span> KH được chuyển gửi điều trị thành công
+    </div>
+</div>
+<div data-th-fragment="table-sample-sent(form)">
+    <table class="table-report table table-striped table-bordered table-hover table-full"
+           data-scrollY="auto">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success text-uppercase" rowspan="2">TT</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" style="min-width: 200px;">Họ tên</th>
+                <th class="text-center vertical-align-middle success " colspan="2" >Năm sinh</th>
+                <th class="text-center vertical-align-middle success tbl-sent-address" rowspan="2" style="width: 230px;">Địa chỉ</th>
+                <th class="text-center vertical-align-middle success tbl-sent-obj" rowspan="2">Đối tượng</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" style="min-width: 80px;">Ngày lấy mẫu</th>
+                <th class="text-center vertical-align-middle success " style="width: 90px;">Kết quả xét nghiệm</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Chất lượng mẫu</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">Mã số PXN</th>
+                <th class="text-center vertical-align-middle success " rowspan="2" style="width: 70px;">Ghi chú</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success " style="min-width: 35px;" >Nam</th>
+                <th class="text-center vertical-align-middle success " style="min-width: 35px;" >Nữ</th>
+                <th class="text-center vertical-align-middle success " ><b>SP</b><p class="text-normal">(ghi rõ tên sp)</p></th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle text-normal">(1)</th>
+                <th class="text-center vertical-align-middle text-normal">(2)</th>
+                <th class="text-center vertical-align-middle text-normal">(3)</th>
+                <th class="text-center vertical-align-middle text-normal">(4)</th>
+                <th class="text-center vertical-align-middle text-normal">(5)</th>
+                <th class="text-center vertical-align-middle text-normal">(6)</th>
+                <th class="text-center vertical-align-middle text-normal">(7)</th>
+                <th class="text-center vertical-align-middle text-normal">(8)</th>
+                <th class="text-center vertical-align-middle text-normal">(9)</th>
+                <th class="text-center vertical-align-middle text-normal">(10)</th>
+                <th class="text-center vertical-align-middle text-normal">(11)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iter : ${form}" th:if="${form!= null}" >
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="text-left" >
+                    <span th:utext="${item.fullname == ''? '' : item.fullname}" ></span><br/>
+                    <span th:if="${item.patientID != null && item.patientID != ''}" th:utext="${'CMND: ' + item.patientID}" ></span>
+                    <!--<br th:if="${item.patientID != null && item.patientID != ''}"/>-->
+                    <!--Mã KH: <span th:utext="${item.code}" ></span>-->
+                </td>
+                <td class="text-center" th:utext="${item.gender == 'Nam' ? item.year : ''}" ></td>
+                <td class="text-center" th:utext="${item.gender == 'Nữ' ? item.year : ''}" ></td>
+                <td class="" th:utext="${item.address != '' ? item.address : ''}" ></td>
+                <td class="text-left" th:utext="${item.objectGroupID =='' ? '' : item.objectGroupID}" ></td>
+                <td class="text-left text-center" th:utext="${item.sourceReceiveSampleTime !='' ? T(com.gms.components.TextUtils).formatDate(item.sourceReceiveSampleTime, 'dd/MM/yyyy') : ''}" ></td>
+                <td class="text-center" ><span class="text-bold" th:utext="${item.resultsID == '1' ? 'Âm tính<br>' : item.resultsID == '2' ? 'Dương tính<br>' : 'Không xác định<br>'}"></span><span th:utext="${options.get(T(com.gms.entity.db.ParameterEntity).BIOLOGY_PRODUCT_TEST).get(item.bioName)}"></span></td>
+                <td class="text-left" ></td>
+                <td class="text-left text-center" th:utext="${item.roomTestNo != '' ? item.roomTestNo : ''}" ></td>
+                <td class="text-left" ></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div data-th-fragment="mer-table(form)">
+    
+    <!-- Bảng 01-->
+    <p class="text-uppercase text-red">Bảng 01: Số bạn tình/bạn chích được giới thiệu và đồng ý xét nghiệm qua kênh "Theo dấu bạn tình/bạn chích"</p>
+    <table class="table-report table table-striped table-bordered table-hover table-full" 
+           data-scrollY="auto" data-rowsGroup="0">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap" rowspan="3" style = "min-width: 80px;">Tên cơ sở</th>
+                <th class="text-center vertical-align-middle success duongtinh duongtinh-title" colspan="28" >Số bạn tình/bạn chích được  giới thiệu qua kênh "Theo dấu bạn tình/bạn chích" </br> ngày tư vấn từ [[${form.startDate}]] đến [[${form.endDate}]]</th>
+                <th class="text-center vertical-align-middle success amtinh amtinh-title" colspan="28" >Số bạn tình/bạn chích được  giới thiệu và đồng ý xét nghiệm qua kênh "Theo dấu bạn tình/bạn chích" </br> ngày tư vấn từ [[${form.startDate}]] đến [[${form.endDate}]]</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="14" >Nam</th>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="14" >Nữ</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="14" >Nam</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="14" >Nữ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+            </tr>
+        </thead>
+        <tbody >
+            <tr th:each="item, iter : ${form.table01Forms}" th:if="${form.table01Forms!= null }" >
+                <td class="text-left" th:utext="${form.siteName}" ></td>
+                <!--NAM được giới thiệu--> 
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').unDefinedAge == 0 ? ''             : item.value.get('introduced-nam').unDefinedAge}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').underOneAge == 0 ? ''              : item.value.get('introduced-nam').underOneAge}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').oneToFour == 0 ? ''                : item.value.get('introduced-nam').oneToFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').fiveToNine == 0 ? ''               : item.value.get('introduced-nam').fiveToNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').tenToFourteen == 0 ? ''            : item.value.get('introduced-nam').tenToFourteen}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').fifteenToNineteen == 0 ? ''        : item.value.get('introduced-nam').fifteenToNineteen}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').twentyToTwentyFour == 0 ? ''       : item.value.get('introduced-nam').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').twentyFiveToTwentyNine == 0 ? ''   : item.value.get('introduced-nam').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').thirtyToThirtyFour == 0 ? ''       : item.value.get('introduced-nam').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').thirtyFiveToThirtyNine == 0 ? ''   : item.value.get('introduced-nam').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').fortyToFortyFour == 0 ? ''         : item.value.get('introduced-nam').fortyToFortyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').fortyFiveToFortyNine == 0 ? ''     : item.value.get('introduced-nam').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').overFifty == 0 ? ''                : item.value.get('introduced-nam').overFifty}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nam') == null || item.value.get('introduced-nam').sum == 0 ? ''                      : item.value.get('introduced-nam').sum }" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table01i\')'"></td>
+                <!--Nu được giới thiệu-->
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').unDefinedAge == 0 ? ''             : item.value.get('introduced-nu').unDefinedAge}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').underOneAge == 0 ? ''              : item.value.get('introduced-nu').underOneAge}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').oneToFour == 0 ? ''                : item.value.get('introduced-nu').oneToFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').fiveToNine == 0 ? ''               : item.value.get('introduced-nu').fiveToNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').tenToFourteen == 0 ? ''            : item.value.get('introduced-nu').tenToFourteen}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').fifteenToNineteen == 0 ? ''        : item.value.get('introduced-nu').fifteenToNineteen}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').twentyToTwentyFour == 0 ? ''       : item.value.get('introduced-nu').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').twentyFiveToTwentyNine == 0 ? ''   : item.value.get('introduced-nu').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').thirtyToThirtyFour == 0 ? ''       : item.value.get('introduced-nu').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').thirtyFiveToThirtyNine == 0 ? ''   : item.value.get('introduced-nu').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').fortyToFortyFour == 0 ? ''         : item.value.get('introduced-nu').fortyToFortyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').fortyFiveToFortyNine == 0 ? ''     : item.value.get('introduced-nu').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').overFifty == 0 ? ''                : item.value.get('introduced-nu').overFifty}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01i\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('introduced-nu') == null || item.value.get('introduced-nu').sum == 0 ? ''                      : item.value.get('introduced-nu').sum }" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table01i\')'"></td>
+                <!--Nam đồng ý--> 
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').unDefinedAge == 0 ? ''             : item.value.get('agreed-nam').unDefinedAge}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').underOneAge == 0 ? ''              : item.value.get('agreed-nam').underOneAge}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').oneToFour == 0 ? ''                : item.value.get('agreed-nam').oneToFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').fiveToNine == 0 ? ''               : item.value.get('agreed-nam').fiveToNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').tenToFourteen == 0 ? ''            : item.value.get('agreed-nam').tenToFourteen}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').fifteenToNineteen == 0 ? ''        : item.value.get('agreed-nam').fifteenToNineteen}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').twentyToTwentyFour == 0 ? ''       : item.value.get('agreed-nam').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').twentyFiveToTwentyNine == 0 ? ''   : item.value.get('agreed-nam').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').thirtyToThirtyFour == 0 ? ''       : item.value.get('agreed-nam').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').thirtyFiveToThirtyNine == 0 ? ''   : item.value.get('agreed-nam').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').fortyToFortyFour == 0 ? ''         : item.value.get('agreed-nam').fortyToFortyFour}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').fortyFiveToFortyNine == 0 ? ''     : item.value.get('agreed-nam').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').overFifty == 0 ? ''                : item.value.get('agreed-nam').overFifty}" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nam') == null || item.value.get('agreed-nam').sum == 0 ? ''                      : item.value.get('agreed-nam').sum }" th:attr="ng-click='detailReportLine({genderID:\'1\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table01a\')'"></td>
+                <!--Nữ đồng ý-->
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').unDefinedAge == 0 ? ''             : item.value.get('agreed-nu').unDefinedAge}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').underOneAge == 0 ? ''              : item.value.get('agreed-nu').underOneAge}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').oneToFour == 0 ? ''                : item.value.get('agreed-nu').oneToFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').fiveToNine == 0 ? ''               : item.value.get('agreed-nu').fiveToNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').tenToFourteen == 0 ? ''            : item.value.get('agreed-nu').tenToFourteen}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').fifteenToNineteen == 0 ? ''        : item.value.get('agreed-nu').fifteenToNineteen}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').twentyToTwentyFour == 0 ? ''       : item.value.get('agreed-nu').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').twentyFiveToTwentyNine == 0 ? ''   : item.value.get('agreed-nu').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').thirtyToThirtyFour == 0 ? ''       : item.value.get('agreed-nu').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').thirtyFiveToThirtyNine == 0 ? ''   : item.value.get('agreed-nu').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').fortyToFortyFour == 0 ? ''         : item.value.get('agreed-nu').fortyToFortyFour}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').fortyFiveToFortyNine == 0 ? ''     : item.value.get('agreed-nu').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').overFifty == 0 ? ''                : item.value.get('agreed-nu').overFifty}" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table01a\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('agreed-nu') == null || item.value.get('agreed-nu').sum == 0 ? ''                      : item.value.get('agreed-nu').sum }" th:attr="ng-click='detailReportLine({genderID:\'2\', siteID:\''+${form.siteID}+'\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.services)}+', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table01a\')'"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    
+    <!--Bảng 02-->
+    <p class="text-uppercase text-red">Bảng 02: Kết quả xét nghiệm mới nhiễm theo cơ sở dịch vụ, giới tính và nhóm tuổi</p>
+    <table class="table-report table table-striped table-bordered table-hover table-full" 
+           data-scrollY="auto" data-rowsGroup="0">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap" rowspan="3" style = "min-width: 80px;">Tên cơ sở</th>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap tt03-width-tr" rowspan="3"  style="min-width: 100px;">Loại hình dịch vụ</th>
+                <th class="text-center vertical-align-middle success duongtinh duongtinh-title" colspan="22" >Kết quả xét nghiệm mới nhiễm <6 tháng <br>ngày xét nghiệm mới nhiễm từ <span th:utext="${form.startDate != null ? form.startDate : ''}"></span> đến <span th:utext="${form.endDate != null ? form.endDate : ''}"></span></th>
+                
+                <th class="text-center vertical-align-middle success amtinh amtinh-title" colspan="22" >Kết quả xét nghiệm mới nhiễm >12 tháng <br>ngày xét nghiệm mới nhiễm từ <span th:utext="${form.startDate != null ? form.startDate : ''}"></span> đến <span th:utext="${form.endDate != null ? form.endDate : ''}"></span></th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="11" >Nam</th>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="11" >Nữ</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="11" >Nam</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="11" >Nữ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;15</th>
+                <th class="text-center vertical-align-middle success object-size">15-19</th>
+                <th class="text-center vertical-align-middle success object-size">20-24</th>
+                <th class="text-center vertical-align-middle success object-size">25-29</th>
+                <th class="text-center vertical-align-middle success object-size">30-34</th>
+                <th class="text-center vertical-align-middle success object-size">35-39</th>
+                <th class="text-center vertical-align-middle success object-size">40-44</th>
+                <th class="text-center vertical-align-middle success object-size">45-49</th>
+                <th class="text-center vertical-align-middle success object-size">&ge;50</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;15</th>
+                <th class="text-center vertical-align-middle success object-size">15-19</th>
+                <th class="text-center vertical-align-middle success object-size">20-24</th>
+                <th class="text-center vertical-align-middle success object-size">25-29</th>
+                <th class="text-center vertical-align-middle success object-size">30-34</th>
+                <th class="text-center vertical-align-middle success object-size">35-39</th>
+                <th class="text-center vertical-align-middle success object-size">40-44</th>
+                <th class="text-center vertical-align-middle success object-size">45-49</th>
+                <th class="text-center vertical-align-middle success object-size">&ge;50</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;15</th>
+                <th class="text-center vertical-align-middle success object-size">15-19</th>
+                <th class="text-center vertical-align-middle success object-size">20-24</th>
+                <th class="text-center vertical-align-middle success object-size">25-29</th>
+                <th class="text-center vertical-align-middle success object-size">30-34</th>
+                <th class="text-center vertical-align-middle success object-size">35-39</th>
+                <th class="text-center vertical-align-middle success object-size">40-44</th>
+                <th class="text-center vertical-align-middle success object-size">45-49</th>
+                <th class="text-center vertical-align-middle success object-size">&ge;50</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;15</th>
+                <th class="text-center vertical-align-middle success object-size">15-19</th>
+                <th class="text-center vertical-align-middle success object-size">20-24</th>
+                <th class="text-center vertical-align-middle success object-size">25-29</th>
+                <th class="text-center vertical-align-middle success object-size">30-34</th>
+                <th class="text-center vertical-align-middle success object-size">35-39</th>
+                <th class="text-center vertical-align-middle success object-size">40-44</th>
+                <th class="text-center vertical-align-middle success object-size">45-49</th>
+                <th class="text-center vertical-align-middle success object-size">&ge;50</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+            </tr>
+        </thead>
+        <tbody >
+        <th:block th:each="item, iter : ${form.table02Forms}" th:if="${form.table02Forms != null}">
+            <tr th:if="${item.getKey() != 'tong'}" >
+                <td class="text-left sitename" th:utext="${form.siteName}" ></td>
+                <td class="text-left" th:utext="${serviceOptions.get(item.key)}" ></td>
+                <!--Kết quả xét nghiệm mới nhiễm <6 tháng NAM-->
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').unDefinedAge == 0 ? '' : item.value.get('duongtinh-nam').unDefinedAge}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'\')'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').underFifteen == 0 ? '' : item.value.get('duongtinh-nam').underFifteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fifteenToNineteen == 0 ? '' : item.value.get('duongtinh-nam').fifteenToNineteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').twentyToTwentyFour == 0 ? '' : item.value.get('duongtinh-nam').twentyToTwentyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').twentyFiveToTwentyNine == 0 ? '' : item.value.get('duongtinh-nam').twentyFiveToTwentyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').thirtyToThirtyFour == 0 ? '' : item.value.get('duongtinh-nam').thirtyToThirtyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('duongtinh-nam').thirtyFiveToThirtyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fortyToFortyFour == 0 ? '' : item.value.get('duongtinh-nam').fortyToFortyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fortyFiveToFortyNine == 0 ? '' : item.value.get('duongtinh-nam').fortyFiveToFortyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').overFifty == 0 ? '' : item.value.get('duongtinh-nam').overFifty}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').sum == 0 ? '' : item.value.get('duongtinh-nam').sum }" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'\')'">
+                </td>
+                <!--Kết quả xét nghiệm mới nhiễm <6 tháng NỮ-->
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').unDefinedAge == 0 ? '' : item.value.get('duongtinh-nu').unDefinedAge}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'\')'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').underFifteen == 0 ? '' : item.value.get('duongtinh-nu').underFifteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fifteenToNineteen == 0 ? '' : item.value.get('duongtinh-nu').fifteenToNineteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').twentyToTwentyFour == 0 ? '' : item.value.get('duongtinh-nu').twentyToTwentyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').twentyFiveToTwentyNine == 0 ? '' : item.value.get('duongtinh-nu').twentyFiveToTwentyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').thirtyToThirtyFour == 0 ? '' : item.value.get('duongtinh-nu').thirtyToThirtyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('duongtinh-nu').thirtyFiveToThirtyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fortyToFortyFour == 0 ? '' : item.value.get('duongtinh-nu').fortyToFortyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fortyFiveToFortyNine == 0 ? '' : item.value.get('duongtinh-nu').fortyFiveToFortyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').overFifty == 0 ? '' : item.value.get('duongtinh-nu').overFifty}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').sum == 0 ? '' : item.value.get('duongtinh-nu').sum }" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'\')'">
+                </td>
+                <!--Kết quả xét nghiệm mới nhiễm >12 tháng Nam-->
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').unDefinedAge == 0 ? '' : item.value.get('amtinh-nam').unDefinedAge}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'\')'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').underFifteen == 0 ? '' : item.value.get('amtinh-nam').underFifteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fifteenToNineteen == 0 ? '' : item.value.get('amtinh-nam').fifteenToNineteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').twentyToTwentyFour == 0 ? '' : item.value.get('amtinh-nam').twentyToTwentyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').twentyFiveToTwentyNine == 0 ? '' : item.value.get('amtinh-nam').twentyFiveToTwentyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').thirtyToThirtyFour == 0 ? '' : item.value.get('amtinh-nam').thirtyToThirtyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('amtinh-nam').thirtyFiveToThirtyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fortyToFortyFour == 0 ? '' : item.value.get('amtinh-nam').fortyToFortyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fortyFiveToFortyNine == 0 ? '' : item.value.get('amtinh-nam').fortyFiveToFortyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').overFifty == 0 ? '' : item.value.get('amtinh-nam').overFifty}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').sum == 0 ? '' : item.value.get('amtinh-nam').sum } " 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'\')'">
+                </td>
+                <!--Kết quả xét nghiệm mới nhiễm >12 tháng Nữ-->
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').unDefinedAge == 0 ? '' : item.value.get('amtinh-nu').unDefinedAge}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'\')'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').underFifteen == 0 ? '' : item.value.get('amtinh-nu').underFifteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'15\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fifteenToNineteen == 0 ? '' : item.value.get('amtinh-nu').fifteenToNineteen}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').twentyToTwentyFour == 0 ? '' : item.value.get('amtinh-nu').twentyToTwentyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').twentyFiveToTwentyNine == 0 ? '' : item.value.get('amtinh-nu').twentyFiveToTwentyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').thirtyToThirtyFour == 0 ? '' : item.value.get('amtinh-nu').thirtyToThirtyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('amtinh-nu').thirtyFiveToThirtyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fortyToFortyFour == 0 ? '' : item.value.get('amtinh-nu').fortyToFortyFour}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fortyFiveToFortyNine == 0 ? '' : item.value.get('amtinh-nu').fortyFiveToFortyNine}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').overFifty == 0 ? '' : item.value.get('amtinh-nu').overFifty}" 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'})'">
+                </td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').sum == 0 ? '' : item.value.get('amtinh-nu').sum } " 
+                    th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'\')'">
+                </td>
+            </tr>
+        </th:block>
+        <tr th:if="${form.table02Forms!= null}">
+            <td class="text-left" th:utext="${form.siteName}" ></td>
+            <td class="text-left"> Tổng cộng</td>
+            <!--Nho 6 NAM-->
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').unDefinedAge == null ? '0'               : form.table02Forms.get('tong').get('duongtinh-nam').unDefinedAge}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').underFifteen == null ? '0'               : form.table02Forms.get('tong').get('duongtinh-nam').underFifteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').fifteenToNineteen == null ? '0'          : form.table02Forms.get('tong').get('duongtinh-nam').fifteenToNineteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').twentyToTwentyFour == null ? '0'         : form.table02Forms.get('tong').get('duongtinh-nam').twentyToTwentyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').twentyFiveToTwentyNine == null ? '0'     : form.table02Forms.get('tong').get('duongtinh-nam').twentyFiveToTwentyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').thirtyToThirtyFour == null ? '0'         : form.table02Forms.get('tong').get('duongtinh-nam').thirtyToThirtyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').thirtyFiveToThirtyNine == null ? '0'     : form.table02Forms.get('tong').get('duongtinh-nam').thirtyFiveToThirtyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').fortyToFortyFour == null ? '0'           : form.table02Forms.get('tong').get('duongtinh-nam').fortyToFortyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').fortyFiveToFortyNine == null ? '0'       : form.table02Forms.get('tong').get('duongtinh-nam').fortyFiveToFortyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').overFifty == null ? '0'                  : form.table02Forms.get('tong').get('duongtinh-nam').overFifty}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nam').sum == null ? '0'                        : form.table02Forms.get('tong').get('duongtinh-nam').sum }" ></td>
+            <!--Nho 6 Nữ-->
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').unDefinedAge  == null ? '0'               : form.table02Forms.get('tong').get('duongtinh-nu').unDefinedAge}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').underFifteen  == null ? '0'               : form.table02Forms.get('tong').get('duongtinh-nu').underFifteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').fifteenToNineteen  == null ? '0'          : form.table02Forms.get('tong').get('duongtinh-nu').fifteenToNineteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').twentyToTwentyFour  == null ? '0'         : form.table02Forms.get('tong').get('duongtinh-nu').twentyToTwentyFour}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').twentyFiveToTwentyNine  == null ? '0'     : form.table02Forms.get('tong').get('duongtinh-nu').twentyFiveToTwentyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').thirtyToThirtyFour  == null ? '0'         : form.table02Forms.get('tong').get('duongtinh-nu').thirtyToThirtyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').thirtyFiveToThirtyNine  == null ? '0'     : form.table02Forms.get('tong').get('duongtinh-nu').thirtyFiveToThirtyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').fortyToFortyFour  == null ? '0'           : form.table02Forms.get('tong').get('duongtinh-nu').fortyToFortyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').fortyFiveToFortyNine  == null ? '0'       : form.table02Forms.get('tong').get('duongtinh-nu').fortyFiveToFortyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').overFifty  == null ? '0'                  : form.table02Forms.get('tong').get('duongtinh-nu').overFifty}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('duongtinh-nu').sum == null ? '0'                         : form.table02Forms.get('tong').get('duongtinh-nu').sum }" ></td>
+            <!--Lon 12 Nam-->
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').unDefinedAge  == null ? '0'                 : form.table02Forms.get('tong').get('amtinh-nam').unDefinedAge}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').underFifteen  == null ? '0'                 : form.table02Forms.get('tong').get('amtinh-nam').underFifteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').fifteenToNineteen  == null ? '0'            : form.table02Forms.get('tong').get('amtinh-nam').fifteenToNineteen}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').twentyToTwentyFour  == null ? '0'           : form.table02Forms.get('tong').get('amtinh-nam').twentyToTwentyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').twentyFiveToTwentyNine  == null ? '0'       : form.table02Forms.get('tong').get('amtinh-nam').twentyFiveToTwentyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').thirtyToThirtyFour  == null ? '0'           : form.table02Forms.get('tong').get('amtinh-nam').thirtyToThirtyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').thirtyFiveToThirtyNine  == null ? '0'       : form.table02Forms.get('tong').get('amtinh-nam').thirtyFiveToThirtyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').fortyToFortyFour  == null ? '0'             : form.table02Forms.get('tong').get('amtinh-nam').fortyToFortyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').fortyFiveToFortyNine  == null ? '0'         : form.table02Forms.get('tong').get('amtinh-nam').fortyFiveToFortyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').overFifty  == null ? '0'                    : form.table02Forms.get('tong').get('amtinh-nam').overFifty}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nam').sum == null ? '0'                           : form.table02Forms.get('tong').get('amtinh-nam').sum } " ></td>
+            <!--Lon 12 Nữ-->
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').unDefinedAge  == null ? '0'                  : form.table02Forms.get('tong').get('amtinh-nu').unDefinedAge}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').underFifteen  == null ? '0'                  : form.table02Forms.get('tong').get('amtinh-nu').underFifteen}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').fifteenToNineteen  == null ? '0'             : form.table02Forms.get('tong').get('amtinh-nu').fifteenToNineteen}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').twentyToTwentyFour  == null ? '0'            : form.table02Forms.get('tong').get('amtinh-nu').twentyToTwentyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').twentyFiveToTwentyNine  == null ? '0'        : form.table02Forms.get('tong').get('amtinh-nu').twentyFiveToTwentyNine}"></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').thirtyToThirtyFour  == null ? '0'            : form.table02Forms.get('tong').get('amtinh-nu').thirtyToThirtyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').thirtyFiveToThirtyNine  == null ? '0'        : form.table02Forms.get('tong').get('amtinh-nu').thirtyFiveToThirtyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').fortyToFortyFour  == null ? '0'              : form.table02Forms.get('tong').get('amtinh-nu').fortyToFortyFour}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').fortyFiveToFortyNine  == null ? '0'          : form.table02Forms.get('tong').get('amtinh-nu').fortyFiveToFortyNine}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').overFifty  == null ? '0'                     : form.table02Forms.get('tong').get('amtinh-nu').overFifty}" ></td>
+            <td class="text-center" th:utext="${form.table02Forms.get('tong').get('amtinh-nu').sum == null ? '0'                            : form.table02Forms.get('tong').get('amtinh-nu').sum } " ></td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    <p class="text-uppercase text-red">Bảng 03: Kết quả xét nghiệm mới nhiễm theo cơ sở dịch vụ và nhóm đối tượng</p>
+    <table class="table-report table table-striped table-bordered table-hover table-full">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap" rowspan="2" >Tên cơ sở</th>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap tt03-width-tr" rowspan="2">Loại hình dịch vụ</th>
+                <th class="text-center vertical-align-middle success duongtinh b2-title-width" colspan="7" >Kết quả xét nghiệm mới nhiễm <6 tháng theo nhóm đối tượng<br>ngày xét nghiệm mới nhiễm từ <span th:utext="${form.startDate != null ? form.startDate : ''}"></span> đến <span th:utext="${form.endDate != null ? form.endDate : ''}"></span></th>
+                <th class="text-center vertical-align-middle success amtinh b2-title-width" colspan="7" >Kết quả xét nghiệm mới nhiễm >12 tháng theo nhóm đối tượng<br>ngày xét nghiệm mới nhiễm từ <span th:utext="${form.startDate != null ? form.startDate : ''}"></span> đến <span th:utext="${form.endDate != null ? form.endDate : ''}"></span></th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Nghiện chích ma túy</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Phụ nữ bán dâm</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Nam có quan hệ tình dục với nam</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Người chuyển giới</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Phạm nhân</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Khác</th>
+                <th class="text-center vertical-align-middle success duongtinh">Tổng</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Nghiện chích ma túy</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Phụ nữ bán dâm</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Nam có quan hệ tình dục với nam</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Người chuyển giới</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Phạm nhân</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Khác</th>
+                <th class="text-center vertical-align-middle success amtinh">Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="item, iter : ${form.table03Forms}" th:if="${form.table03Forms!= null}" >
+            <tr th:if="${item.getKey() != 'tong'}">
+                <td class="text-left" th:utext="${form.siteName}" ></td>
+                <td class="text-left" th:utext="${serviceOptions.get(item.key)}" ></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').ncmt == 0 ? ''                : item.value.get('nho6').ncmt}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupID:\''+${form.objects.get('1') == null ? '-1' : '1' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').phuNuBanDam == 0 ? ''         : item.value.get('nho6').phuNuBanDam}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupID:\''+${form.objects.get('2') == null ? '-1' : '2' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').msm == 0 ? ''                 : item.value.get('nho6').msm}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupID:\''+${form.objects.get('3') == null ? '-1' : '3' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').chuyenGioi == 0 ? ''          : item.value.get('nho6').chuyenGioi}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupID:\''+${form.objects.get('13') == null ? '-1' : '13' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').phamNhan == 0 ? ''            : item.value.get('nho6').phamNhan}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupID:\''+${form.objects.get('19') == null ? '-1' : '19' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').khac == 0 ? ''                : item.value.get('nho6').khac}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('nho6') == null || item.value.get('nho6').sum == 0 ? ''                 : item.value.get('nho6').sum}" th:attr="ng-click='detailReportLine({earlyHiv:\'4\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('nho6') == null ? '' : item.value.get('nho6').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').ncmt == 0 ? ''                      : item.value.get('lon12').ncmt}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupID:\''+${form.objects.get('1') == null ? '-1' : '1' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').phuNuBanDam == 0 ? ''               : item.value.get('lon12').phuNuBanDam}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupID:\''+${form.objects.get('2') == null ? '-1' : '2' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').msm == 0 ? ''                       : item.value.get('lon12').msm}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupID:\''+${form.objects.get('3') == null ? '-1' : '3' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').chuyenGioi == 0 ? ''                : item.value.get('lon12').chuyenGioi}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupID:\''+${form.objects.get('13') == null ? '-1' : '13' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').phamNhan == 0 ? ''                  : item.value.get('lon12').phamNhan}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupID:\''+${form.objects.get('19') == null ? '-1' : '19' }+'\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').khac == 0 ? ''                      : item.value.get('lon12').khac}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table03\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('lon12') == null || item.value.get('lon12').sum == 0 ? ''                       : item.value.get('lon12').sum}" th:attr="ng-click='detailReportLine({earlyHiv:\'2\', siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('lon12') == null ? '' : item.value.get('lon12').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table03\')'"></td>
+            </tr>
+        </th:block>
+        <tr th:if="${form.table03Forms!= null}">
+            <td class="text-left" th:utext="${form.siteName}" ></td>
+            <td class="text-left" >Tổng cộng</td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').ncmt == null ? '0'                                        : form.table03Forms.get('tong').get('nho6').ncmt}"></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').phuNuBanDam == null ? '0'                                 : form.table03Forms.get('tong').get('nho6').phuNuBanDam}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').msm == null ? '0'                                         : form.table03Forms.get('tong').get('nho6').msm}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').chuyenGioi == null ? '0'                                  : form.table03Forms.get('tong').get('nho6').chuyenGioi}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').phamNhan == null ? '0'                                    : form.table03Forms.get('tong').get('nho6').phamNhan}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').khac == null ? '0'                                        : form.table03Forms.get('tong').get('nho6').khac}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('nho6').sum == null ? '0'                                         : form.table03Forms.get('tong').get('nho6').sum}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').ncmt == null ? '0'                                       : form.table03Forms.get('tong').get('lon12').ncmt}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').phuNuBanDam == null ? '0'                                : form.table03Forms.get('tong').get('lon12').phuNuBanDam}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').msm == null ? '0'                                        : form.table03Forms.get('tong').get('lon12').msm}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').chuyenGioi == null ? '0'                                 : form.table03Forms.get('tong').get('lon12').chuyenGioi}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').phamNhan == null ? '0'                                   : form.table03Forms.get('tong').get('lon12').phamNhan}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').khac == null ? '0'                                       : form.table03Forms.get('tong').get('lon12').khac}" ></td>
+            <td class="text-center" th:utext="${form.table03Forms.get('tong').get('lon12').sum == null ? '0'                                        : form.table03Forms.get('tong').get('lon12').sum}" ></td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    
+    <!--Bảng 04-->
+    <p class="text-uppercase text-red">Bảng 04: Số khách hàng nhận dịch vụ HTC và quay lại nhận kết quả theo nhóm giới tính và nhóm tuổi</p>
+    <table class="table-report table table-striped table-bordered table-hover table-full" 
+           data-scrollY="auto" data-rowsGroup="0">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap" rowspan="3" style = "min-width: 80px;">Tên cơ sở</th>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap tt03-width-tr" rowspan="3"  style="min-width: 100px;">Loại hình dịch vụ</th>
+                <th class="text-center vertical-align-middle success duongtinh duongtinh-title" colspan="28" >Dương tính</th>
+                <th class="text-center vertical-align-middle success amtinh amtinh-title" colspan="28" >Âm tính</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="14" >Nam</th>
+                <th class="text-center vertical-align-middle success duongtinh" colspan="14" >Nữ</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="14" >Nam</th>
+                <th class="text-center vertical-align-middle success amtinh" colspan="14" >Nữ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+                <th class="text-center vertical-align-middle success object-size">Không rõ</th>
+                <th class="text-center vertical-align-middle success object-size">&lt;1 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">1-4 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">5-9 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">10-14 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">15-19 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">20-24 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">25-29 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">30-34 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">35-39 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">40-44 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">45-49 tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">50+ tuổi</th>
+                <th class="text-center vertical-align-middle success object-size">Tổng</th>
+            </tr>
+        </thead>
+        <tbody >
+        <th:block th:each="item, iter : ${form.table04Forms}" th:if="${form.table04Forms!= null }" >
+            <tr th:if="${item.getKey() != 'tong'}">
+                <td class="text-left sitename" th:utext="${form.siteName}" ></td>
+                <td class="text-left" th:utext="${serviceOptions.get(item.key)}" ></td>
+                <!--Dương tính NAM-->
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').unDefinedAge == 0 ? ''          : item.value.get('duongtinh-nam').unDefinedAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').underOneAge == 0 ? ''           : item.value.get('duongtinh-nam').underOneAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').oneToFour == 0 ? ''             : item.value.get('duongtinh-nam').oneToFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fiveToNine == 0 ? ''             : item.value.get('duongtinh-nam').fiveToNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').tenToFourteen == 0 ? ''         : item.value.get('duongtinh-nam').tenToFourteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fifteenToNineteen == 0 ? ''     : item.value.get('duongtinh-nam').fifteenToNineteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').twentyToTwentyFour == 0 ? ''    : item.value.get('duongtinh-nam').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').twentyFiveToTwentyNine == 0 ? ''    : item.value.get('duongtinh-nam').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').thirtyToThirtyFour == 0 ? ''    : item.value.get('duongtinh-nam').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').thirtyFiveToThirtyNine == 0 ? ''    : item.value.get('duongtinh-nam').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fortyToFortyFour == 0 ? ''    : item.value.get('duongtinh-nam').fortyToFortyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').fortyFiveToFortyNine == 0 ? ''    : item.value.get('duongtinh-nam').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').overFifty == 0 ? ''             : item.value.get('duongtinh-nam').overFifty}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nam') == null || item.value.get('duongtinh-nam').sum == 0 ? '' : item.value.get('duongtinh-nam').sum }" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nam') == null ? '' : item.value.get('duongtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table04p\')'"></td>
+                <!--Dương tính Nữ-->
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').unDefinedAge == 0 ? ''          : item.value.get('duongtinh-nu').unDefinedAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').underOneAge == 0 ? ''           : item.value.get('duongtinh-nu').underOneAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').oneToFour == 0 ? ''           : item.value.get('duongtinh-nu').oneToFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fiveToNine == 0 ? ''           : item.value.get('duongtinh-nu').fiveToNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').tenToFourteen == 0 ? ''         : item.value.get('duongtinh-nu').tenToFourteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fifteenToNineteen == 0 ? ''     : item.value.get('duongtinh-nu').fifteenToNineteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').twentyToTwentyFour == 0 ? ''    : item.value.get('duongtinh-nu').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').twentyFiveToTwentyNine == 0 ? ''    : item.value.get('duongtinh-nu').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').thirtyToThirtyFour == 0 ? ''    : item.value.get('duongtinh-nu').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').thirtyFiveToThirtyNine == 0 ? ''    : item.value.get('duongtinh-nu').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fortyToFortyFour == 0 ? ''    : item.value.get('duongtinh-nu').fortyToFortyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').fortyFiveToFortyNine == 0 ? ''    : item.value.get('duongtinh-nu').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').overFifty == 0 ? ''             : item.value.get('duongtinh-nu').overFifty}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh-nu') == null || item.value.get('duongtinh-nu').sum == 0 ? '' : item.value.get('duongtinh-nu').sum }" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh-nu') == null ? '' : item.value.get('duongtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table04p\')'"></td>
+                <!--Âm tính Nam-->
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').unDefinedAge == 0 ? ''          : item.value.get('amtinh-nam').unDefinedAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').underOneAge == 0 ? ''           : item.value.get('amtinh-nam').underOneAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').oneToFour == 0 ? ''           : item.value.get('amtinh-nam').oneToFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fiveToNine == 0 ? ''           : item.value.get('amtinh-nam').fiveToNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').tenToFourteen == 0 ? ''         : item.value.get('amtinh-nam').tenToFourteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fifteenToNineteen == 0 ? ''     : item.value.get('amtinh-nam').fifteenToNineteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').twentyToTwentyFour == 0 ? ''    : item.value.get('amtinh-nam').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').twentyFiveToTwentyNine == 0 ? '' : item.value.get('amtinh-nam').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').thirtyToThirtyFour == 0 ? '' : item.value.get('amtinh-nam').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('amtinh-nam').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fortyToFortyFour == 0 ? '' : item.value.get('amtinh-nam').fortyToFortyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').fortyFiveToFortyNine == 0 ? '' : item.value.get('amtinh-nam').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').overFifty == 0 ? ''             : item.value.get('amtinh-nam').overFifty}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nam') == null || item.value.get('amtinh-nam').sum == 0 ? '' : item.value.get('amtinh-nam').sum } " th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'1\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nam') == null ? '' : item.value.get('amtinh-nam').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table04n\')'"></td>
+                <!--Âm tính Nữ-->
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').unDefinedAge == 0 ? ''          : item.value.get('amtinh-nu').unDefinedAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'2\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').underOneAge == 0 ? ''           : item.value.get('amtinh-nu').underOneAge}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'1\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'3\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').oneToFour == 0 ? ''             : item.value.get('amtinh-nu').oneToFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'1\', toAge:\'4\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fiveToNine == 0 ? ''             : item.value.get('amtinh-nu').fiveToNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'5\', toAge:\'9\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').tenToFourteen == 0 ? ''         : item.value.get('amtinh-nu').tenToFourteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'10\', toAge:\'14\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fifteenToNineteen == 0 ? ''     : item.value.get('amtinh-nu').fifteenToNineteen}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'15\', toAge:\'19\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').twentyToTwentyFour == 0 ? ''    : item.value.get('amtinh-nu').twentyToTwentyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'20\', toAge:\'24\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').twentyFiveToTwentyNine == 0 ? '' : item.value.get('amtinh-nu').twentyFiveToTwentyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'25\', toAge:\'29\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').thirtyToThirtyFour == 0 ? '' : item.value.get('amtinh-nu').thirtyToThirtyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'30\', toAge:\'34\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').thirtyFiveToThirtyNine == 0 ? '' : item.value.get('amtinh-nu').thirtyFiveToThirtyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'35\', toAge:\'39\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fortyToFortyFour == 0 ? '' : item.value.get('amtinh-nu').fortyToFortyFour}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'40\', toAge:\'44\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').fortyFiveToFortyNine == 0 ? '' : item.value.get('amtinh-nu').fortyFiveToFortyNine}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'45\', toAge:\'49\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').overFifty == 0 ? ''             : item.value.get('amtinh-nu').overFifty}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'50\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table04n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh-nu') == null || item.value.get('amtinh-nu').sum == 0 ? '' : item.value.get('amtinh-nu').sum } " th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', genderID:\'2\', fromAge:\'0\', toAge:\'200\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh-nu') == null ? '' : item.value.get('amtinh-nu').serviceID}+'\', objectGroupIDs: '+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table04n\')'"></td>
+            </tr>
+        </th:block>
+            <tr th:if="${form.table05Forms!= null}">
+                <td class="text-left" th:utext="${form.siteName}" ></td>
+                <td class="text-left"> Tổng cộng</td>
+                <!--Dương tính NAM-->
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').unDefinedAge == null ? '0'           : form.table04Forms.get('tong').get('duongtinh-nam').unDefinedAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').underOneAge == 0 ? '0'               : form.table04Forms.get('tong').get('duongtinh-nam').underOneAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').oneToFour == 0 ? '0'                 : form.table04Forms.get('tong').get('duongtinh-nam').oneToFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').fiveToNine == 0 ? '0'                : form.table04Forms.get('tong').get('duongtinh-nam').fiveToNine}"></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').tenToFourteen == 0 ? '0'             : form.table04Forms.get('tong').get('duongtinh-nam').tenToFourteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').fifteenToNineteen == 0 ? '0'         : form.table04Forms.get('tong').get('duongtinh-nam').fifteenToNineteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').twentyToTwentyFour == 0 ? '0'        : form.table04Forms.get('tong').get('duongtinh-nam').twentyToTwentyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').twentyFiveToTwentyNine == 0 ? '0'    : form.table04Forms.get('tong').get('duongtinh-nam').twentyFiveToTwentyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').thirtyToThirtyFour == 0 ? '0'        : form.table04Forms.get('tong').get('duongtinh-nam').thirtyToThirtyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').thirtyFiveToThirtyNine == 0 ? '0'    : form.table04Forms.get('tong').get('duongtinh-nam').thirtyFiveToThirtyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').fortyToFortyFour == 0 ? '0'          : form.table04Forms.get('tong').get('duongtinh-nam').fortyToFortyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').fortyFiveToFortyNine == 0 ? '0'      : form.table04Forms.get('tong').get('duongtinh-nam').fortyFiveToFortyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').overFifty == 0 ? '0'                 : form.table04Forms.get('tong').get('duongtinh-nam').overFifty}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nam').sum == 0 ? '0'                       : form.table04Forms.get('tong').get('duongtinh-nam').sum }" ></td>
+                <!--Dương tính Nữ-->
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').unDefinedAge  == 0 ? '0'               : form.table04Forms.get('tong').get('duongtinh-nu').unDefinedAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').underOneAge  == 0 ? '0'                : form.table04Forms.get('tong').get('duongtinh-nu').underOneAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').oneToFour  == 0 ? '0'                  : form.table04Forms.get('tong').get('duongtinh-nu').oneToFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').fiveToNine  == 0 ? '0'                 : form.table04Forms.get('tong').get('duongtinh-nu').fiveToNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').tenToFourteen  == 0 ? '0'              : form.table04Forms.get('tong').get('duongtinh-nu').tenToFourteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').fifteenToNineteen  == 0 ? '0'          : form.table04Forms.get('tong').get('duongtinh-nu').fifteenToNineteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').twentyToTwentyFour  == 0 ? '0'         : form.table04Forms.get('tong').get('duongtinh-nu').twentyToTwentyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').twentyFiveToTwentyNine  == 0 ? '0'     : form.table04Forms.get('tong').get('duongtinh-nu').twentyFiveToTwentyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').thirtyToThirtyFour  == 0 ? '0'         : form.table04Forms.get('tong').get('duongtinh-nu').thirtyToThirtyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').thirtyFiveToThirtyNine  == 0 ? '0'     : form.table04Forms.get('tong').get('duongtinh-nu').thirtyFiveToThirtyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').fortyToFortyFour  == 0 ? '0'           : form.table04Forms.get('tong').get('duongtinh-nu').fortyToFortyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').fortyFiveToFortyNine  == 0 ? '0'       : form.table04Forms.get('tong').get('duongtinh-nu').fortyFiveToFortyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').overFifty  == 0 ? '0'                  : form.table04Forms.get('tong').get('duongtinh-nu').overFifty}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('duongtinh-nu').sum == 0 ? '0'                         : form.table04Forms.get('tong').get('duongtinh-nu').sum }" ></td>
+                <!--Âm tính Nam-->
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').unDefinedAge  == 0 ? '0'                 : form.table04Forms.get('tong').get('amtinh-nam').unDefinedAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').underOneAge  == 0 ? '0'                  : form.table04Forms.get('tong').get('amtinh-nam').underOneAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').oneToFour  == 0 ? '0'                    : form.table04Forms.get('tong').get('amtinh-nam').oneToFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').fiveToNine  == 0 ? '0'                   : form.table04Forms.get('tong').get('amtinh-nam').fiveToNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').tenToFourteen  == 0 ? '0'                : form.table04Forms.get('tong').get('amtinh-nam').tenToFourteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').fifteenToNineteen  == 0 ? '0'            : form.table04Forms.get('tong').get('amtinh-nam').fifteenToNineteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').twentyToTwentyFour  == 0 ? '0'           : form.table04Forms.get('tong').get('amtinh-nam').twentyToTwentyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').twentyFiveToTwentyNine  == 0 ? '0'       : form.table04Forms.get('tong').get('amtinh-nam').twentyFiveToTwentyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').thirtyToThirtyFour  == 0 ? '0'           : form.table04Forms.get('tong').get('amtinh-nam').thirtyToThirtyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').thirtyFiveToThirtyNine  == 0 ? '0'       : form.table04Forms.get('tong').get('amtinh-nam').thirtyFiveToThirtyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').fortyToFortyFour  == 0 ? '0'             : form.table04Forms.get('tong').get('amtinh-nam').fortyToFortyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').fortyFiveToFortyNine  == 0 ? '0'         : form.table04Forms.get('tong').get('amtinh-nam').fortyFiveToFortyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').overFifty  == 0 ? '0'                    : form.table04Forms.get('tong').get('amtinh-nam').overFifty}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nam').sum == 0 ? '0'                           : form.table04Forms.get('tong').get('amtinh-nam').sum } " ></td>
+                <!--Âm tính Nữ-->
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').unDefinedAge  == 0 ? '0'                  : form.table04Forms.get('tong').get('amtinh-nu').unDefinedAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').underOneAge  == 0 ? '0'                   : form.table04Forms.get('tong').get('amtinh-nu').underOneAge}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').oneToFour  == 0 ? '0'                     : form.table04Forms.get('tong').get('amtinh-nu').oneToFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').fiveToNine  == 0 ? '0'                    : form.table04Forms.get('tong').get('amtinh-nu').fiveToNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').tenToFourteen  == 0 ? '0'                 : form.table04Forms.get('tong').get('amtinh-nu').tenToFourteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').fifteenToNineteen  == 0 ? '0'             : form.table04Forms.get('tong').get('amtinh-nu').fifteenToNineteen}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').twentyToTwentyFour  == 0 ? '0'            : form.table04Forms.get('tong').get('amtinh-nu').twentyToTwentyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').twentyFiveToTwentyNine  == 0 ? '0'        : form.table04Forms.get('tong').get('amtinh-nu').twentyFiveToTwentyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').thirtyToThirtyFour  == 0 ? '0'            : form.table04Forms.get('tong').get('amtinh-nu').thirtyToThirtyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').thirtyFiveToThirtyNine  == 0 ? '0'        : form.table04Forms.get('tong').get('amtinh-nu').thirtyFiveToThirtyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').fortyToFortyFour  == 0 ? '0'              : form.table04Forms.get('tong').get('amtinh-nu').fortyToFortyFour}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').fortyFiveToFortyNine  == 0 ? '0'          : form.table04Forms.get('tong').get('amtinh-nu').fortyFiveToFortyNine}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').overFifty  == 0 ? '0'                     : form.table04Forms.get('tong').get('amtinh-nu').overFifty}" ></td>
+                <td class="text-center" th:utext="${form.table04Forms.get('tong').get('amtinh-nu').sum == 0 ? '0'                            : form.table04Forms.get('tong').get('amtinh-nu').sum } " ></td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <p class="text-uppercase text-red">Bảng 05: Số khách hàng nhận dịch vụ HTC và quay lại nhận kết quả theo nhóm đối tượng</p>
+    <table class="table-report table table-striped table-bordered table-hover table-full">
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap" rowspan="2" >Tên cơ sở</th>
+                <th class="text-center vertical-align-middle success huyen-dichvu wrap tt03-width-tr" rowspan="2">Loại hình dịch vụ</th>
+                <th class="text-center vertical-align-middle success duongtinh b2-title-width" colspan="7" >Dương tính</th>
+                <th class="text-center vertical-align-middle success amtinh b2-title-width" colspan="7" >Âm tính</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Nghiện chích ma túy</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Phụ nữ bán dâm</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Nam có quan hệ tình dục với nam</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Người chuyển giới</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Phạm nhân</th>
+                <th class="text-center vertical-align-middle success duongtinh wrap">Khác</th>
+                <th class="text-center vertical-align-middle success duongtinh">Tổng</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Nghiện chích ma túy</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Phụ nữ bán dâm</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Nam có quan hệ tình dục với nam</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Người chuyển giới</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Phạm nhân</th>
+                <th class="text-center vertical-align-middle success amtinh wrap">Khác</th>
+                <th class="text-center vertical-align-middle success amtinh">Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="item, iter : ${form.table05Forms}" th:if="${form.table05Forms!= null}">
+            <tr th:if="${item.getKey() != 'tong'}">
+                <td class="text-left" th:utext="${form.siteName}" ></td>
+                <td class="text-left" th:utext="${serviceOptions.get(item.key)}" ></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').ncmt == 0 ? ''                : item.value.get('duongtinh').ncmt}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('1') == null ? '-1' : '1' }+'\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').phuNuBanDam == 0 ? ''         : item.value.get('duongtinh').phuNuBanDam}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('2') == null ? '-1' : '2' }+'\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').msm == 0 ? ''                 : item.value.get('duongtinh').msm}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('3') == null ? '-1' : '3' }+'\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').chuyenGioi == 0 ? ''          : item.value.get('duongtinh').chuyenGioi}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('13') == null ? '-1' : '13' }+'\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').phamNhan == 0 ? ''            : item.value.get('duongtinh').phamNhan}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('19') == null ? '-1' : '19' }+'\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').khac == 0 ? ''                : item.value.get('duongtinh').khac}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table05p\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('duongtinh') == null || item.value.get('duongtinh').sum == 0 ? ''                 : item.value.get('duongtinh').sum}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('duongtinh') == null ? '' : item.value.get('duongtinh').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table05p\')'"></td>
+                
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').ncmt == 0 ? ''                      : item.value.get('amtinh').ncmt}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('1') == null ? '-1' : '1' }+'\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').phuNuBanDam == 0 ? ''               : item.value.get('amtinh').phuNuBanDam}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('2') == null ? '-1' : '2' }+'\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').msm == 0 ? ''                       : item.value.get('amtinh').msm}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('3') == null ? '-1' : '3' }+'\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').chuyenGioi == 0 ? ''                : item.value.get('amtinh').chuyenGioi}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('13') == null ? '-1' : '13' }+'\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').phamNhan == 0 ? ''                  : item.value.get('amtinh').phamNhan}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupID:\''+${form.objects.get('19') == null ? '-1' : '19' }+'\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').khac == 0 ? ''                      : item.value.get('amtinh').khac}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+', flag:\'1\'}, \'table05n\')'"></td>
+                <td class="text-center" th:utext="${item.value.get('amtinh') == null || item.value.get('amtinh').sum == 0 ? ''                       : item.value.get('amtinh').sum}" th:attr="ng-click='detailReportLine({siteID:\''+${form.siteID}+'\', fromTime:\''+${form.startDate}+'\', toTime:\''+${form.endDate}+'\', serviceID:\''+${item.value.get('amtinh') == null ? '' : item.value.get('amtinh').serviceID}+'\', objectGroupIDs:'+${T(com.gms.components.TextUtils).ketMapToJson(form.objects)}+'}, \'table05n\')'"></td>
+            </tr>
+        </th:block>
+        <tr th:if="${form.table05Forms!= null}">
+            <td class="text-left" th:utext="${form.siteName}" ></td>
+            <td class="text-left" >Tổng cộng</td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').ncmt == null ? '0'                                : form.table05Forms.get('tong').get('duongtinh').ncmt}"></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').phuNuBanDam == null ? '0'                         : form.table05Forms.get('tong').get('duongtinh').phuNuBanDam}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').msm == null ? '0'                                 : form.table05Forms.get('tong').get('duongtinh').msm}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').chuyenGioi == null ? '0'                           : form.table05Forms.get('tong').get('duongtinh').chuyenGioi}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').phamNhan == null ? '0'                             : form.table05Forms.get('tong').get('duongtinh').phamNhan}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').khac == null ? '0'                                 : form.table05Forms.get('tong').get('duongtinh').khac}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('duongtinh').sum == null ? '0'                                  : form.table05Forms.get('tong').get('duongtinh').sum}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').ncmt == null ? '0'                                       : form.table05Forms.get('tong').get('amtinh').ncmt}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').phuNuBanDam == null ? '0'                                : form.table05Forms.get('tong').get('amtinh').phuNuBanDam}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').msm == null ? '0'                                        : form.table05Forms.get('tong').get('amtinh').msm}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').chuyenGioi == null ? '0'                                 : form.table05Forms.get('tong').get('amtinh').chuyenGioi}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').phamNhan == null ? '0'                                   : form.table05Forms.get('tong').get('amtinh').phamNhan}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').khac == null ? '0'                                       : form.table05Forms.get('tong').get('amtinh').khac}" ></td>
+            <td class="text-center" th:utext="${form.table05Forms.get('tong').get('amtinh').sum == null ? '0'                                        : form.table05Forms.get('tong').get('amtinh').sum}" ></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-th-fragment="table-test-book(form)">
+    <table class="table table-striped table-bordered table-full table-report" data-scrollY="auto" ng-cloak>
+        <thead>
+            <tr>
+                <th class="text-center vertical-align-middle success " rowspan="3">STT</th>
+                <th class="text-center vertical-align-middle success " colspan="6" >THÔNG TIN KHÁCH HÀNG</th>
+                <th class="text-center vertical-align-middle success " rowspan="3" >NGÀY LẤY MẪU</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">NGÀY XÉT NGHIỆM</th>
+                <th class="text-center vertical-align-middle success " >KẾT QUẢ XÉT NGHIỆM</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">KẾT LUẬN</th>
+                <th class="text-center vertical-align-middle success " rowspan="3" >KẾT QUẢ KHẲNG ĐỊNH</th>
+                <th class="text-center vertical-align-middle success " rowspan="3">GHI CHÚ</th>
+                    <th class="text-center vertical-align-middle success " rowspan="3">TƯ VẤN VIÊN TRƯỚC XN</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success " rowspan="2">HỌ TÊN</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">MÃ SỐ</th>
+                <th class="text-center vertical-align-middle success " colspan="2">NĂM SINH</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">ĐỊA CHỈ</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">ĐỐI TƯỢNG</th>
+                <th class="text-center vertical-align-middle success " rowspan="2">SP<br/>(ghi rõ tên sinh phẩm)</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success ">Nam</th>
+                <th class="text-center vertical-align-middle success ">Nữ</th>
+            </tr>
+            <tr>
+                <th class="text-center vertical-align-middle success " >(1)</th>
+                <th class="text-center vertical-align-middle success " >(2)</th>
+                <th class="text-center vertical-align-middle success " >(3)</th>
+                <th class="text-center vertical-align-middle success " >(4)</th>
+                <th class="text-center vertical-align-middle success " >(5)</th>
+                <th class="text-center vertical-align-middle success " >(6)</th>
+                <th class="text-center vertical-align-middle success " >(7)</th>
+                <th class="text-center vertical-align-middle success " >(8)</th>
+                <th class="text-center vertical-align-middle success " >(9)</th>
+                <th class="text-center vertical-align-middle success " >(10)</th>
+                <th class="text-center vertical-align-middle success " >(11)</th>
+                <th class="text-center vertical-align-middle success " >(12)</th>
+                <th class="text-center vertical-align-middle success " >(13)</th>
+                <th class="text-center vertical-align-middle success " >(14)</th>
+            </tr>
+        </thead>
+        <tbody th:if="${form.table!= null}">
+            <tr th:each="item, iter : ${form.table}">
+                <td class="text-center" th:utext="${iter.index + 1}" ></td>
+                <td class="" th:utext="${item.patientName == ''? '  ' : item.patientName}" ></td>
+                <td class="text-center" th:utext="${item.code == '' ? '  ' : item.code}" ></td>
+                <td class="text-center" th:utext="${item.gender == '1' ? item.yearOfBirth : '' }" ></td>
+                <td class="text-center" th:utext="${item.gender == '2' ? item.yearOfBirth : '' }" ></td>
+                <td class="" th:utext="${item.permanentAddress == ''? '  ' : item.permanentAddress}" ></td>
+                <td class="" th:utext="${item.objectGroupID == ''? '  ' : item.objectGroupID}" ></td>
+                <td class="text-center" th:utext="${item.preTestTime == ''? '  ' : item.preTestTime}" ></td>
+                <td class="text-center" th:utext="${item.preTestTime == ''? '  ' : item.preTestTime}" ></td>
+                <td class="text-center" ><b><span th:utext="${item.bioNameResult == ''? '  ' : item.bioNameResult}"></span></b><br/><span th:utext="${item.bioName == ''? '  ' : item.bioName}"></span></td>
+                <td class="text-center" th:utext="${item.testResultsID == ''? '  ' : item.testResultsID}" ></td>
+                <td class="text-center" th:utext="${item.confirmResultID == ''? '  ' : item.confirmResultID}" ></td>
+                <td class="text-center" th:utext="${item.note == ''? '  ' : item.note}" ></td>
+                <td class="text-center" th:utext="${item.staffBeforeTestID == ''? '  ' : item.staffBeforeTestID}" ></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="row margin-left-5" th:if="${form.table != null}">
+        Tổng số <span th:utext="${form.table.size()}"></span> khách hàng xét nghiệm sàng lọc.
+    </div>
+</div>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${form}]];
+                        var urlVisitNew = [[${ T(com.gms.components.UrlUtils).opcArvVisitNew(arv.ID)}]];
+                        var urlPrinted = '/report/opc-visit/print.html';
+                        var arv = [[${arv}]];
+                        var visit = [[${visit}]];
+                        var feedback = [[${feedback}]];
+                        var isARV = [[${isARV}]];
+                        var isOpcManager = [[${isOpcManager}]];
+                        var pOptions = [[${options}]];
+                        var province_id = [[${currentSite.provinceID}]];
+                        var district_id = [[${currentSite.districtID}]];
+                        var ward_id = [[${currentSite.wardID}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).opcVisit(arv.ID, 'all')}" 
+                       class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span>Bệnh án</span>
+                    <b th:text="${' #' + arv.code}" class="text-danger text-uppercase" ></b>
+                    <small th:text="${title}" ></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).opcArvIndex()}">Điều trị ngoại trú</a></li>
+                    <li>
+                        <a th:href="${T(com.gms.components.UrlUtils).opcArvVisitView(arv.ID, visit.ID)}"  ><span th:text="${smallTitle}" ></span></a>
+                    </li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="visit_view" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/opc_arv/widget :: opc-tab('visit', ${arv.ID})" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${form.ID == null || form.ID == '' ? T(com.gms.components.UrlUtils).opcArvVisitNew(arv.ID) : T(com.gms.components.UrlUtils).opcArvVisitUpdate(arv.ID, visit.ID)}" 
+                          th:object="${form}"
+                          method="post"
+                          name="visit_view"
+                          id="visit_view"
+                          ng-submit="register(visit_view, $event)"
+                          ng-validate="validationOptions">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        Thông tin điều trị
+                                    </h4>
+                                </div>
+                                <div class="box-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Giai đoạn điều trị:', 'stageID', true, ${options.get('treatment-stage')}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('BN có thẻ BHYT:', 'insurance', true, ${options.get(T(com.gms.entity.db.ParameterEntity).HAS_HEALTH_INSURANCE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Số thẻ BHYT:', 'insuranceNo', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Loại thẻ BHYT:', 'insuranceType', false, ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_TYPE)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-text('Nơi ĐK KCB ban đầu:', 'insuranceSite', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày hết hạn thẻ BHYT:', 'insuranceExpiry', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Tỷ lệ thanh toán BHYT(%):', 'insurancePay', false, ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_PAY)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: select('Tuyến đăng ký bảo hiểm:', 'route', false, ${options.get(T(com.gms.entity.db.ParameterEntity).ROUTE)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày khám:', 'lastExaminationTime', true, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Bậc phác đồ hiện tại:', 'treatmentRegimenStage', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Phác đồ hiện tại:', 'treatmentRegimenID', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN)}, '')"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày thay đổi bậc phác đồ:', 'regimenStageDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày thay đổi phác đồ:', 'regimenDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/gridview :: select-model('Bậc phác đồ cũ:', 'oldTreatmentRegimenStage', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGINMEN_STAGE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/gridview :: select-model('Phác đồ cũ:', 'oldTreatmentRegimenID', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_REGIMEN)}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" >
+                                            <div data-th-replace="widget/form :: input-text('Lý do thay đổi:', 'causesChange', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Mạch (lần/phút):', 'circuit', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Huyết áp(mmHg):', 'bloodPressure', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Thân nhiệt (độ C):', 'bodyTemperature', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Chiều cao (cm):', 'patientHeight', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Cân nặng (kg):', 'patientWeight', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Lâm sàng:', 'clinical', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Tuân thủ điều trị:', 'medicationAdherence', false, ${options.get(T(com.gms.entity.db.ParameterEntity).MEDICATION_ADHERENCE)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: select('Tư vấn tăng cường tuân thủ điều trị:', 'consult', false, ${options.get('has')}, '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" >
+                                            <!--<div data-th-replace="widget/form :: input-text('Chẩn đoán:', 'diagnostic', false, '', '')"></div>-->
+                                            <div data-th-replace="widget/form :: textarea('Chẩn đoán:', 'diagnostic', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">    
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-text('Số ngày nhận thuốc:', 'daysReceived', false, '', '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày hẹn khám:', 'appointmentTime', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày đầu tiên cấp thuốc nhiều tháng:', 'supplyMedicinceDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày nhận thuốc tại xã:', 'receivedWardDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12" >
+                                            <div data-th-replace="widget/form :: input-text('Lời dặn đơn thuốc:', 'msg', false, '', '')"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row"> 
+                                        <div class="form-group col-md-12">
+                                            <label>Ghi chú</label>
+                                            <textarea class="form-control" rows="3" id="note" th:field="*{note}" th:attr="ng-model='note'"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box box-default box-solid">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        Thông tin phụ nữ mang thai nhiễm HIV
+                                    </h4>
+                                </div>
+                                <div class="box-body">  
+                                    <div class="row"> 
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/gridview :: select-model('Đối tượng:', 'objectID', false, ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}, '')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày bắt đầu thai kỳ:', 'pregnantStartDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3" >
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày kết thúc thai kỳ (chuyển dạ, đẻ):', 'pregnantEndDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div data-th-replace="widget/form :: input-date-model('Ngày dự sinh:', 'birthPlanDate', false, 'dd/mm/yyyy', 'Định dạng nhập: Ngày/tháng/năm')"></div>
+                                        </div>
+                                    </div>
+                                    <div ng-show="objectID == '5' || objectID == '5.1' || objectID == '5.2'">
+                                        <p><label class="text-bold">Thông tin trẻ sinh ra từ mẹ nhiễm HIV</label></p>
+                                        <div class="box box-default box-solid">
+                                            <input type="hidden" id="start_count_value"  name="start_count_value" value="" />
+                                            <div class="box-body">
+                                                <table ng-cloak class="table table-striped table-bordered table-sm table-full" 
+                                                       data-scrollY="auto" data-rightColumns="0" data-leftColumns="0" >
+                                                    <thead id = "listPartner">
+                                                        <tr class="text-center vertical-align-middle success th-fieldwrapper">
+                                                            <th class="text-center "><li class="fa fa-gear"></li></th>
+                                                            <th class="text-center th-agency" style="width:150px;">Ngày sinh</th>
+                                                            <th class="text-center th-agency" >Ngày BĐ dự phòng ARV</th>
+                                                            <th class="text-center th-agency" >Ngày KT dự phòng ARV</th>
+                                                            <th class="text-center th-agency" >Ngày BĐ Cotrimoxazole</th>
+                                                            <th class="text-center th-agency" >Ngày KT Cotrimoxazole</th>
+                                                            <th class="text-center th-agency" >Ngày lấy mẫu PCR lần 1</th>
+                                                            <th class="text-center th-agency" >Ngày XN PCR lần 1</th>
+                                                            <th class="text-center th-agency" >Kết quả XN PCR lần 1</th>
+                                                            <th class="text-center th-agency" >Ngày lấy mẫu PCR lần 2</th>
+                                                            <th class="text-center th-agency" >Ngày XN PCR lần 2</th>
+                                                            <th class="text-center th-agency" >Kết quả XN PCR lần 2</th>
+                                                            <th class="text-center th-agency" >Ngày điều trị ARV</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id = "listPartnerBody">
+                                                        <tr th:each="child, itemStat : *{childs}" class="fieldwrapper" th:if="*{childs != null}">
+                                                            <td class="text-center  vertical-align-middle order td_agency" ><li class="fa fa-gear"></li></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].dob}" />
+                                                                <input type="hidden" th:field="*{childs[__${itemStat.index}__].ID}">
+                                                            </td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].preventiveDate}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].preventiveEndDate}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].cotrimoxazoleFromTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].cotrimoxazoleToTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrBloodOneTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrOneTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency">
+                                                                <select id ="alertType" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrOneResult}" >
+                                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS_PCR)}" th:value="${instance.key}" th:utext="${instance.value}" ></option>
+                                                                </select>
+                                                            </td>
+                                                            
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrBloodTwoTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrTwoTime}" /></td>
+                                                            <td class="text-center vertical-align-top td_agency">
+                                                                <select id ="alertType" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].pcrTwoResult}" >
+                                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_RESULTS_PCR)}" th:value="${instance.key}" th:utext="${instance.value}" ></option>
+                                                                </select>
+                                                            </td>
+                                                            <td class="text-center vertical-align-top td_agency"><input placeholder="dd/mm/yyyy" class="form-control tbl_child" th:field="*{childs[__${itemStat.index}__].treatmentTime}" /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <p></p>
+                                                <div class="row pull-right ">
+                                                    <div class="col-md-11">
+                                                        <p id="total-customer"></p>
+                                                    </div>
+                                                    <div class="col-md-1"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer text-center navbar-fixed-bottom main-footer " >
+                                <button ng-cloak class="btn btn-primary" type="button" th:if="${!isOpcManager}"
+                                        ng-click="print()">
+                                    <i class="fa fa-print" ></i> 
+                                    In đơn thuốc 
+                                </button>
+                                <a th:href="${T(com.gms.components.UrlUtils).opcVisit(arv.ID, 'all')}" 
+                                   class="btn btn-default"><i class="fa fa-backward"></i> Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

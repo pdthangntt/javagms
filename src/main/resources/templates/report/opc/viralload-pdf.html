@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+        </style>
+
+        <style type="text/css" th:if="${!print}">
+            /*@page { size: A4 landscape;}*/
+        </style>
+    </head>
+    <body style='font-family: "Times New Roman"' >
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body xacnhan" id="xacnhan" >
+            <div class="content">
+                <div class="header">
+                    <div data-th-replace="report/widget :: donvi(form=${form}, so=false)"></div>
+                    <div class="box_id" >
+        <p class="text-uppercase conghoa">Cộng Hòa Xã Hội Chủ Nghĩa Việt Nam</p>
+        <p class="text-capitalize doclap"><span>Độc lập - Tự do - Hạnh phúc</span></p>
+    </div>
+                    <div class="clear-fix" >&nbsp;</div>
+                    <div class="box_title" >
+                        <div class="row text-normal">
+                        </div>
+                        <div class="clear-fix" >&nbsp;</div>
+                        <p class="text-uppercase text-title" >[[${form.title}]]</p>
+                        
+                        <p class=" text-title" >
+                            Tháng <span th:utext="${form.month}" ></span> 
+                            năm <span th:utext="${form.year}" ></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="mid">
+                    <div class="info-time">
+                        <div class="row">
+                            <p>&nbsp;</p>
+                            <div data-th-replace="report/opc/widget-table :: table-viralload-report()"></div>
+                        </div>
+                    </div>
+                    <div class="info-time">
+                        <p class="" >&nbsp;</p>
+                        <div class="row">
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <i>&nbsp;
+                                        </i>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" > Người lập bảng</span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-50 text-center footer">
+                                <div>
+                                    <p class="text-normal" >
+                                        <i>
+                                            <span class="point">.............</span>, 
+                                            ngày <span class="point">.......</span>
+                                            tháng <span class="point">.......</span> 
+                                            năm <span class="point">..............</span>
+                                        </i>
+                                    </p>
+                                    <p class="box-ky-title">
+                                        <span class="text-uppercase" >Thủ trưởng đơn vị</span>
+                                        <br/>
+                                        <span class="chu-ky">(Ký, họ tên)</span>
+                                    </p>
+                                    <!--<p class="empty-ky">&nbsp;</p>-->
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

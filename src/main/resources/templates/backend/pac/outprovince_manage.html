@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:utext="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var form = [[${
+                        form
+                        }
+                        ]];
+                        var pOptions = [[${options}
+                        ]];
+                        var current_user_name = [[${currenUser.name}
+                        ]];
+                        var province_id = [[${currentSite.provinceID}
+                        ]];
+                        var district_id = [[${currentSite.districtID}
+                        ]];
+                        var ward_id = [[${currentSite.wardID}
+                        ]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <small>Ngoại tỉnh</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceIndex()}">Quản lý người nhiễm</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceManager(model.ID)}"  ><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_outprovince_manager" ng-init="init()">  
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <form th:action="${ T(com.gms.components.UrlUtils).pacOutProvinceManager(form.ID)}" th:object="${form}" method="post" name="pac_patient_form">
+                        <div class="col-md-6">
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Chọn tỉnh quản lý cần chuyển</h3>
+                                </div>
+                                <div class="box-body">
+                                    <input type="hidden" name="ID" th:field="${form.ID}" th:id="${form.ID}" >
+                                    <fieldset class="form-fieldset">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div data-th-replace="widget/form :: select('Tỉnh/Thành phố:', 'provinceID', true, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div data-th-replace="widget/form :: select('Quận/Huyện:', 'districtID', false, null, '')"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div data-th-replace="widget/form :: select('Phường/xã:', 'wardID', false, null, '')"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--  navbar-fixed-bottom main-footer -->
+                                <div class="box-footer text-center" >
+                                    <button  class="btn btn-primary" type="submit">
+                                        <i class="fa fa-edit" ></i>
+                                        Chuyển quản lý
+                                    </button>
+                                    <a class="btn btn-default" 
+                                       th:href="${T(com.gms.components.UrlUtils).pacOutProvinceIndex()}"
+                                       data-confirm-browsers
+                                       data-confirm="Bạn chắc chắn muốn hủy ?">Huỷ</a>
+                                </div>
+                            </div>
+                            <div>
+                                <blockquote>
+                                    <small>Sau khi thực hiện chuyển tỉnh quản lý, ca nhiễm <span class="text-danger" th:text="${model.fullname}"></span> sẽ được chuyển về phần dữ liệu <span class="text-info">Tỉnh khác phát hiện</span> tại đơn vị tuyến tỉnh</small>
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="timeline">
+                                <li>
+                                    <i class="fa fa-user bg-aqua"></i>
+                                    <div class="timeline-item">
+                                        <span class="time">
+                                            <i class="fa fa-clock-o"></i> 
+                                            <span th:utext="${#dates.format(model.createAT, 'hh:mm dd/MM/yyyy')}" ></span>
+                                        </span>
+                                        <h3 class="timeline-header">
+                                            <span class="text-danger text-bold" th:text="${'#' + model.ID}" ></span>
+                                            <span th:text="${model.fullname}" ></span>
+                                        </h3>
+                                        <div class="timeline-body">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-5">Nguồn thông tin</div>
+                                                <div class="col-md-8 col-xs-7" th:text="${(model.sourceServiceID == null || model.sourceServiceID == '') ? '--' : options.get(T(com.gms.entity.db.ParameterEntity).SERVICE).get(model.sourceServiceID)}" ></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-5">Tỉnh phát hiện</div>
+                                                <div class="col-md-8 col-xs-7" th:text="${model.detectProvinceID == null || model.detectProvinceID == '' ? '' : options.get('provinces').getOrDefault(model.detectProvinceID, '-')}" ></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-5">Thường trú</div>
+                                                <div class="col-md-8 col-xs-7" th:text="${model.permanentAddressFull}" ></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-5">Tạm trú</div>
+                                                <div class="col-md-8 col-xs-7" th:text="${model.currentAddressFull}" ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li th:each="item : ${logs}">
+                                    <i class="fa fa-comments-o bg-aqua"></i>
+                                    <div class="timeline-item">
+                                        <span class="time">
+                                            <i class="fa fa-clock-o"></i> 
+                                            <span th:utext="${#dates.format(item.time, 'hh:mm dd/MM/yyyy')}" ></span>
+                                        </span>
+                                        <div class="timeline-body">
+                                            <span class="text-info" th:utext="${staffs.getOrDefault(item.staffID, 'Hệ thống') + ': '}"></span>
+                                            <span th:utext="${item.content}"></span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

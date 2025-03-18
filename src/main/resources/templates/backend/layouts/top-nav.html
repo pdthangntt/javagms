@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" >
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title data-layout-title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE"></title>
+        <link rel="shortcut icon" th:href="@{/static/backend/images/favicon.ico}" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link data-th-replace="backend/layouts/widget-layout :: widget-css"  />
+    </head> 
+
+    <body ng-controller="body" ng-init="init()" class="skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header" th:if="${#request.userPrincipal != null}">
+                <nav class="navbar navbar-static-top">
+                    <div class="navbar-header">
+                        <a th:href="${T(com.gms.components.UrlUtils).backendHome()}" class="navbar-brand"
+                           th:utext="${#request.userPrincipal.principal.site.viewName()}"></a>
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tổng quan <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a th:href="${T(com.gms.components.UrlUtils).dashboardHtc()}">Tư vấn & xét nghiệm</a></li>
+                                    <li><a th:href="${T(com.gms.components.UrlUtils).dashboardPac()}">Quản lý người nhiễm</a></li>
+                                    <li><a th:href="${T(com.gms.components.UrlUtils).dashboardOPC()}">Điều trị ngoại trú</a></li>
+                                </ul>
+                            </li>
+                            <li><a th:href="${T(com.gms.components.UrlUtils).backendHome()}">Quay lại ứng dụng</a></li>
+                            <li><a href="javascript:;" ng-click="clearCache()">Làm mới</a></li>
+                        </ul>
+                    </div>
+                    <div data-th-replace="backend/layouts/widget-layout :: top-navigation"></div>
+                </nav>
+
+            </header>
+            <div data-layout-fragment="content"></div>
+            <div data-th-replace="backend/layouts/widget-layout :: footer-content"></div>
+            <div class="control-sidebar-bg"></div>
+        </div>
+        <script type="text/javascript" th:inline="javascript">
+            var app_security = [[${view.security}]];
+            var user_action = [[${#request.userPrincipal.principal.roles}]];
+            var site_config = [[${#request.userPrincipal.principal.config}]];
+            var site_province = [[${#request.userPrincipal.principal.siteProvince}]];
+            var user_staff_url_301 = [[${T(com.gms.components.UrlUtils).siteStaff(#request.userPrincipal.principal.site.ID)}]];
+        </script>
+        <script data-th-replace="backend/layouts/widget-layout :: widget-js" ></script>
+    </body>
+</html>

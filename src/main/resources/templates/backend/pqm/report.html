@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).currentSiteUpdate()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).tt09('index')}" method="GET">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Năm</label>
+                                                <select name="year" id="year" class="form-control">
+                                                    <option th:each="n : ${options.get('years')}" 
+                                                            th:selected="${#httpServletRequest.getParameter('year') == n.key}"
+                                                            th:value="${n.key}" 
+                                                            th:text="${n.value}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Cơ sở</label>
+                                                <select name="site" id="sites" class="form-control">
+                                                    <option value=""
+                                                            th:selected="${#httpServletRequest.getParameter('site') == null}">Chọn cơ sở</option>
+                                                    <option th:each="n : ${sites}" 
+                                                            th:selected="${#httpServletRequest.getParameter('site') == n.key}"
+                                                            th:value="${n.key}" th:text="${n.value.shortName}"/>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="padding-top: 28px;">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="btn btn-group pl-0">
+                                                <button type="button" class="btn btn-default"><span class="c-signal">Tháng 1</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-success">Tháng 2</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-warning">Tháng 3</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 4</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 5</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 6</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 7</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 8</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 9</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 10</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 11</span></button>
+                                                <button type="button" class="btn btn-default"><span class="c-signal is-none">Tháng 12</span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border">
+                                <div class="no-margin pull-left">
+                                    Số liệu đã hoàn thành 20% đạt 20/40 cơ sở tháng 02/2020
+                                </div>
+                                <div class="no-margin pull-right">
+                                    <button type="button" class="btn btn-success btn-xs table-function">
+                                        <i class="fa fa-sitemap"></i>
+                                        Tổng hợp
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-xs table-function">
+                                        <i class="fa fa-send-o"></i>
+                                        Gửi báo cáo
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                xxxx
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

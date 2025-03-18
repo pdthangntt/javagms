@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).inPacAidsReport()}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).excelPacAidsReport()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).emailPacAidsReport()}]];
+            var form = {
+            permanent_district_id: [[${#httpServletRequest.getParameterValues('permanent_district_id')}]],
+                    permanent_ward_id: [[${#httpServletRequest.getParameterValues('permanent_ward_id')}]],
+                    permanent_province_id: [[${#httpServletRequest.getParameterValues('permanent_province_id')}]]
+            };
+            var f = [[${form}]];
+        </script>
+        <style>
+            .customer{
+                width: 250px;
+            }
+            .yearOfBirth{  
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacPatientIndex()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacAidsReport()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_aids" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pacAidsReport()}" method="get" id="search">
+                                    <div class="row form-horizontal">
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí lọc theo địa chỉ:</div>
+                                                <div class="col-md-3">
+                                                    <div class="radio">
+                                                        <label id = "thuongtru"><input type="radio"  class="radio-cust" name="address_type" th:checked="${form.addressFilter == 'hokhau'}" checked value="hokhau"> Địa chỉ thường trú</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="radio">
+                                                        <label id = "tamtru"><input type="radio"  class="radio-cust" name="address_type" th:checked="${form.addressFilter == 'tamtru'}" value="tamtru"> Địa chỉ cư trú hiện tại</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                </div>
+                                            </div>
+                                            <div class="row" th:if="${!isVAAC}">
+                                                <br>
+                                                <div class="col-md-3 text-left text-bold form-control-static">Tiêu chí lọc theo trạng thái quản lý:</div>
+                                                <div class="col-md-3 text-right">
+                                                    <select class="form-control" name="manage_status" id="manage_status">
+                                                        <option th:each="instance : ${manageStatus}" 
+                                                                th:value="${instance.key}" 
+                                                                th:selected="${#httpServletRequest.getParameter('manage_status') == instance.key}"
+                                                                th:utext="${instance.value}" ></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding-top: 30px;">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label id = "fromTime">Ngày chẩn đoán AIDS từ</label>
+                                                <input type="text" class="form-control" name="aids_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="aids_from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label id="toTime">Ngày chẩn đoán AIDS đến</label>
+                                                <input type="text" class="form-control" name="aids_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="aids_to" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-2 text-left">
+                                            <div class="form-group" > 
+                                                <label id = "fromTime">Ngày XNKĐ từ</label>
+                                                <input type="text" class="form-control" name="confirm_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <div class="form-group" >
+                                                <label id="toTime">Ngày XNKĐ đến</label>
+                                                <input type="text" class="form-control" name="confirm_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Ngày nhập liệu từ</label>
+                                                <input type="text" class="form-control" name="input_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="inputTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Ngày nhập liệu đến</label>
+                                                <input type="text" class="form-control" name="input_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="inputTimeTo" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2 text-left">
+                                            <div class="form-group" >
+                                                <label id = "fromTime">Ngày tử vong từ</label>
+                                                <input type="text" class="form-control" name="death_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="deathTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 text-left">
+                                            <div class="form-group" >
+                                                <label id="toTime">Ngày tử vong đến</label>
+                                                <input type="text" class="form-control" name="death_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="deathTimeTo" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Ngày cập nhật từ</label>
+                                                <input type="text" class="form-control" name="update_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="update_time_from" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Ngày cập nhật đến</label>
+                                                <input type="text" class="form-control" name="update_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="update_time_to" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Tuổi từ</label>
+                                                <input type="text" id="age_from" class="form-control" name = "age_from" th:value="${#httpServletRequest.getParameter('age_from')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" >
+                                                <label>Tuổi đến</label>
+                                                <input type="text" id="age_to" class="form-control" name = "age_to" th:value="${#httpServletRequest.getParameter('age_to')}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class = "lblProvince">Tỉnh/Thành phố</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="province_id" id="permanent_province_id">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class = "lblDistrict">Quận/Huyện</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="district_id" id="permanent_district_id">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <label class = "lblWard">Xã/Phường</label>
+                                                <select class="form-control" 
+                                                        data-title="Tất cả"
+                                                        th:selected="${#httpServletRequest.getParameter('ward_id')}" 
+                                                        th:data-province-id="${#request.userPrincipal.principal.site.getProvinceID()}"
+                                                        name="ward_id" id="permanent_ward_id"></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Giới tính</label>
+                                                <select class="form-control" name="gender" id="gender">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('gender') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Dân tộc</label>
+                                                <select class="form-control" name="race" id="race">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).RACE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('race') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Đường lây nhiễm</label>
+                                                <select class="form-control" name="transmision" id="transmision">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).MODE_OF_TRANSMISSION)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('transmision') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Nhóm đối tượng</label>
+                                                <select class="form-control" name="test_object" id="test_object">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('test_object') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Mã người nhiễm</label>
+                                                <input type="text" class="form-control" th:text="${code}" name = "code" th:value="${#httpServletRequest.getParameter('code')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label>Họ và tên</label>
+                                                <input type="text" class="form-control" th:text="${name}" name = "name" th:value="${#httpServletRequest.getParameter('name')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group" >
+                                                <label>Nơi lấy mẫu XN</label>
+                                                <select class="form-control" name="blood" id="blood">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).BLOOD_BASE)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('blood') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group" >
+                                                <label>Nơi XN khẳng định</label>
+                                                <select class="form-control" name="place_test" id="place_test">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).PLACE_TEST)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('place_test') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group" >
+                                                <label>Nơi điều trị</label>
+                                                <select class="form-control" name="facility" id="facility">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('facility') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <span th:utext="${title}" ></span><span class = "titleTable" ></span>
+                                - <span th:utext="${form.titleLocationDisplay == null || form.titleLocationDisplay == '' ? form.provinceName : form.titleLocationDisplay}" class="text-normal"></span> <br>
+                                Tổng số bệnh nhân AIDS <span class = "titleTable" ></span>: <span th:utext="${dataPage.totalRecords == 0 ? 0 : #numbers.formatInteger(dataPage.totalRecords,2,'POINT')}"></span>
+                                <div data-th-replace="report/pac/widget :: table-aids-report(${dataPage})"></div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                <div class="no-margin pull-right">
+                                    <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

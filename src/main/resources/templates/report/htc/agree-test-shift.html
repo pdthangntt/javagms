@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title th:utext="${form.fileName} + '.pdf'"></title>
+        <style type="text/css">
+            [[${T(com.gms.components.TextUtils).readFile("static/report/css/main.css")}]]
+            
+            .header-italic{
+                font-size: 10pt;
+                font-style: italic;
+            }
+            
+            .bottom-div{position: relative; bottom:0;}
+            .line-height-each-row{line-height: 20px;}
+            .text-italic{font-style: italic;}
+            .font-7-5{font-size: 7.5pt;}
+            .font-9{font-size: 9pt;}
+            .font-10{font-size: 10pt;}
+            .font-11{font-size: 11pt;}
+            .main_title{
+                font-size: 15pt;
+                line-height: 50px;
+                color: white;
+            }
+            li{list-style-type:none;}
+            .main_title_div{
+                border: 1px solid black;
+                background-color: #001f5f;
+                margin-top: 15px;
+                line-height: 50px;
+            }
+            .clearfix{
+                overflow: auto;
+            }
+            
+            .text-left-detail{text-align: left !important;}
+            .contain-front-page{ border: 1px solid black; height: 820px; padding: 5px 10px;}
+            .contain-next-page{ position:relative; border: 1px solid black; padding: 5px 10px;}
+            .contain-next-page .line-height-each-row{line-height: 26px;}
+            .line-height-each-row2{line-height: 22px;}
+            .note-footer{padding: 5px 5px; background-color: #ADADAD;}
+            @media print {
+                .page-after {page-break-before: always;}
+            }
+        </style>
+        <style type="text/css">
+            @page { /*size: A4 portrait;*/}
+            @media print {
+                * {
+                    /*padding: 0px; margin: 0px;*/
+                    font-family: Arial !important;
+                    footer {page-break-after: always;}
+                }
+            }
+        </style>
+    </head>
+    <body style="font-family: 'Arial'">
+        <div data-th-replace="widget/report :: js-print"></div>
+        <div class="body">
+            <div class="content">
+                <div class="row">
+                    <div class="col-35 font-10 text-center"><span class="text-bold">Tên cơ sở (*):</span>&nbsp;<span class="text-bold text-left" th:utext="${form.siteName != null && form.siteName != '' ? form.siteName : ' ..................................'}"></span></div>
+                    <div class="col-65 header-italic clearfix text-left-detail">&nbsp;&nbsp;(*): Bắt buộc điền với mọi khách hàng <br> &nbsp;&nbsp;(**): Bắt buộc điền với khách hàng có kết quả xét nghiệm”có phản ứng”</div>
+                </div>
+                <div class="row">
+                    <div class="col-100 main_title_div text-center"><span class="main_title text-bold"><i class="fa fa-list" style="color: white;"></i>PHIẾU THÔNG TIN KHÁCH HÀNG & CHẤP THUẬN XÉT NGHIỆM</span></div>
+                </div>
+                <div class="row font-11 text-center text-bold" style="line-height: 30px;">I. THÔNG TIN TƯ VẤN TRƯỚC XÉT NGHIỆM</div>
+                <div class="row">
+                    <div class="contain-front-page clearfix">
+                        <div class="content-front-page font-9 clearfix">
+                            <div class="row text-left font-10 text-bold line-height-each-row"> A. THÔNG TIN KHÁCH HÀNG TƯ VẤN TRƯỚC XÉT NGHIỆM</div>
+                            <div class="row line-height-each-row">
+                                <div class="col-30">A1*: Ngày tư vấn trước xét nghiệm:</div>
+                                <div class="col-70">
+                                    Ngày &nbsp;<span th:utext="${item.advisoryeTime != null && item.advisoryeTime != '' ? #strings.arraySplit(#calendars.format(item.advisoryeTime, 'dd/MM/yyyy'), '/')[0] : '..............'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.advisoryeTime != null && item.advisoryeTime != '' ? #strings.arraySplit(#calendars.format(item.advisoryeTime, 'dd/MM/yyyy'), '/')[1]: '..............'}"></span>
+                                    năm &nbsp;<span th:utext="${item.advisoryeTime != null && item.advisoryeTime != '' ? #strings.arraySplit(#calendars.format(item.advisoryeTime, 'dd/MM/yyyy'), '/')[2]: '..............'}"></span>
+                                </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-50">
+                                    A2*: Loại dịch vụ xét nghiệm <br>
+                                        <ul>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.serviceID == 'CD'}" > &nbsp;&nbsp;&nbsp;&nbsp;Cố định</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.serviceID == 'LD'}" > &nbsp;&nbsp;&nbsp;&nbsp;Lưu động  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     &#8594; Chuyển câu A3,4</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.serviceID == 'KC'}"> &nbsp;&nbsp;&nbsp;&nbsp;Không chuyên  &nbsp;&nbsp;  &#8594; Chuyển câu A3,4</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Tự XN-có hỗ trợ</li>
+                                        </ul>
+                                </div>
+                                <div class="col-50 line-height-each-row">A2.1*: Khách hàng đã làm XN tại cộng đồng không? <br>
+                                        <ul>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Không</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Có</li>
+                                        </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-50">A3,4*: &nbsp; Mã số XN: &nbsp;<span th:utext="${item.code != null && item.code != '' && form.patientCodeDsp == '1' ? item.code : '.................................................................'}"></span>&nbsp;</div>
+                                <div class="col-50">A5**: &nbsp;&nbsp;Họ tên KH: &nbsp;<span th:utext="${item.patientName != null && item.patientName != '' ? item.patientName : '............................................'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-50">A6: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Số điện thoại (nếu có) &nbsp;<span th:utext="${item.patientPhone != null && item.patientPhone != '' ? item.patientPhone : '...............................................'}"></span>&nbsp;</div>
+                                <div class="col-50">A7**: Số CMND: &nbsp;<span th:utext="${item.patientID != null && item.patientID != '' ? item.patientID : '...........................................................................'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-50">A8**:&nbsp; &nbsp;&nbsp;Dân tộc: &nbsp;<span th:utext="${item.raceID != null && item.raceID != '' ? options.get(T(com.gms.entity.db.ParameterEntity).RACE).get(item.raceID) : '................................................'}"></span>&nbsp;</div>
+                                <div class="col-20">A9**:  Giới tính: &nbsp;<span th:utext="${item.genderID != null && item.genderID != '' ? options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID) : '.........'}"></span>&nbsp;</div>
+                                <div class="col-30">A10**: Năm sinh: &nbsp;<span th:utext="${item.yearOfBirth != null && item.yearOfBirth != '' ? item.yearOfBirth : '.........'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-100">A11**: Nơi đăng ký hộ khẩu thường trú: &nbsp;<span th:utext="${item.permanentAddressFull != null && item.permanentAddressFull != '' ? item.permanentAddressFull : '.........................................................................................................................................'}"></span></div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-100">A12**: Nơi cư trú hiện tại (nếu khác nơi đăng ký hộ khẩu thường trú): &nbsp;<span th:utext="${item.currentAddressFull != null && item.currentAddressFull != '' ? item.currentAddressFull : '.........................................................................................................'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-100"> A13: Nghề nghiệp: &nbsp;<span th:utext="${item.jobID != null && item.jobID != '' ? options.get(T(com.gms.entity.db.ParameterEntity).JOB).get(item.jobID) : '..........................'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <div class="col-40">
+                                    A14*:  Nhóm đối tượng:<br>
+                                        <ul>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '1'}">&nbsp;&nbsp;&nbsp;&nbsp;1. Nghiện chích ma túy (NCMT)</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;2. Người bán dâm (NBD)</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '5.1' || item.objectGroupID == '5.2'}">&nbsp;&nbsp;&nbsp;&nbsp;3. Phụ nữ mang thai</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '9'}">&nbsp;&nbsp;&nbsp;&nbsp;4. Người hiến máu</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '6'}">&nbsp;&nbsp;&nbsp;&nbsp;5. Bệnh nhân lao</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" >&nbsp;&nbsp;&nbsp;&nbsp;6. Người có STI</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '12'}">&nbsp;&nbsp;&nbsp;&nbsp;7. Thanh niên khám tuyển nghĩa vụ quân sự</li>
+                                        </ul>
+                                </div>
+                                <div class="col-60">
+                                    <br>
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '3'}">&nbsp;&nbsp;&nbsp;&nbsp;8. Nam quan hệ tình dục với nam (MSM)</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '101'}">&nbsp;&nbsp;&nbsp;&nbsp;9. Khách hàng PrEP</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '13'}">&nbsp;&nbsp;&nbsp;&nbsp;10. Người chuyển giới</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '4'}">&nbsp;&nbsp;&nbsp;&nbsp;11. Vợ/chồng/bạn tình/bạn chích chung/cha/mẹ đẻ/con đẻ của NCH</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '8'}">&nbsp;&nbsp;&nbsp;&nbsp;12. Vợ/chồng/bạn tình/bạn chích của người có nguy cơ cao</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '10'}">&nbsp;&nbsp;&nbsp;&nbsp;13. Bệnh nhân nghi ngờ AIDS</li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.objectGroupID == '7'}">&nbsp;&nbsp;&nbsp;&nbsp;14. Khác</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row">A17*: Từ đâu biết đến hoặc được giới thiệu sử dụng dịch vụ:<br></div>
+                            <div class="row line-height-each-row">
+                                <div class="col-40">
+                                        <ul>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${#lists.contains(item.referralSource, '1')}">&nbsp;&nbsp;&nbsp;&nbsp;1. Tiếp cận cộng đồng</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${#lists.contains(item.referralSource, '2')}">&nbsp;&nbsp;&nbsp;&nbsp;2. Kênh xét nghiệm theo dấu BT/BC</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${#lists.contains(item.referralSource, '3')}">&nbsp;&nbsp;&nbsp;&nbsp;3. Cán bộ y tế</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${#lists.contains(item.referralSource, '4')}">&nbsp;&nbsp;&nbsp;&nbsp;4. Internet, mạng xã hội…</li>
+                                            <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${#lists.contains(item.referralSource, '5')}">&nbsp;&nbsp;&nbsp;&nbsp;5. Các kênh khác (truyền thông khác, truyền <br> 
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;miệng, khách hàng khác….)</li>
+                                        </ul>
+                                </div>
+                                <div class="col-60">
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.approacherNo != null && item.approacherNo != ''}">&nbsp;&nbsp;&nbsp;&nbsp;1.1. Mã số của tiếp cận viên cộng đồng: &nbsp;<span th:utext="${item.approacherNo != null && item.approacherNo != '' ? item.approacherNo : '..........................................'}"></span></li>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.youInjectCode != null && item.youInjectCode != ''}">&nbsp;&nbsp;&nbsp;&nbsp;2.1. Mã theo dấu BT/BC:&nbsp;<span th:utext="${item.youInjectCode != null && item.youInjectCode != '' ? item.youInjectCode : '...................................................................'}"></span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox"> <span class="text-bold">Phần ký xác nhận đồng ý tham gia/nhận dịch vụ (*):</span>
+                                    <p class="text-italic">Sau khi được tư vấn đầy đủ, rõ ràng về nguy cơ lây nhiễm HIV và lợi ích của việc làm xét nghiệm HIV, tôi hoàn toàn đồng ý tự nguyện làm xét nghiệm HIV, xét nghiệm phát hiện mới nhiễm HIV và xét nghiệm tải lượng vi rút (nếu cần).</p>
+                            </div>
+                            <div class="row line-height-each-row">
+                                <p><br></p>
+                                <div class="col-50 text-center">
+                                    <br>
+                                    <span class="text-bold">Người được tư vấn xét nghiệm (*)</span> <br>
+                                    <p class="text-italic">(Ký và ghi rõ họ tên; trường hợp người bảo hộ cần ghi rõ họ tên <br>người đại diện hợp pháp, mối quan hệ với người được xét<br> nghiệm HIV)</p>
+                                </div>
+                                <div class="col-50 text-center">
+                                    <i th:if="${date}">
+                                        <span class="point" >.....................</span>, 
+                                        ngày <span class="point" th:utext="${#dates.format(#dates.createNow(),'dd')}"></span>
+                                        tháng <span class="point" th:utext="${#dates.format(#dates.createNow(),'MM')}"></span> 
+                                        năm <span class="point" th:utext="${#dates.format(#dates.createNow(),'yyyy')}"></span>
+                                    </i>
+                                   <i th:if="${!date}">
+                                        <span class="point" >.....................</span>, 
+                                        ngày <span class="point" >.....</span>
+                                        tháng <span class="point">.....</span> 
+                                        năm <span class="point">..........</span>
+                                    </i><br>
+                                    <span class="text-bold">Cán bộ y tế tại cơ sở cố định/lưu động/Cộng tác viên tư <br>vấn, lấy máu, XN tại cộng đồng (*)</span> <br>
+                                    <span class="text-italic">(Ký và ghi rõ họ tên)</span>
+                                </div>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                    </div>
+                </div>
+                <footer></footer>
+                <div class="row page-after">
+                    <div class="row font-11 text-center text-bold" style="line-height: 30px;">II. KẾT QUẢ XÉT NGHIỆM HIV GẦN ĐÂY*</div>
+                    <div class="contain-next-page clearfix">
+                        <div class="content-front-page font-10 clearfix">
+                            <div class="row line-height-each-row2">
+                                <div class="col-100 ">
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Chưa bao giờ XN HIV</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Có XN, kết quả XN âm tính &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  (XN ngày ……./……./…….)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Chưa điều trị PrEP</li>
+                                    </ul>
+                                </div>
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Đã điều trị PrEP</li>
+                                    </ul>
+                                </div>
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Đang điều trị PrEP </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Có XN, kết quả XN dương tính &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  (XN ngày ……./……./…….)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Chưa điều trị ARV</li>
+                                    </ul>
+                                </div>
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Đã điều trị ARV</li>
+                                    </ul>
+                                </div>
+                                <div class="col-30 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Đang điều trị ARV </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">
+                                    <ul>
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" > &nbsp;&nbsp;&nbsp;&nbsp;Có XN, kết quả không xác định hoặc không biết kết quả XN &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  (XN ngày ……./……./…….)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+                <div class="row">
+                    <div class="row font-11 text-center text-bold" style="line-height: 30px;">III. THÔNG TIN SAU XÉT NGHIỆM</div>
+                    <div class="contain-next-page clearfix">
+                        <div class="content-front-page font-10 clearfix">
+                            <div class="row text-left font-10 text-bold line-height-each-row2"> B. KẾT QUẢ XÉT NGHIỆM SÀNG LỌC</div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-50 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" th:checked="${item.cdService != '2' && item.testMethod == '1'}">&nbsp;&nbsp;&nbsp;&nbsp;Xét nghiệm kháng thể</li>
+                                    </ul>
+                                </div>
+                                <div class="col-50 text-center">
+                                    <ul>
+                                        <li><input type="checkbox" th:checked="${item.cdService != '2' && item.testMethod == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;Xét nghiệm kháng nguyên, kháng thể</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-35">B1*: Kết quả xét nghiệm (KQXN):</div>
+                                <div class="col-35"><input type="checkbox" th:checked="${item.cdService != '2' && item.testResultsID == '1'}" >&nbsp;&nbsp;&nbsp;&nbsp;1. Không phản ứng</div>
+                                <div class="col-30"><input type="checkbox" th:checked="${item.cdService != '2' && item.testResultsID == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;2. Có phản ứng</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <span class="text-bold">Nếu KQXN” có phản ứng”:</span>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-35">B2**: KH có đồng ý tiếp tục XN tại <br> cơ sở y tế không?</div>
+                                <div class="col-35"><input type="checkbox" th:checked="${item.cdService != '2' && (item.isAgreeTest == null || !item.isAgreeTest)}">&nbsp;&nbsp;&nbsp;&nbsp;0. Không (<span class="text-italic">Kết thúc nhập phiếu</span>)</div>
+                                <div class="col-30"><input type="checkbox" class="clearfix" th:checked="${item.cdService != '2' && item.isAgreeTest != null && item.isAgreeTest}">&nbsp;&nbsp;&nbsp;&nbsp;1. Có, tên cơ sở XN: <br><span th:utext="${item.siteConfirmTest != null && item.siteConfirmTest != '' ? siteConfirmTests.get(item.siteConfirmTest) : '.........................' }"></span>&nbsp;</div>
+                            </div>
+                            <div class="row text-left font-10 text-bold line-height-each-row2"> C. KẾT QUẢ XÉT NGHIỆM KHẲNG ĐỊNH</div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C1**: Tên cơ sở XN khẳng định: &nbsp;<span th:utext="${item.siteConfirmTestName != null && item.siteConfirmTestName != '' ? item.siteConfirmTestName : '.......................................................................................................................' }"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C2**: Mã XN khẳng định do cơ sở TVXN cố định cấp: &nbsp;<span th:utext="${item.confirmTestNo != null && item.confirmTestNo != '' ? item.confirmTestNo : '.....................................................................................' }"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-40">C3**: Kết quả XN khẳng định:</div>
+                                <div class="col-30"><input type="checkbox" th:checked="${item.confirmType!= null && item.confirmType == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;Xét nghiệm huyết thanh</div>
+                                <div class="col-30"><input type="checkbox" th:checked="${item.confirmType!= null && item.confirmType == '1'}">&nbsp;&nbsp;&nbsp;&nbsp;Xét nghiệm PCR HIV</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-40">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                <div class="col-20"><input type="checkbox" th:checked="${item.confirmResultsID == '1'}">&nbsp;&nbsp;&nbsp;&nbsp;1. Âm tính</div>
+                                <div class="col-20"><input type="checkbox" th:checked="${item.confirmResultsID == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;2. Dương tính</div>
+                                <div class="col-20"><input type="checkbox" th:checked="${item.confirmResultsID == '3'}">&nbsp;&nbsp;&nbsp;&nbsp;3. Không xác định</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-60">C4:&nbsp;&nbsp;&nbsp; Kết quả XN nhanh nhiễm mới Asante HIV 1:</div>
+                                <div class="col-20"><input type="checkbox" >&nbsp;&nbsp;&nbsp;&nbsp;1. Mới nhiễm</div>
+                                <div class="col-20"><input type="checkbox" >&nbsp;&nbsp;&nbsp;&nbsp;2. Nhiễm lâu</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C5: &nbsp;&nbsp;&nbsp;Ngày xét nghiệm khẳng định:	
+                                    Ngày &nbsp;<span th:utext="${item.confirmTime != null && item.confirmTime != '' ? #strings.arraySplit(#calendars.format(item.confirmTime, 'dd/MM/yyyy'), '/')[0] : '..............'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.confirmTime != null && item.confirmTime != '' ? #strings.arraySplit(#calendars.format(item.confirmTime, 'dd/MM/yyyy'), '/')[1]: '..............'}"></span>
+                                    năm &nbsp;<span th:utext="${item.confirmTime != null && item.confirmTime != '' ? #strings.arraySplit(#calendars.format(item.confirmTime, 'dd/MM/yyyy'), '/')[2]: '......................................................................'}"></span>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C6**: Ngày cơ sở VCT nhận kết quả khẳng định:  
+                                    Ngày &nbsp;<span th:utext="${item.resultsSiteTime != null && item.resultsSiteTime != '' ? #strings.arraySplit(#calendars.format(item.resultsSiteTime, 'dd/MM/yyyy'), '/')[0] : '......'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.resultsSiteTime != null && item.resultsSiteTime != '' ? #strings.arraySplit(#calendars.format(item.resultsSiteTime, 'dd/MM/yyyy'), '/')[1]: '......'}"></span>
+                                    năm &nbsp;<span th:utext="${item.resultsSiteTime != null && item.resultsSiteTime != '' ? #strings.arraySplit(#calendars.format(item.resultsSiteTime, 'dd/MM/yyyy'), '/')[2]: '.................'}"></span>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C7**: Ngày khách hàng nhận kết quả khẳng định:  
+                                    Ngày &nbsp;<span th:utext="${item.resultsPatienTime != null && item.resultsPatienTime != '' ? #strings.arraySplit(#calendars.format(item.resultsPatienTime, 'dd/MM/yyyy'), '/')[0] : '..............'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.resultsPatienTime != null && item.resultsPatienTime != '' ? #strings.arraySplit(#calendars.format(item.resultsPatienTime, 'dd/MM/yyyy'), '/')[1]: '...................'}"></span>
+                                    năm &nbsp;<span th:utext="${item.resultsPatienTime != null && item.resultsPatienTime != '' ? #strings.arraySplit(#calendars.format(item.resultsPatienTime, 'dd/MM/yyyy'), '/')[2]: '...........................................'}"></span>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">C8:  &nbsp;&nbsp;&nbsp; Kết quả xét nghiệm tải lượng vi rút: </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-30">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.virusLoad == '1'}" >&nbsp;&nbsp;&nbsp;&nbsp;1. Không phát hiện</div>
+                                <div class="col-35">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.virusLoad == '2'}">&nbsp;&nbsp;&nbsp;&nbsp;2. Dưới ngưỡng phát hiện</div>
+                                <div class="col-35">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" th:checked="${item.virusLoad == '4'}">&nbsp;&nbsp;&nbsp;&nbsp;3. Trên ngưỡng phát hiện:......</div>
+                            </div>
+                            <div class="row text-left font-10 text-bold line-height-each-row2">D.THÔNG TIN CHUYỂN GỬI/THEO DÕI CHUYỂN GỬI ĐIỀU TRỊ ARV VÀ HỖ TRỢ TIẾP TỤC:</div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-50">D1**: Ngày thực hiện TV chuyển gửi điều trị ARV:</div>
+                                <div class="col-40">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ngày &nbsp;<span th:utext="${item.exchangeConsultTime != null && item.exchangeConsultTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeConsultTime, 'dd/MM/yyyy'), '/')[0] : '.....'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.exchangeConsultTime != null && item.exchangeConsultTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeConsultTime, 'dd/MM/yyyy'), '/')[1]: '.....'}"></span>
+                                    năm &nbsp;<span th:utext="${item.exchangeConsultTime != null && item.exchangeConsultTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeConsultTime, 'dd/MM/yyyy'), '/')[2]: '.....'}"></span>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-25">&nbsp;&nbsp;D1.1**: Đồng ý chuyển gửi:</div>
+                                <div class="col-30">&nbsp; <input type="checkbox" th:checked="${item.exchangeTime != null && item.exchangeTime != ''}"> Ngày chuyển gửi:</div>
+                                <div class="col-40">
+                                    Ngày &nbsp;<span th:utext="${item.exchangeTime != null && item.exchangeTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeTime, 'dd/MM/yyyy'), '/')[0] : '.....'}"></span>
+                                    tháng &nbsp;<span th:utext="${item.exchangeTime != null && item.exchangeTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeTime, 'dd/MM/yyyy'), '/')[1]: '.....'}"></span>
+                                    năm &nbsp;<span th:utext="${item.exchangeTime != null && item.exchangeTime != '' ? #strings.arraySplit(#calendars.format(item.exchangeTime, 'dd/MM/yyyy'), '/')[2]: '.....'}"></span>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-40">&nbsp;&nbsp;&nbsp;D1.2**: Chưa đồng ý chuyển gửi &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                <div class="col-60">
+                                    <ul>
+                                        <li><input type="checkbox" th:checked="${item.partnerProvideResult == '1'}">&nbsp;&nbsp;&nbsp;D1.2a**: Đồng ý cung cấp thông tin thực hiện XN theo dấu BT/BC</li>
+                                        <li><input type="checkbox" th:checked="${item.partnerProvideResult == '2'}">&nbsp;&nbsp;&nbsp;D1.2b**: Không đồng ý cung cấp thông tin thực hiện XN theo dấu BT/BC ngay và hẹn một ngày khác quay lại TV</li>
+                                        <li><input type="checkbox" th:checked="${item.partnerProvideResult == '3'}">&nbsp;&nbsp;&nbsp;D1.2c**: Không đồng ý cung cấp thông tin thực hiện XN theo dấu BT/BC và từ chối quay lại tư vấn tiếp tục</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">D2**:&nbsp;&nbsp;&nbsp;&nbsp;Tên CSĐT mà khách hàng được chuyển gửi tới: &nbsp;<span th:utext="${item.arrivalSite != null && item.arrivalSite != '' ? item.arrivalSite : '.................................................................................................'}"></span></div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-35">D3**:&nbsp;&nbsp;&nbsp; Ngày đăng ký điều trị:</div>
+                                <div class="col-65">
+                                    Ngày &nbsp;<span th:utext="${item.registerTherapyTime != null && item.registerTherapyTime != '' ? #strings.arraySplit(#calendars.format(item.registerTherapyTime, 'dd/MM/yyyy'), '/')[0] : '..............'}"></span>
+                                    .. tháng &nbsp;<span th:utext="${item.registerTherapyTime != null && item.registerTherapyTime != '' ? #strings.arraySplit(#calendars.format(item.registerTherapyTime, 'dd/MM/yyyy'), '/')[1]: '..............'}"></span>
+                                    .. năm &nbsp;<span th:utext="${item.registerTherapyTime != null && item.registerTherapyTime != '' ? #strings.arraySplit(#calendars.format(item.registerTherapyTime, 'dd/MM/yyyy'), '/')[2]: '.....................................................'}"></span>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">D4**:&nbsp;&nbsp;&nbsp; Tên CSĐT mà khách hàng đăng ký điều trị: &nbsp;<span th:utext="${item.registeredTherapySite != null && item.registeredTherapySite != '' ? item.registeredTherapySite : '.......................................................................................................'}"></span></div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-50">D4.1**: Tỉnh/Thành phố: &nbsp;<span th:utext="${item.therapyRegistProvinceName != null && item.therapyRegistProvinceName != '' ? item.therapyRegistProvinceName : '.................................................'}"></span>&nbsp;</div>
+                                <div class="col-50">D4.2**: Quận/ Huyện:&nbsp;<span th:utext="${item.therapyRegistDistrictName != null && item.therapyRegistDistrictName != '' ? item.therapyRegistDistrictName : '........................................................'}"></span>&nbsp;</div>
+                            </div>
+                            <div class="row line-height-each-row2">
+                                <div class="col-100">D5**: &nbsp;&nbsp;&nbsp;Mã điều trị:&nbsp;<span th:utext="${item.therapyNo != null && item.therapyNo != '' ? item.therapyNo : '............................................................................................................................................................'}"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+</html>

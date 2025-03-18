@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript" 
+                    th:with="currenUser=${#request.userPrincipal.principal.user}, 
+                    currentSite=${#request.userPrincipal.principal.site}">
+                        var urlPatientView = [[${T(com.gms.components.UrlUtils).pacPatientView(0)}]];
+                        var urlAcceptView = [[${T(com.gms.components.UrlUtils).pacAcceptView(0)}]];
+                        var urlReviewView = [[${T(com.gms.components.UrlUtils).pacReviewView(0)}]];
+                        var urlNewView = [[${T(com.gms.components.UrlUtils).pacPatientView("new_in_province", 0)}]];
+                        var urlOpcView = [[${T(com.gms.components.UrlUtils).pacOpcView("", 0)}]];
+                        var patient = [[${patient}]];
+            </script>
+            <section class="content-header">
+                <h1>
+                    <a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceIndex()}" class="btn btn-default" ><i class="fa fa-backward"></i> Quay lại</a>
+                    <span th:text="${title}" ></span>
+                    <small>Ngoại tỉnh</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceIndex()}">Quản lý người nhiễm</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacOutProvinceFilter(patient.ID)}">Kiểm tra trùng lắp</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_outprovince_filter" ng-init="init()">
+                <div class="row">
+                    <div class="col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-md-4">
+                        <div class="box box-widget widget-user-2">
+                            <div class="widget-user-header bg-blue">
+                                <div class="widget-user-image">
+                                    <img class="img-circle" th:src="@{/static/backend/images/avatar-none.jpg}" th:alt="${patient.fullname}">
+                                </div>
+                                <h3 class="widget-user-username" th:text="${patient.fullname}" ></h3>
+                                <h5 class="widget-user-desc">
+                                    <span th:text="${'#' + patient.ID}" ></span>
+                                    <span th:text="${patient.status == null ? ' - Chưa xác định' : ' - ' + options.get('status').get(patient.status)}" ></span>
+                                </h5>
+                            </div>
+                            <div class="box-footer no-padding">
+                                <ul class="nav nav-stacked">
+                                    <li th:if="${parents != null && parents != '' && parents.ID != null && parents.ID != ''}"><a 
+                                            th:attr="ng-click='view('+${parents.ID}+','+${parents.acceptTime!= null ? 1 : null}+','+${parents.reviewWardTime!= null ? 1 : null}+','+${parents.reviewProvinceTime != null ? 1 : null}+', \''+${parents.sourceServiceID}+'\')'"
+                                            ><b>Thông tin chính:</b> <span class="text-bold text-danger" th:text="${'#' + parents.ID}"></span> </a></li>
+                                    <li th:if="${patient.refOpcID != null}"><a href="javascript:;"><b>Được kết nối:</b> <span class="text-danger" th:text="${'#' + patient.refOpcID}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Năm sinh:</b> <span th:text="${patient.yearOfBirth}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Giới tính:</b> <span th:text="${options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(patient.genderID)}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>CMND:</b> <span th:text="${patient.identityCard}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Thẻ BHYT:</b> <span th:text="${patient.healthInsuranceNo}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Số điện thoại:</b> <span th:text="${patient.patientPhone}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Tỉnh quản lý:</b> <span th:text="${patient.provinceID == null || patient.provinceID == '' ? '' : options.get('provinces').get(patient.provinceID)}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Thường trú:</b> <span th:text="${patient.permanentAddressFull}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Tỉnh phát hiện:</b> <span th:text="${patient.detectProvinceID == null || patient.detectProvinceID == '' ? '' : options.get('provinces').get(patient.detectProvinceID)}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Cư trú:</b> <span th:text="${patient.currentAddressFull}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Nơi điều trị:</b> <span th:text="${patient.siteTreatmentFacilityID == null || patient.siteTreatmentFacilityID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(patient.siteTreatmentFacilityID)}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Trạng thái điều trị:</b> <span th:text="${patient.statusOfTreatmentID == null || patient.statusOfTreatmentID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT).get(patient.statusOfTreatmentID)}" ></span></a></li>
+                                    <li><a href="javascript:;"><b>Ngày điều trị:</b> <span th:text="${#dates.format(patient.startTreatmentTime, 'dd/MM/yyyy')}" ></span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <form th:action="${T(com.gms.components.UrlUtils).pacOutProvinceFilter(patient.ID)}" th:object="${patient}" method="GET">
+                            <input type="hidden" name="id" th:value="${patient.ID}" />
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <div class="box-title">Tiêu chí kiểm tra trùng lắp</div>
+                                </div>
+                                <div class="box-body">
+                                    <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <div class="row" ng-cloak>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.fullname}" value="fullname"> 
+                                                    Họ và tên
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.gender}" value="gender"> 
+                                                    Giới tính
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.identity}" value="identity"> 
+                                                    CMND/Giấy tờ khác
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.insurance}" value="insurance"> 
+                                                    Số thẻ BHYT
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.phone}" value="phone"> 
+                                                    Số điện thoại
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="checkbox" class="radio-cust" name="filter" th:checked="${filter.address}" value="address"> 
+                                                    Địa chỉ thường trú (<i class="text-info">kiểm tra tới xã/phường</i>)
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <button  class="btn btn-primary" type="submit">
+                                                <i class="fa fa-search" ></i>
+                                                Kiểm tra trùng lắp
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${patient.status == null || patient.status == 'new'}" class="box-footer text-center navbar-fixed-bottom main-footer" style="z-index: 9999999" >
+                                    <a th:if="${patient.status == null}" class="btn btn-success"
+                                       data-confirm="Bạn chắc chắn muốn xác nhận ca nhiễm mới?"
+                                       th:href="${T(com.gms.components.UrlUtils).pacOutProvinceFilterNew(patient.ID)}"
+                                       th:data-role=="${T(com.gms.components.UrlUtils).pacOutProvinceFilterNew(patient.ID)}">
+                                        <i class="fa fa-check-square-o" ></i> 
+                                        Xác nhận ca mới
+                                    </a>
+                                    <a th:if="${patient.status == 'new'}" class="btn btn-danger"
+                                       data-confirm="Bạn chắc chắn muốn bỏ xác nhận ca nhiễm mới?"
+                                       th:href="${T(com.gms.components.UrlUtils).pacOutProvinceFilterNew(patient.ID)}"
+                                       th:data-role=="${T(com.gms.components.UrlUtils).pacOutProvinceFilterNew(patient.ID)}">
+                                        <i class="fa fa-check-square-o" ></i> 
+                                        Huỷ xác nhận ca mới
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+
+                                <div class="no-margin pull-left">
+                                    <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                </div>
+                                <div class="no-margin pull-right" id="tableFunction"></div>
+                                <div class="clearfix"></div>
+                            </div> 
+                            <div class="box-body">
+                                <p th:if="${dataPage.totalRecords > 0}">Danh sách người nhiễm nghi trùng gồm <span class="text-bold" th:text="${dataPage.totalRecords}">...</span> người <span class="text-danger"> (các dòng thông tin trùng được đánh dấu màu đỏ)</span></p>
+                                <div ng-cloak ng-cloak-loading><i class="fa fa-sun-o fa-spin" ></i></div>
+                                <div class="table-responsive">
+                                    <table ng-cloak class="table table-striped table-bordered table-sm table-full" data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center">
+                                                    <input type="checkbox" id="checkbox-switch-all" />
+                                                </th>
+                                                <th class="text-center">Mã</th>
+                                                <th class="text-center">Họ tên</th>
+                                                <th class="text-center">Năm sinh</th>
+                                                <th class="text-center">Giới tính</th>
+                                                <th class="text-center">Địa chỉ thường trú</th>
+                                                <th class="text-center">Số CMND</th>
+                                                <th class="text-center">Số thẻ BHYT</th>
+                                                <th class="text-center">Số điền thoại</th>
+                                                <th class="text-center">Ngày XN khẳng định</th>
+                                                <th class="text-center">Cơ sở khẳng định</th>
+                                                <th class="text-center">Trạng thái điều trị</th>
+                                                <th class="text-center">Nơi điều trị</th>
+                                                <th class="text-center">Ngày điều trị</th>
+                                                <th class="text-center">Trạng thái quản lý</th>
+                                                <th class="text-center">Hoạt động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${dataPage.data}"
+                                                th:class="${patient.parentID == item.ID ? 'warning' : ''}"
+                                                th:data-id="${item.ID}">
+                                                <td class="text-center"><input type="checkbox" class="checkbox-switch" th:value="${item.ID}" /></td>
+                                                <td th:text="${'#'+item.ID}"></td>
+                                                <td th:class="${T(com.gms.components.TextUtils).removemarks(item.fullname) == T(com.gms.components.TextUtils).removemarks(patient.fullname)} ? 'text-danger' : ''" 
+                                                    th:text="${item.fullname}"></td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.yearOfBirth == patient.yearOfBirth} ? 'text-danger' : ''"
+                                                          th:text="${item.yearOfBirth == 0 ? '' : item.yearOfBirth}"></span></td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.genderID == patient.genderID} ? 'text-danger' : ''"
+                                                          th:text="${item.genderID == null || item.genderID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).GENDER).get(item.genderID)}"></span></td>
+                                                <td class="text-left">
+                                                    <span th:class="${item.permanentWardID == patient.permanentWardID && item.permanentDistrictID == patient.permanentDistrictID && item.permanentProvinceID == patient.permanentProvinceID} ? 'text-danger' : ''"
+                                                          th:text="${item.permanentAddressFull}"></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.identityCard == patient.identityCard} ? 'text-danger' : ''"
+                                                          th:text="${item.identityCard}"></span></td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.healthInsuranceNo == patient.healthInsuranceNo} ? 'text-danger' : ''"
+                                                          th:text="${item.healthInsuranceNo}"></span></td>
+                                                <td class="text-center">
+                                                    <span th:class="${item.patientPhone == patient.patientPhone} ? 'text-danger' : ''"
+                                                          th:text="${item.patientPhone}"></span></td>
+                                                <td class="text-center" ><span th:text="${#dates.format(item.confirmTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-left"><span th:text="${item.siteConfirmID == null || item.siteConfirmID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).PLACE_TEST).get(item.siteConfirmID)}"></span></td>
+                                                <td class="text-left"><span th:text="${item.statusOfTreatmentID == null || item.statusOfTreatmentID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).STATUS_OF_TREATMENT).get(item.statusOfTreatmentID)}"></span></td>
+                                                <td class="text-left"><span th:text="${item.siteTreatmentFacilityID == null || item.siteTreatmentFacilityID == '' ? '' : options.get(T(com.gms.entity.db.ParameterEntity).TREATMENT_FACILITY).get(item.siteTreatmentFacilityID)}"></span></td>
+                                                <td class="text-center"><span th:text="${#dates.format(item.startTreatmentTime, 'dd/MM/yyyy')}"></span></td>
+                                                <td class="text-center" th:utext="${(item.acceptTime == null && item.reviewWardTime == null && item.reviewProvinceTime == null && item.sourceServiceID != '103') ? 'Chưa rà soát' 
+                                                    : (item.acceptTime != null && item.reviewWardTime == null && item.reviewProvinceTime == null) ? 'Cần rà soát'
+                                                    : (item.acceptTime != null && item.reviewWardTime != null && item.reviewProvinceTime == null) ? 'Đã rà soát'
+                                                    : (item.acceptTime != null && item.reviewWardTime != null && item.reviewProvinceTime != null) ? 'Quản lý' : item.sourceServiceID == '103' ? 'Điều trị' : 'Không rõ'}" ></td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs table-function" th:if="${patient.status == null || patient.status == ''}"
+                                                       th:attr="data-confirm='Bạn có muốn đánh dấu người nhiễm được kiểm tra trùng lắp ' + ${ patient.fullname} + ' là thông tin con của người nhiễm đang được chọn này không?'"
+                                                       th:href="${T(com.gms.components.UrlUtils).filterAddHistory(patient.ID,item.ID)}" >
+                                                        Thêm lịch sử</a>
+                                                    <button type="button" class="btn btn-default btn-xs table-function" 
+                                                            th:attr="ng-click='view('+${item.ID}+','+${item.acceptTime!= null ? 1 : null}+','+${item.reviewWardTime!= null ? 1 : null}+','+${item.reviewProvinceTime != null ? 1 : null}+', \''+${item.sourceServiceID}+'\')'">
+                                                        <i class="fa fa-eye"></i> Xem
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div data-th-include="widget/gridview :: pagination-title(dataPage=${dataPage})" ></div>
+                                <div class="no-margin pull-right">
+                                    <div class="text-center" data-th-include="widget/gridview :: pagination(${dataPage.totalPages}, ${dataPage.navigationPages}, ${dataPage.currentPage})"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

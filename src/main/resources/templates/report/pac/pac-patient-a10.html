@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title}" ></title>
+        <script th:inline="javascript">
+            var urlPdf = [[${T(com.gms.components.UrlUtils).inPacPatientA10()}]];
+            var urlExcel = [[${T(com.gms.components.UrlUtils).excelPacPatientA10()}]];
+            var urlEmail = [[${T(com.gms.components.UrlUtils).emailPacPatientA10()}]];
+            var form = [[${form}]];
+        </script>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacNew()}"><span th:text="${parent_title}" ></span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacNewExport()}">Sổ A10/YTCS</a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_patient_a10" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <form th:action="${T(com.gms.components.UrlUtils).pacPatientA10()}" method="get" id="search">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <label>Họ tên</label>
+                                                <input type="text" class="form-control" name = "fullname" th:value="${#httpServletRequest.getParameter('fullname')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <label>Năm sinh</label>
+                                                <input type="text" class="form-control" 
+                                                       th:text="${yearOfBirth}" name = "year_of_birth" 
+                                                       ui-mask="9999"
+                                                       th:value="${#httpServletRequest.getParameter('year_of_birth')}"
+                                                       ng-model="yearOfBirth"
+                                                       placeholder="yyyy">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Giới tính</label>
+                                                <select class="form-control" name="gender" id="gender">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).GENDER)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('gender') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <label>Số CMND</label>
+                                                <input type="text" class="form-control" name = "identity_card" th:value="${#httpServletRequest.getParameter('identity_card')}">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group" >
+                                                <label>Số thẻ BHYT</label>
+                                                <input type="text" class="form-control" name = "health_insurance_no" th:value="${#httpServletRequest.getParameter('health_insurance_no')}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>Đối tượng</label>
+                                                <select class="form-control" name="test_object" id="test_object">
+                                                    <option th:each="instance : ${options.get(T(com.gms.entity.db.ParameterEntity).TEST_OBJECT_GROUP)}" 
+                                                            th:value="${instance.key}" 
+                                                            th:selected="${#httpServletRequest.getParameter('test_object') == instance.key}"
+                                                            th:utext="${instance.key == '' ? 'Tất cả' :instance.value}" ></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div>
+                                                <label id = "fromTime">Ngày XNKĐ từ</label>
+                                                <input type="text" class="form-control" name="confirm_time_from" 
+                                                       ui-mask="99/99/9999" 
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeFrom" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div>
+                                                <label id="toTime">Ngày XNKĐ đến</label>
+                                                <input type="text" class="form-control" name="confirm_time_to" 
+                                                       ui-mask="99/99/9999" 
+                                                       model-view-value="true"
+                                                       placeholder="dd/mm/yyyy"
+                                                       ng-model="confirmTimeTo" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search"></i> Xem báo cáo
+                                            </button>
+                                            <button ng-click="pdf()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-print"></i> In
+                                            </button>
+                                            <button ng-click="excel()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-file-excel-o"></i> Xuất Excel
+                                            </button>
+                                            <button ng-click="email()" type="button" class="btn btn-primary margin-left-5">
+                                                <i class="fa fa-inbox"></i> Gửi đến Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-body">
+                                <span th:utext="${title}" ></span> - <span th:utext="${form.titleLocation}" class="text-normal"></span><br>
+                                <span th:if="${form.startDate != null}" class="text-normal"> Từ </span> 
+                                <span th:if="${form.startDate != null}" class="text-danger" th:utext="${form.startDate}"></span> 
+                                <span th:if="${form.endDate != null}" class="text-normal"> đến </span> 
+                                <span th:if="${form.endDate != null}" class="text-danger" th:utext="${form.endDate}"></span><br><br>
+                                <div data-th-replace="report/pac/widget :: table-patient-a10(${form.dataPage})"></div>
+                            </div>
+                            <div class="box-footer clearfix">
+                                <div data-th-include="widget/gridview :: pagination-title(dataPage=${form.dataPage})" ></div>
+                                <div class="no-margin pull-right">
+                                    <div class="text-center" data-th-include="widget/gridview :: pagination(${form.dataPage.totalPages}, ${form.dataPage.navigationPages}, ${form.dataPage.currentPage})"></div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

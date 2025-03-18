@@ -1,0 +1,109 @@
+<div data-th-fragment="laytest-log()">
+    <script type="text/ng-template" id="laytestLogs">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Lịch sử khách hàng {{model.patientName}}. Mã: <span class="text-danger" >#{{model.code}}</span></h4>
+        </div>
+        <div class="modal-body popup-note">
+        <table class="table table-hover table-sm table-striped table-bordered">
+        <tbody>
+        <tr>
+        <th class="text-center">Thời gian</th>
+        <th class="text-center">Nhân viên</th>
+        <th  class="text-center">Nội dung</th>
+        </tr>
+        <tr ng-if="!logs.length">
+        <td class="text-danger text-center" colspan="3">Chưa có ghi chép nào</td>
+        </tr>
+        <tr ng-repeat="log in logs">
+        <td class="text-center">{{log.createAt| date:'h:mma dd/MM/yyyy'}}</td>
+        <td class="text-center">{{log.staffId===0?'Hệ thống':log.staffID}}</td>
+        <td style="word-break: break-all;">{{log.content}}</td>
+        </tr>
+        </tbody>
+        </table>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+        <div class="pull-right">
+        <div ng-class="errors.content ? 'has-error form-group' : 'form-group'">
+        <div class="input-group input-group-sm">
+        <input ng-model="model.content" type="text" class="form-control"
+        placeholder="Ghi chú thêm" ng-enter="add()"/>
+        <span class="input-group-btn">
+        <button ng-click="add()" type="button" class="btn btn-success btn-flat">
+        <i class="fa fa-plus"></i> Thêm ghi chú
+        </button>
+        </span>
+        </div>
+        <p class="help-block" ng-if="errors.content">{{errors.content[0]}}</p>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+<div data-th-fragment="transferred()">
+    <script type="text/ng-template" id="transferred">
+        <div class="modal-header">
+        <button ng-click="cancel()" type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Xác nhận gửi thông tin khách hàng sang cơ sở xét nghiệm</h4>
+        </div>
+        <div class="modal-body">
+        <form class="row">
+        <div class="col-md-6">
+        <div class="form-group">
+        <label>Họ và tên khách hàng</label>
+        <input type="text" ng-value="item.patientName" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+        <label>Ngày xét nghiệm </label>
+        <input type="text" ng-value="item.advisoryeTime | date:'dd/MM/yyyy'" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+        <label>Ngày chuyển gửi</label>
+        <input type="text" ng-value="model.sampleSentDate | date:'dd/MM/yyyy'" class="form-control" disabled />
+        </div>
+        </div>
+        <div class="col-md-6">
+        <div class="form-group">
+        <label>Mã khách hàng</label>
+        <input type="text" ng-value="item.code" class="form-control" disabled />
+        </div>
+        
+        <div class="form-group">
+        <label>Kết quả xét nghiệm</label>
+        <input type="text" ng-value="options['test-results'][item.testResultsID]" class="form-control" disabled />
+        </div>
+        <div ng-class="errors.siteVisitID?'has-error form-group':'form-group'">
+        <label>Cơ sở xét nghiệm chuyển đến <span class="text-danger">*</span></label>
+        <select ng-model="model.siteVisitID" 
+        ng-options="key as value for (key , value) in options.visitSite"
+        class="form-control">
+        </select>
+        <p class="help-block" ng-if="errors.siteVisitID">{{errors.siteVisitID}}</p>
+        </div>
+        </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">Gửi thông tin</button>
+        <button class="btn btn-default" type="button" ng-click="cancel()">Đóng</button>
+        </div>
+    </script>
+</div>
+<ul class="nav nav-tabs" data-th-fragment="htc-laytest-header()">
+    <li th:class="${#request.getParameter('tab') == null || #request.getParameter('tab') == '' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).laytest()}">Tất cả</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'agency' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).laytestAgency() + '?tab=agency'}">Theo dõi bạn tình bạn chích</a>
+    </li>
+    <li th:class="${#request.getParameter('tab') == 'delete' ? 'active' : ''}">
+        <a th:href="${T(com.gms.components.UrlUtils).laytest() + '?tab=delete'}">Đã xóa</a>
+    </li>
+</ul>

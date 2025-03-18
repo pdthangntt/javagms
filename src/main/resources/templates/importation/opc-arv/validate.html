@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${form.title}" ></title>
+    </head>
+    <body >
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <script th:inline="javascript">
+                var form = {};
+            </script>
+            <section class="content-header">
+                <h1>
+                    <span th:utext="${form.title}" ></span>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+                    <li><a th:href="${form.smallUrl}"><span th:text="${form.smallTitle}" ></span></a></li>
+                    <li><a th:href="${form.uploadUrl}"><span th:text="${form.title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="import_opc_arv" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                    <div class="col-lg-12 col-md-12" >
+                        <div class="nav-tabs-custom">
+                            <ul th:replace="importation/widget :: tab" ></ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active form">
+                                    <div ng-cloak ng-cloak-loading class="form-group"><i class="fa fa-sun-o fa-spin" ></i></div>
+                                    <table ng-cloak class="table table-striped table-bordered table-sm table-scroll table-full" data-scrollY="auto" data-rightColumns="0" data-leftColumns="0">
+                                        <thead>
+                                            <tr class="text-center vertical-align-middle success">
+                                                <th class="text-center" style="width: 20px;"></th>
+                                                <th class="text-center"  style="width: 150px;" >Mã bệnh án</th>
+                                                <th class="text-center"  style="width: 150px;" >Họ và tên</th>
+                                                <th class="text-center"  style="width: 150px;" >Giới tính</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày sinh</th>
+                                                <th class="text-center"  style="width: 150px;" >Số CMND</th>
+                                                <th class="text-center"  style="width: 150px;" >Dân tộc</th>
+                                                <th class="text-center"  style="width: 150px;" >Nghề nghiệp</th>
+                                                <th class="text-center"  style="width: 300px;" >Nhóm đối tượng</th>
+                                                <th class="text-center"  style="width: 150px;" >BN có thẻ BHYT</th>
+                                                <th class="text-center"  style="width: 150px;" >Số thẻ BHYT</th>
+                                                <th class="text-center"  style="width: 222px;" >Loại thẻ BHYT</th>
+                                                <th class="text-center"  style="width: 200px;" >Nơi ĐK KCB ban đầu</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày hết hạn thẻ BHYT</th>
+                                                <th class="text-center"  style="width: 150px;" >Tỷ lệ thanh toán BHYT</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Tuyến đăng ký bảo hiểm</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >SĐT bệnh nhân</th>
+                                                <th class="text-center"  style="width: 150px;" >Số nhà thường trú</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Đường phố thường trú (nếu có)</th>
+                                                <th class="text-center"  style="width: 150px;" >Tổ/ấp/Khu phố thường trú</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Tỉnh/Thành thường trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Quận/Huyện thường trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Xã/Phường thường trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Số nhà cư trú</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Đường phố cư trú (nếu có)</th>
+                                                <th class="text-center"  style="width: 150px;" >Tổ/ấp/Khu phố cư trú</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Tỉnh/Thành cư trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Quận/Huyện cư trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Xã/Phường cư trú</th>
+                                                <th class="text-center"  style="width: 150px;" >Họ tên người hỗ trợ</th>
+                                                <th class="text-center"  style="width: 150px;" >Quan hệ với BN</th>
+                                                <th class="text-center"  style="width: 150px;" >SĐT người hỗ trợ</th>
+                                                <th class="text-center"  style="width: 150px;" >Mã XN khẳng định</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN khẳng định</th>
+                                                <th class="text-center"  style="width: 200px;" >Nơi XN khẳng định</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN PCR lần 1</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN PCR lần 1</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN PCR lần 2</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN PCR lần 2</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày đăng ký</th>
+                                                <th class="text-center"  style="width: 150px;" >Loại đăng ký</th>
+                                                <th class="text-center"  style="width: 200px;" >Cơ sở chuyển gửi</th>
+                                                <th class="text-center"  style="width: 150px;" >Mã BA chuyển đến</th>
+                                                <th class="text-center"  style="width: 150px;" >Giai đoạn lâm sàng</th>
+                                                <th class="text-center"  style="width: 150px;" >CD4  hoặc CD4%</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Ngày tiếp nhận</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày chuyển gửi theo phiếu</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày phản hồi</th>
+                                                <th class="text-center"  style="width: 150px;" >Tình trạng đăng ký</th>
+                                                <th class="text-center"  style="width: 150px;" >Cân nặng (kg)</th>
+                                                <th class="text-center"  style="width: 150px;" >Chiều cao (cm)</th>
+                                                
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Sàng lọc Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày sàng lọc</th>
+                                                <th class="text-center"  style="width: 150px;" >Các biểu hiện nghi Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Triệu chứng khác</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Triệu chứng nghi ngờ</th>
+                                                <th class="text-center"  style="width: 150px;" >Chuyển gửi khám và xét nghiệm</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày xét nghiệm Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả xét nghiệm Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Chẩn đoán loại hình Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Điều trị Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày bắt đầu điều trị Lao</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày kết thúc điều trị Lao</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Điều trị dự phòng INH</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày bắt đầu INH</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày kết thúc INH</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do kết thúc INH</th>
+                                                <th class="text-center"  style="width: 150px;" >Điều trị NTCH</th>
+                                                <th class="text-center"  style="width: 150px;" >Các biểu hiện NTCH</th>
+                                                <th class="text-center"  style="width: 150px;" >Triệu chứng NTCH khác</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày bắt đầu Cotrimoxazole</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày kết thúc Cotrimoxazole</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do kết thúc NTCH</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do kết thúc khác (nếu có)</th>
+                                                <th class="text-center"  style="width: 150px;" >Trạng thái điều trị</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày ARV đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Phác đồ đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Đạt tiêu chuẩn điều trị nhanh</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày điều trị ARV</th>
+                                                <th class="text-center"  style="width: 150px;" >Bậc phác đồ hiện tại</th>
+                                                <th class="text-center"  style="width: 150px;" >Phác đồ hiện tại</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày khám gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Tuân thủ điều trị</th>
+                                                <th class="text-center"  style="width: 150px;" >Số ngày nhận thuốc</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày hẹn khám</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Ngày nhận thuốc tại xã</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Các vấn đề khác</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN CD4 đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN CD4 đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN CD4 gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN CD4 gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do XN CD4 gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN tải lượng đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN tải lượng đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do XN tải lượng đầu tiên</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày XN tải lượng gần nhất</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Nồng độ virus</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN tải lượng gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do XN tải lượng gần nhất</th>
+                                                <th class="text-center"  style="width: 150px;" >Xét nghiệm HBV</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày xét nghiệm HBV</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN HBV</th>
+                                                <th class="text-center"  style="width: 150px;" >Xét nghiệm HCV</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày xét nghiệm HCV</th>
+                                                <th class="text-center"  style="width: 150px;" >Kết quả XN HCV</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày kết thúc</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do kết thúc</th>
+                                                <th class="text-center"  style="width: 200px;" >Cơ sở chuyển đi</th>
+                                                <th class="text-center"  style="width: 150px;" >Lý do chuyển</th>
+                                                		
+                                                <th class="text-center"  style="width: 150px;" >Ngày chuyển đi</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày cs chuyển đi tiếp nhận</th>
+                                                <th class="text-center"  style="width: 150px;" >Ngày cs chuyển đi phản hồi</th>
+                                                
+                                                <th class="text-center"  style="width: 150px;" >Ghi chú</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="vertical-align-top"
+                                                th:each="item,inter : ${items}" 
+                                                th:data-row="${inter.index}"> 
+                                                <td class="text-center">
+                                                    <i class="fa fa-cog"></i>
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <input name="code" th:value="${item.code}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <input name="fullName" th:value="${item.fullName}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="genderID" id="genderID" class="form-control" th:data-value="${item.genderID}">
+                                                        <option th:each="o : ${options.get('gender')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="dob" th:value="${item.dob}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="identityCard" th:value="${item.identityCard}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="raceID" id="raceID" class="form-control" th:data-value="${item.raceID}">
+                                                        <option th:each="o : ${options.get('race')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="jobID" id="jobID" class="form-control" th:data-value="${item.jobID}">
+                                                        <option th:each="o : ${options.get('job')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="objectGroupID" id="objectGroupID" class="form-control" th:data-value="${item.objectGroupID}">
+                                                        <option th:each="o : ${options.get('test-object-group')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="insurance" id="insurance" class="form-control" th:data-value="${item.insurance}">
+                                                        <option th:each="o : ${options.get('health-insurance')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="insuranceNo" th:value="${item.insuranceNo}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="insuranceType" id="insuranceType" class="form-control" th:data-value="${item.insuranceType}">
+                                                        <option th:each="o : ${options.get('insurance-type')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="insuranceSite" th:value="${item.insuranceSite}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="insuranceExpiry" th:value="${item.insuranceExpiry}"  class="form-control"/>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="insurancePay" id="insurancePay" class="form-control" th:data-value="${item.insurancePay}">
+                                                        <option th:each="o : ${options.get(T(com.gms.entity.db.ParameterEntity).INSURANCE_PAY)}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="route" id="route" class="form-control" th:data-value="${item.route}">
+                                                        <option th:each="o : ${options.get(T(com.gms.entity.db.ParameterEntity).ROUTE)}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="patientPhone" th:value="${item.patientPhone}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="permanentAddress" th:value="${item.permanentAddress}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="permanentAddressStreet" th:value="${item.permanentAddressStreet}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="permanentAddressGroup" th:value="${item.permanentAddressGroup}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="permanentProvinceID" 
+                                                            th:data-content="${item.permanentProvinceID}"
+                                                            th:id="${'permanentProvinceID_' + inter.index}">
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="permanentDistrictID" 
+                                                            th:data-content="${item.permanentDistrictID}"
+                                                            th:id="${'permanentDistrictID_' + inter.index}">
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="permanentWardID" 
+                                                            th:data-content="${item.permanentWardID}"
+                                                            th:id="${'permanentWardID_' + inter.index}">
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="currentAddress" th:value="${item.currentAddress}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="currentAddressStreet" th:value="${item.currentAddressStreet}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="currentAddressGroup" th:value="${item.currentAddressGroup}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="currentProvinceID" 
+                                                            th:data-content="${item.currentProvinceID}"
+                                                            th:id="${'currentProvinceID_' + inter.index}">
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="currentDistrictID" 
+                                                            th:data-content="${item.currentDistrictID}"
+                                                            th:id="${'currentDistrictID_' + inter.index}">
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap">
+                                                    <select class="form-control" 
+                                                            name="currentWardID" 
+                                                            th:data-content="${item.currentWardID}"
+                                                            th:id="${'currentWardID_' + inter.index}">
+                                                    </select>
+                                                </td>
+
+                                                <td class="text-center wrap" >
+                                                    <input name="supporterName" th:value="${item.supporterName}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="supporterRelation" id="supporterRelation" class="form-control" th:data-value="${item.supporterRelation}">
+                                                        <option th:each="o : ${options.get(T(com.gms.entity.db.ParameterEntity).SUPPORTER_RELATION)}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="supporterPhone" th:value="${item.supporterPhone}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="confirmCode" th:value="${item.confirmCode}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="confirmTime" th:value="${item.confirmTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="confirmSiteName" th:value="${item.confirmSiteName}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="pcrOneTime" th:value="${item.pcrOneTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="pcrOneResult" id="pcrOneResult" class="form-control" th:data-value="${item.pcrOneResult}">
+                                                        <option th:each="o : ${options.get('test-results-pcr')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="pcrTwoTime" th:value="${item.pcrTwoTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="pcrTwoResult" id="pcrTwoResult" class="form-control" th:data-value="${item.pcrTwoResult}">
+                                                        <option th:each="o : ${options.get('test-results-pcr')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="registrationTime" th:value="${item.registrationTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="registrationType" id="registrationType" class="form-control" th:data-value="${item.registrationType}">
+                                                        <option th:each="o : ${options.get('registration-type')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="sourceSiteName" th:value="${item.sourceSiteName}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="sourceCode" th:value="${item.sourceCode}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="clinicalStage" id="clinicalStage" class="form-control" th:data-value="${item.clinicalStage}">
+                                                        <option th:each="o : ${options.get('clinical-stage')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cd4" th:value="${item.cd4}" class="form-control" />
+                                                </td>
+                                                
+                                                <!--them-->
+                                                <td class="text-center wrap" >
+                                                    <input name="tranferToTime" th:value="${item.tranferToTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="dateOfArrival" th:value="${item.dateOfArrival}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="feedbackResultsReceivedTime" th:value="${item.feedbackResultsReceivedTime}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="registrationStatus" id="registrationStatus" class="form-control" th:data-value="${item.registrationStatus}">
+                                                        <option th:each="o : ${options.get(T(com.gms.entity.db.ParameterEntity).ARV_REGISTRATION_STATUS)}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="patientWeight" th:value="${item.patientWeight}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="patientHeight" th:value="${item.patientHeight}" class="form-control" />
+                                                </td>
+                                                
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="lao" id="lao" class="form-control" th:data-value="${item.lao}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="laoTestTime" th:value="${item.laoTestTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="laoSymptoms" id="laoSymptoms" class="form-control" th:data-value="${item.laoSymptoms}">
+                                                        <option value="">Chọn biểu hiện</option>
+                                                        <option th:each="o : ${options.get('lao-symtom')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="laoOtherSymptom" th:value="${item.laoOtherSymptom}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="suspiciousSymptoms" id="suspiciousSymptoms" class="form-control" th:data-value="${item.suspiciousSymptoms}">
+                                                        <option th:each="o : ${options.get('suspicious-symptoms')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="examinationAndTest" id="examinationAndTest" class="form-control" th:data-value="${item.examinationAndTest}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="laoTestDate" th:value="${item.laoTestDate}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="laoResult" id="laoResult" class="form-control" th:data-value="${item.laoResult}">
+                                                        <option th:each="o : ${options.get('test-results')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="laoDiagnose" id="laoDiagnose" class="form-control" th:data-value="${item.laoDiagnose}">
+                                                        <option th:each="o : ${options.get('lao-diagnose')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="laoTreatment" id="laoTreatment" class="form-control" th:data-value="${item.laoTreatment}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="laoStartTime" th:value="${item.laoStartTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="laoEndTime" th:value="${item.laoEndTime}" class="form-control" />
+                                                </td>
+                                                
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="inh" id="inh" class="form-control" th:data-value="${item.inh}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="inhFromTime" th:value="${item.inhFromTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="inhToTime" th:value="${item.inhToTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="inhEndCauses" id="inhEndCauses" class="form-control" th:data-value="${item.inhEndCauses}">
+                                                        <option value="">Chọn lý do</option>
+                                                        <option th:each="o : ${options.get('lao-end-case')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="ntch" id="ntch" class="form-control" th:data-value="${item.ntch}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="ntchSymptoms" id="ntchSymptoms" class="form-control" th:data-value="${item.ntchSymptoms}">
+                                                        <option value="">Chọn biểu hiện</option>
+                                                        <option th:each="o : ${options.get('ntch-symtom')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="ntchOtherSymptom" th:value="${item.ntchOtherSymptom}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cotrimoxazoleFromTime" th:value="${item.cotrimoxazoleFromTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cotrimoxazoleToTime" th:value="${item.cotrimoxazoleToTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="cotrimoxazoleEndCauses" id="cotrimoxazoleEndCauses" class="form-control" th:data-value="${item.cotrimoxazoleEndCauses}">
+                                                        <option value="">Chọn lý do</option>
+                                                        <option th:each="o : ${options.get('ntch-end-case')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cotrimoxazoleOtherEndCause" th:value="${item.cotrimoxazoleOtherEndCause}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="statusOfTreatmentID" id="statusOfTreatmentID" class="form-control" th:data-value="${item.statusOfTreatmentID}">
+                                                        <option th:each="o : ${options.get('status-of-treatment')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="firstTreatmentTime" th:value="${item.firstTreatmentTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="firstTreatmentRegimenID" id="firstTreatmentRegimenID" class="form-control" th:data-value="${item.firstTreatmentRegimenID}">
+                                                        <option th:each="o : ${options.get('treatment-regimen')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="passTreatment" id="passTreatment" class="form-control" th:data-value="${item.passTreatment}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="treatmentTime" th:value="${item.treatmentTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="treatmentRegimenStage" id="treatmentRegimenStage" class="form-control" th:data-value="${item.treatmentRegimenStage}">
+                                                        <option th:each="o : ${options.get('treatment-regimen-stage')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="treatmentRegimenID" id="treatmentRegimenID" class="form-control" th:data-value="${item.treatmentRegimenID}">
+                                                        <option th:each="o : ${options.get('treatment-regimen')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="lastExaminationTime" th:value="${item.lastExaminationTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="medicationAdherence" id="medicationAdherence" class="form-control" th:data-value="${item.medicationAdherence}">
+                                                        <option th:each="o : ${options.get('medication-adherence')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="daysReceived" th:value="${item.daysReceived}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="appointmentTime" th:value="${item.appointmentTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="receivedWardDate" th:value="${item.receivedWardDate}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="examinationNote" th:value="${item.examinationNote}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="firstCd4Time" th:value="${item.firstCd4Time}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="firstCd4Result" th:value="${item.firstCd4Result}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cd4Time" th:value="${item.cd4Time}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="cd4Result" th:value="${item.cd4Result}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="cd4Causes" id="cd4Causes" class="form-control" th:data-value="${item.cd4Causes}">
+                                                        <option value="">Chọn lý do</option>
+                                                        <option th:each="o : ${options.get('cd4-symtom')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="firstViralLoadTime" th:value="${item.firstViralLoadTime}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="firstViralLoadResult" id="firstViralLoadResult" class="form-control" th:data-value="${item.firstViralLoadResult}">
+                                                        <option th:each="o : ${options.get('virus-load')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="firstViralLoadCauses" id="firstViralLoadCauses" class="form-control" th:data-value="${item.firstViralLoadCauses}">
+                                                        <option value="">Chọn lý do</option>
+                                                        <option th:each="o : ${options.get('viralload-symtom')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="viralLoadTime" th:value="${item.viralLoadTime}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <input name="viralLoadResultNumber" th:value="${item.viralLoadResultNumber}" class="form-control" />
+                                                </td>
+                                                
+                                                <td class="text-center wrap" >
+                                                    <select name="viralLoadResult" id="viralLoadResult" class="form-control" th:data-value="${item.viralLoadResult}">
+                                                        <option th:each="o : ${options.get('virus-load')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="viralLoadCauses" id="viralLoadCauses" class="form-control" th:data-value="${item.viralLoadCauses}">
+                                                        <option value="">Chọn lý do</option>
+                                                        <option th:each="o : ${options.get('viralload-symtom')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="hbv" id="hbv" class="form-control" th:data-value="${item.hbv}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="hbvTime" th:value="${item.hbvTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="hbvResult" id="hbvResult" class="form-control" th:data-value="${item.hbvResult}">
+                                                        <!--<option value="">Chọn lý do</option>-->
+                                                        <option th:each="o : ${options.get('test-results')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+
+                                                <td class="text-center wrap" >
+                                                    <select name="hcv" id="hcv" class="form-control" th:data-value="${item.hcv}">
+                                                        <option th:each="o : ${options.get('has')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="hcvTime" th:value="${item.hcvTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="hcvResult" id="hcvResult" class="form-control" th:data-value="${item.hcvResult}">
+                                                        <!--<option value="">Chọn lý do</option>-->
+                                                        <option th:each="o : ${options.get('test-results')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="endTime" th:value="${item.endTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <select name="endCase" id="endCase" class="form-control" th:data-value="${item.endCase}">
+                                                        <!--<option value="">Chọn lý do</option>-->
+                                                        <option th:each="o : ${options.get('arv-end-case')}"
+                                                                th:utext="${o.value}"
+                                                                th:value="${o.key}"></option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="transferSiteName" th:value="${item.transferSiteName}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="transferCase" th:value="${item.transferCase}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="tranferFromTime" th:value="${item.tranferFromTime}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="tranferToTimeOpc" th:value="${item.tranferToTimeOpc}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="feedbackResultsReceivedTimeOpc" th:value="${item.feedbackResultsReceivedTimeOpc}" class="form-control" />
+                                                </td>
+                                                <td class="text-center wrap" >
+                                                    <input name="note" th:value="${item.note}" class="form-control" />
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="importation/widget :: footer_view"  ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+        </div>
+    </body>
+</html>

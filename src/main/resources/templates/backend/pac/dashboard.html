@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout-decorate="~{backend/layouts/main}">
+    <head>
+        <title th:text="${title + ' ' + smallTitle}" ></title>
+    </head>
+    <body>
+        <div class="content-wrapper" role="main" data-layout-fragment="content">
+            <!-- static js chart leaflet -->
+            <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/leaflet/leaflet.css'}" />
+            <link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/leaflet/plugin/markercluster-master/MarkerCluster.css'}" />
+            <!--<link rel="stylesheet" type="text/css" th:href="@{'/static/backend/plugin/leaflet/plugin/extra-markers/css/leaflet.extra-markers.min.css'}" />-->
+            <script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/leaflet.js'}"></script>
+            <!--<script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/plugin/extra-markers/js/leaflet.extra-markers.min.js'}"></script>-->
+            <script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/plugin/markercluster-master/leaflet.markercluster.js'}"></script>
+            <!--<script type="text/javascript" th:src="@{'/static/backend/plugin/leaflet/vi-districts.js'}"></script>-->
+            <!-- # static js chart leaflet -->
+            <style>
+                .dashboard-height {
+                    height: 400px;
+                }
+                .dashboard-height .fa {
+                    margin-top: 150px;
+                }
+            </style>
+            <section class="content-header">
+                <h1>
+                    <span th:text="${title}" ></span>
+                    <small th:text="${#request.userPrincipal.principal.site.name}" ></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a th:href="${T(com.gms.components.UrlUtils).home()}"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacNew()}"><span>Quản lý người nhiễm</span></a></li>
+                    <li><a th:href="${T(com.gms.components.UrlUtils).pacDashboard()}"><span th:text="${title}" ></span></a></li>
+                </ol>
+            </section>
+            <section class="content" ng-controller="pac_dashboard" ng-init="init()">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12" data-th-include="backend/layouts/widget-message :: widget-message" ></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-blue">
+                                <i class="fa fa-users"></i>
+                            </span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Lũy tích phát hiện</span>
+                                <span class="info-box-number" ng-bind="newTotal | number:0"></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-red"><i class="fa fa-street-view"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">
+                                    Phát hiện mới
+                                    <i th:utext="${'năm ' +  #dates.year(#dates.createNow())}"></i>
+                                </span>
+                                <span class="info-box-number" ng-bind="patientTotal | number:0"></span>
+
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+
+                    <!-- fix for small devices only -->
+                    <div class="clearfix visible-sm-block"></div>
+
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green"><i class="fa fa-child"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Người nhiễm còn sống</span>
+                                <span class="info-box-number" ng-bind="allTotal | number:0"></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-purple"><i class="fa fa-user-md"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">Đang điều trị</span>
+                                <span class="info-box-number" ng-bind="opcTotal | number:0"></span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-solid">
+                            <div class="box-header with-border text-center">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="no-margin" ng-cloak>
+                                            <label class="radio">
+                                                <input name="viewPac" type="radio" class="checkbox-switch" id="isOne" value="1" checked />
+                                                <span>Số liệu luỹ tích</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="no-margin" ng-cloak>
+                                            <label class="checkbox">
+                                                <input name="viewPac" type="radio" class="checkbox-switch" id="isTwo"  value="2" />
+                                                <span>Số liệu còn sống</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="no-margin" ng-cloak>
+                                            <label class="checkbox">
+                                                <input name="viewPac" type="radio" class="checkbox-switch" id="isThree"  value="3" />
+                                                <span>Số liệu tử vong</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-body text-center">
+                                <div class="dashboard-height" id="dashboard-chartgeo">
+                                    <i class="fa fa-sun-o fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>
